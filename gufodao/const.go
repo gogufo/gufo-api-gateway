@@ -19,6 +19,3 @@ package gufodao
 var configname string = "settings"
 
 var Configpath string = "/var/gufo/config/"
-
-// AesKey is salt for pasword hash
-var AesKey = []byte("H4fnCsMf4vbE60nK")

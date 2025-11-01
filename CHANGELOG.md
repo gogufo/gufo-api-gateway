@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.19.0
+- Update Golang Version to 1.25
+- Optimize errors
+- Rewrite config logic
+- Change Log logic
+- Change config Passwords salt logic
+
 ##.1.17.1
 - Update Golang Version to 1.23
 

@@ -1,386 +1,285 @@
-// Copyright 2019 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2019-2025 Alexey Yanchenko
 //
 // This file is part of the Gufo library.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Licensed under the Apache License, Version 2.0.
 
 package gufodao
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
+	"errors"
 	"os"
+	"path/filepath"
 	"strings"
+
+	"github.com/joho/godotenv"
+	viper "github.com/spf13/viper"
 
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	viper "github.com/spf13/viper"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 )
 
-// CheckConfig() Check configuration file and stop app if config file mot foud or has errors
-func CheckConfig() {
-	viper.SetConfigName(configname) // name of config file (without extension)
-	viper.AddConfigPath(Configpath)
+const (
+	configDir  = "config"
+	configName = "settings"
+)
+
+// defaultConfigExample is a minimal safe configuration
+// automatically written when no config file is found.
+var defaultConfigExample = []byte(`# Auto-generated default config (safe defaults)
+[server]
+port = "8090"
+grpc_port = "4890"
+debug = false
+ip = "0.0.0.0"
+sentry = false
+session = true
+masterservice = true
+sysdir = "/var/gufo/"
+tempdir = "/var/gufo/templates/"
+filedir = "/var/gufo/files/"
+plugindir = "/var/gufo/lib/"
+logdir = "/var/gufo/log/"
+
+[security]
+# Sensitive values should be provided via ENV (see .env.example):
+# GUFO_SIGN, GUFO_JWT_SECRET
+sign_env = "GUFO_SIGN"
+jwt_secret_env = "GUFO_JWT_SECRET"
+
+[microservices.masterservice]
+host = "masterservice"
+port = "5300"
+type = "server"
+entrypointversion = "1.0.0"
+cron = false
+
+[database]
+type = "mysql"
+host = "db"
+port = "3306"
+dbname = "gufo"
+user = "root"
+password_env = "GUFO_DB_PASS"
+charset = "utf8mb4"
+protocol = "tcp"
+sslmode = "disable"
+
+[redis]
+host = "redis://redis"
+
+[sentry]
+enabled = false
+dsn_env = "GUFO_SENTRY_DSN"
+trace = 1.0
+flush = 2
+tracing = true
+debug = false
+`)
+
+// EnsureConfigExists verifies if config/settings.toml exists.
+// If it does not, the function creates it from an embedded safe default.
+// No interactive prompts or secrets are written.
+func EnsureConfigExists() {
+	path := filepath.Join(configDir, configName+".toml")
+
+	info, statErr := os.Stat(path)
+	if statErr == nil && !info.IsDir() {
+		return // file already exists
+	}
+
+	if statErr != nil && !os.IsNotExist(statErr) {
+		SetErrorLog("config: cannot stat config file: " + statErr.Error())
+		return
+	}
+
+	if mkErr := os.MkdirAll(configDir, 0o755); mkErr != nil {
+		SetErrorLog("config: cannot create config dir: " + mkErr.Error())
+		return
+	}
+
+	if writeErr := os.WriteFile(path, defaultConfigExample, 0o644); writeErr != nil {
+		SetErrorLog("config: cannot write default config: " + writeErr.Error())
+		return
+	}
+
+	SetLog("config: created default config at " + path)
+}
+
+// InitConfig loads configuration with layered fallback.
+// It loads .env (optional), reads environment overrides,
+// parses TOML file if present, applies defaults, and validates critical keys.
+func InitConfig() error {
+	// 1) Load .env for local/non-Docker usage
+	_ = godotenv.Load()
+
+	// 2) Configure Viper for ENV overrides
+	viper.SetEnvPrefix("GUFO")
+	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	// 3) Set config search paths
+	viper.SetConfigName(configName)
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(configDir)
+	viper.AddConfigPath(".") // fallback when run from project root
+
+	// 4) Safe defaults to allow startup without config file
+	viper.SetDefault("server.port", "8090")
+	viper.SetDefault("server.grpc_port", "4890")
+	viper.SetDefault("server.debug", false)
+	viper.SetDefault("server.sentry", false)
+	viper.SetDefault("server.session", true)
+	viper.SetDefault("server.masterservice", true)
+	viper.SetDefault("server.ip", "0.0.0.0")
+
+	// 5) Read config file if available
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			// Config file not found; ignore error if desired
-			i := 0
-			AskForConfigFile(i)
+		SetLog("config: no settings.toml found, using defaults and ENV")
+	} else {
+		SetLog("config: loaded " + viper.ConfigFileUsed())
+	}
+
+	// 6) Validate essential values
+	if err := ValidateConfig(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateConfig performs minimal validation for required parameters.
+// It returns an error but never exits the process directly.
+func ValidateConfig() error {
+	httpPort := strings.TrimSpace(viper.GetString("server.port"))
+	grpcPort := strings.TrimSpace(viper.GetString("server.grpc_port"))
+
+	if httpPort == "" {
+		return errors.New("config: server.port must not be empty")
+	}
+	if grpcPort == "" {
+		return errors.New("config: server.grpc_port must not be empty")
+	}
+
+	if viper.GetBool("server.masterservice") {
+		h := strings.TrimSpace(viper.GetString("microservices.masterservice.host"))
+		p := strings.TrimSpace(viper.GetString("microservices.masterservice.port"))
+		if h == "" || p == "" {
+			return errors.New("config: masterservice enabled but host/port missing")
+		}
+	}
+	return nil
+}
+
+// EncryptConfigPasswords encrypts plaintext passwords in settings.toml
+// using AES-GCM and stores them in the "$2a##<cipher>" format.
+// Safe to call repeatedly: already encrypted values are skipped.
+func EncryptConfigPasswords() {
+	key := GetAesKey()
+
+	dbPwd := viper.GetString("database.password")
+	if dbPwd != "" && !strings.HasPrefix(dbPwd, "$2a##") {
+		enc, err := EncryptAES(key, dbPwd)
+		if err == nil {
+			viper.Set("database.password", "$2a##"+enc)
+			_ = viper.WriteConfig()
+			SetLog("config: database.password encrypted")
 		} else {
-			// Config file was found but another error was produced
-			var m string = "Please Check config file. It is an error in it... \t"
-			fmt.Printf(m)
-			var ms string = "Server stop \t"
-			fmt.Printf(ms)
-			os.Exit(3)
+			SetErrorLog("config: failed to encrypt DB password: " + err.Error())
 		}
 	}
-	//Hash passwords
-	HashConfigPasswords()
-	// Check for Gufo Personal Sign
-	CheckForSign()
-	SetLog("Gufo Starting. Config file OK")
-}
 
-// CheckForSign - check Gufo Sign and if it missing, generate a sign. Sign need to connect to micoservices.
-// By this Sign Microservices understand that requests are from one system
-func CheckForSign() {
-	position := "server.sign"
-	sign := viper.GetString(position)
-	if sign == "" {
-		//Generate a new sign
-		newsign := RandomString(64)
-		viper.Set(position, newsign)
-		viper.WriteConfig()
+	emailPwd := viper.GetString("email.password")
+	if emailPwd != "" && !strings.HasPrefix(emailPwd, "$2a##") {
+		enc, err := EncryptAES(key, emailPwd)
+		if err == nil {
+			viper.Set("email.password", "$2a##"+enc)
+			_ = viper.WriteConfig()
+			SetLog("config: email.password encrypted")
+		} else {
+			SetErrorLog("config: failed to encrypt email password: " + err.Error())
+		}
 	}
 }
 
-// HashConfigPasswords - Change password in settings file to hash
-func HashConfigPasswords() {
-	/*
-		viper.SetConfigName(configname) // name of config file (without extension)
-		viper.AddConfigPath(configpath)
-		err := viper.ReadInConfig() // Find and read the config file
-		if err != nil {             // Handle errors reading the config file
-
-			SetErrorLog("Please Check config file. It is an error in it...")
-		}
-	*/
-	var pwd string = viper.GetString("database.password")
-	//Hashed Password started with $2a##
-	s := strings.Split(pwd, "a##")
-	if s[0] != "$2" {
-		// The password is not hashed
-
-		// encrypt password
-		encryptMsg, err := encrypt(pwd)
-		if err != nil {
-			SetErrorLog("config.go:71: " + err.Error())
-		}
-		//Create new passwrd recort
-		var newpasswordrecord interface{} = "$2a##" + encryptMsg
-		//s := make(interface{},  newpasswordrecord)
-		viper.Set("database.password", newpasswordrecord)
-		viper.WriteConfig()
-	}
-
-	var emailpwd string = viper.GetString("email.password")
-	semail := strings.Split(emailpwd, "a##")
-	if semail[0] != "$2" {
-		// The password is not hashed
-
-		// encrypt password
-		encryptMsg, err := encrypt(emailpwd)
-		if err != nil {
-			SetErrorLog("config.go:88: " + err.Error())
-		}
-		//Create new passwrd recort
-		var newpasswordrecord interface{} = "$2a##" + encryptMsg
-		//s := make(interface{},  newpasswordrecord)
-		viper.Set("email.password", newpasswordrecord)
-		viper.WriteConfig()
-	}
-
-}
-
-// DecryptConfigPasswords - Decrypt Hashed password in settings file to real password
+// DecryptConfigPasswords decrypts values stored as "$2a##<cipher>".
+// Compatible with both legacy (simple AES) and new AES-GCM formats.
 func DecryptConfigPasswords(pwd string) string {
-	s := strings.Split(pwd, "a##")
-	if s[0] != "$2" {
-		//The password is not hashed
-		return pwd
-	} else {
-		//The password is hashed and need to be decrypted
-		msg, _ := decrypt(s[1])
-		return msg
-
-	}
-}
-
-func EncryptConfigPassword(pwd string) (string, error) {
-	encryptMsg, err := encrypt(pwd)
-	if err != nil {
-		return "", err
-	}
-	newpasswordrecord := "$2a##" + encryptMsg
-	return newpasswordrecord, nil
-
-}
-
-func ConfigString(conf string) string {
-
-	viper.SetConfigName(configname) // name of config file (without extension)
-	viper.AddConfigPath(Configpath)
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {             // Handle errors reading the config file
-		var errstring string = "Error to get " + conf + "from config file \t"
-		SetErrorLog("config.go:120: " + errstring)
+	if pwd == "" {
 		return ""
-	} else {
-		var param string = viper.GetString(conf)
-		return param
 	}
+	if !strings.HasPrefix(pwd, "$2a##") {
+		return pwd
+	}
+
+	parts := strings.SplitN(pwd, "##", 2)
+	if len(parts) != 2 {
+		return pwd
+	}
+
+	key := GetAesKey()
+	// Try new AES-GCM decryption first
+	if dec, err := DecryptAES(key, parts[1]); err == nil {
+		return dec
+	}
+
+	// Fallback: legacy decrypt() method
+	msg, _ := decrypt(parts[1])
+	return msg
 }
 
+// ConfigString returns a configuration value as string.
+func ConfigString(key string) string {
+	return viper.GetString(key)
+}
+
+// GetPass safely resolves passwords from either ENV or encrypted config values.
+// Priority: explicit ENV variable > encrypted TOML value > plaintext fallback.
 func GetPass(conf string) string {
-	p := viper.GetString(conf)
-	pass := DecryptConfigPasswords(p)
-	return pass
+	pwd := viper.GetString(conf)
+
+	// 1️⃣ Check if there is an ENV override reference (like database.password_env)
+	if strings.Contains(conf, "password") {
+		envKey := viper.GetString(conf + "_env")
+		if envKey != "" {
+			if val, ok := os.LookupEnv(envKey); ok && val != "" {
+				return val // priority: ENV wins
+			}
+		}
+	}
+
+	// 2️⃣ If empty, nothing to decrypt
+	if pwd == "" {
+		return ""
+	}
+
+	// 3️⃣ If encrypted, decrypt
+	if strings.HasPrefix(pwd, "$2a##") {
+		return DecryptConfigPasswords(pwd)
+	}
+
+	// 4️⃣ Otherwise, return as is (plaintext fallback)
+	return pwd
 }
 
-func AskForConfigFile(i int) {
-
-	m := fmt.Sprintf("Config file was not found at %s\t\n\t\n", Configpath)
-	fmt.Printf(m)
-	fmt.Printf("Would you like to create it? [yes/no]: ")
-	var ans string
-
-	fmt.Scanln(&ans)
-	switch ans {
-	case "yes":
-		CreateConfig()
-	case "no":
-		AnsNo()
-	default:
-		i = i + 1
-		AnsDef(i)
-
-	}
-
-}
-
-func AnsNo() {
-	m := fmt.Sprintf("Please place \"%s\" file to the %s path and restart Gufo\t\n", configname, Configpath)
-	fmt.Printf(m)
-	fmt.Printf("Server stop \tn")
-	os.Exit(3)
-}
-
-func AnsDef(i int) {
-	if i == 3 {
-		AnsNo()
-	}
-	AskForConfigFile(i)
-}
-
-func CreateConfig() {
-	//fmt.Printf("Yes  \t\n Server stop \t\n")
-	//os.Exit(3)
-	fl := fmt.Sprintf("%s/settings.toml", Configpath)
-	f, err := os.OpenFile(fl,
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Println(err)
-	}
-	defer f.Close()
-
-	viper.SetConfigName(configname)
-	viper.AddConfigPath(Configpath)
-
-	var ans string
-	fmt.Printf("What's Gufo IP address? [127.0.0.1]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("server.ip", "127.0.0.1")
-	} else {
-		viper.Set("server.ip", ans)
-	}
-	ans = ""
-
-	fmt.Printf("Which port Gufo should listen? [8090]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("server.port", "8090")
-	} else {
-		viper.Set("server.port", ans)
-	}
-	ans = ""
-
-	fmt.Printf("Please set system directory (with slash)? [var/]: ")
-	fmt.Scanln(&ans)
-	sdir := "var/"
-	if ans != "" {
-		sdir = ans
-	}
-	viper.Set("server.sysdir", sdir)
-	viper.Set("server.logdir", fmt.Sprintf("%slog/", sdir))
-	viper.Set("server.plugindir", fmt.Sprintf("%slib/", sdir))
-	viper.Set("server.langdir", fmt.Sprintf("%slang/", sdir))
-	viper.Set("server.tempdir", fmt.Sprintf("%stemplates/", sdir))
-	viper.Set("server.debug", true)
-	ans = ""
-
-	viper.Set("settings.registration", true)
-	viper.Set("settings.email_confirmation", false)
-
-	fmt.Printf("Please set system language? [english]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("server.lang", "english")
-	} else {
-		viper.Set("server.lang", ans)
-	}
-	ans = ""
-
-	fmt.Printf("What's DB type do you prefer? [mysql/postgres]: ")
-	fmt.Scanln(&ans)
-	viper.Set("database.type", ans)
-	ans = ""
-
-	fmt.Printf("What's DB protocol do you use? [tcp]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("database.protocol", "tcp")
-	} else {
-		viper.Set("database.protocol", ans)
-	}
-	ans = ""
-
-	fmt.Printf("What's DB host? [127.0.0.1]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("database.host", "127.0.0.1")
-	} else {
-		viper.Set("database.host", ans)
-	}
-	ans = ""
-
-	fmt.Printf("What's DB port? [3306/5432]: ")
-	fmt.Scanln(&ans)
-	viper.Set("database.port", ans)
-	ans = ""
-
-	fmt.Printf("DB username? [root]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("database.user", "root")
-	} else {
-		viper.Set("database.user", ans)
-	}
-	ans = ""
-
-	fmt.Printf("DB password? : ")
-	fmt.Scanln(&ans)
-	viper.Set("database.password", ans)
-	ans = ""
-
-	fmt.Printf("DB name? : ")
-	fmt.Scanln(&ans)
-	viper.Set("database.dbname", ans)
-	ans = ""
-
-	fmt.Printf("Redis settings? [redis://localhost]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("redis.host", "redis://localhost")
-	} else {
-		viper.Set("redis.host", ans)
-	}
-	ans = ""
-
-	fmt.Printf("Memcached host? [127.0.0.1]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("memcached.host", "127.0.0.1")
-	} else {
-		viper.Set("memcached.host", ans)
-	}
-	ans = ""
-
-	fmt.Printf("Memcached port? [11211]: ")
-	fmt.Scanln(&ans)
-	if ans == "" {
-		viper.Set("memcached.port", "11211")
-	} else {
-		viper.Set("memcached.port", ans)
-	}
-
-	fmt.Printf("Would you like to setup email? [yes/no]: ")
-	fmt.Scanln(&ans)
-	if ans == "yes" {
-
-		fmt.Printf("What's email adddress?: ")
-		fmt.Scanln(&ans)
-		viper.Set("email.address", ans)
-
-		fmt.Printf("What's email host?: ")
-		fmt.Scanln(&ans)
-		viper.Set("email.host", ans)
-
-		fmt.Printf("What's email port?: ")
-		fmt.Scanln(&ans)
-		viper.Set("email.port", ans)
-
-		fmt.Printf("What's email username?: ")
-		fmt.Scanln(&ans)
-		viper.Set("email.user", ans)
-
-		fmt.Printf("What's email password?: ")
-		fmt.Scanln(&ans)
-		viper.Set("email.password", ans)
-
-		fmt.Printf("Reply-to: ")
-		fmt.Scanln(&ans)
-		viper.Set("email.reply", ans)
-
-	} else {
-		fmt.Printf("You can setup email later in config file \t\n")
-	}
-
-	fmt.Printf("Thank You! Config File created \t\n")
-	CheckConfig()
-
-}
-
+// Int32 returns a pointer to int32 (helper for proto structs).
 func Int32(v int) *int32 {
 	s := int32(v)
 	return &s
 }
 
+// ConvertInterfaceToAny serializes any Go value into protobuf Any.
 func ConvertInterfaceToAny(v interface{}) (*anypb.Any, error) {
-
 	anyValue := &any.Any{}
 	bytes, _ := json.Marshal(v)
-	bytesValue := &wrappers.BytesValue{
-		Value: bytes,
-	}
+	bytesValue := &wrappers.BytesValue{Value: bytes}
 	err := anypb.MarshalFrom(anyValue, bytesValue, proto.MarshalOptions{})
 	return anyValue, err
 }
 
+// ConvertAnyToInterface deserializes a protobuf Any into Go interface{}.
 func ConvertAnyToInterface(anyValue *anypb.Any) (interface{}, error) {
 	var value interface{}
 	bytesValue := &wrappers.BytesValue{}
@@ -389,32 +288,32 @@ func ConvertAnyToInterface(anyValue *anypb.Any) (interface{}, error) {
 		return value, err
 	}
 	uErr := json.Unmarshal(bytesValue.Value, &value)
-	if err != nil {
+	if uErr != nil {
 		return value, uErr
 	}
 	return value, nil
 }
 
+// ToMapStringAny converts map[string]interface{} to map[string]*anypb.Any.
 func ToMapStringAny(v map[string]interface{}) map[string]*anypb.Any {
-	size := len(v)
-	if size == 0 {
+	if len(v) == 0 {
 		return nil
 	}
-	fields := make(map[string]*anypb.Any)
-	for k, v := range v {
-		fields[k], _ = ConvertInterfaceToAny(v)
+	fields := make(map[string]*anypb.Any, len(v))
+	for k, val := range v {
+		fields[k], _ = ConvertInterfaceToAny(val)
 	}
 	return fields
 }
 
+// ToMapStringInterface converts map[string]*anypb.Any to map[string]interface{}.
 func ToMapStringInterface(v map[string]*anypb.Any) map[string]interface{} {
-	size := len(v)
-	if size == 0 {
+	if len(v) == 0 {
 		return nil
 	}
-	fields := make(map[string]interface{})
-	for k, v := range v {
-		fields[k], _ = ConvertAnyToInterface(v)
+	fields := make(map[string]interface{}, len(v))
+	for k, val := range v {
+		fields[k], _ = ConvertAnyToInterface(val)
 	}
 	return fields
 }

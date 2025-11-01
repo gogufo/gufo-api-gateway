@@ -5,3 +5,4 @@ gufo/var/lib
 gufo/var/log
 gufo/var/files
 vendor/
+.env

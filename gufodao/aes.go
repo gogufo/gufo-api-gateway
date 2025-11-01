@@ -23,7 +23,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
-	"io"
 	"math/big"
 	"strings"
 )
@@ -58,28 +57,13 @@ func Unpad(src []byte) ([]byte, error) {
 	return src[:(length - unpadding)], nil
 }
 
-func encrypt(text string) (string, error) {
-
-	block, err := aes.NewCipher(AesKey)
-	if err != nil {
-		return "", err
-	}
-
-	msg := Pad([]byte(text))
-	ciphertext := make([]byte, aes.BlockSize+len(msg))
-	iv := ciphertext[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		return "", err
-	}
-
-	cfb := cipher.NewCFBEncrypter(block, iv)
-	cfb.XORKeyStream(ciphertext[aes.BlockSize:], []byte(msg))
-	finalMsg := removeBase64Padding(base64.URLEncoding.EncodeToString(ciphertext))
-	return finalMsg, nil
-}
-
+// decrypt is a backward-compatible legacy decryption helper.
+// It supports the old AES-CFB scheme used before Gufo PR-2.
+// This function should only be called as a fallback from DecryptConfigPasswords().
 func decrypt(text string) (string, error) {
-	block, err := aes.NewCipher(AesKey)
+	key := GetAesKey() // Load key dynamically instead of static AesKey
+
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err
 	}
@@ -89,8 +73,12 @@ func decrypt(text string) (string, error) {
 		return "", err
 	}
 
-	if (len(decodedMsg) % aes.BlockSize) != 0 {
-		return "", errors.New("blocksize must be multiple of decoded message length")
+	if len(decodedMsg) < aes.BlockSize {
+		return "", errors.New("invalid ciphertext: too short")
+	}
+
+	if len(decodedMsg)%aes.BlockSize != 0 {
+		return "", errors.New("invalid ciphertext: not multiple of block size")
 	}
 
 	iv := decodedMsg[:aes.BlockSize]
@@ -99,12 +87,12 @@ func decrypt(text string) (string, error) {
 	cfb := cipher.NewCFBDecrypter(block, iv)
 	cfb.XORKeyStream(msg, msg)
 
-	unpadMsg, err := Unpad(msg)
+	unpadded, err := Unpad(msg)
 	if err != nil {
 		return "", err
 	}
 
-	return string(unpadMsg), nil
+	return string(unpadded), nil
 }
 
 func Stringen(n int) string {

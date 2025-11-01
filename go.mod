@@ -9,16 +9,19 @@ require (
 	github.com/getsentry/sentry-go v0.26.0
 	github.com/golang/protobuf v1.5.3
 	github.com/gomodule/redigo v1.8.9
+	github.com/joho/godotenv v1.5.1
 	github.com/microcosm-cc/bluemonday v1.0.26
 	github.com/nicksnyder/go-i18n/v2 v2.3.0
 	github.com/spf13/viper v1.18.2
 	github.com/urfave/cli/v2 v2.27.1
+	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.18.0
 	golang.org/x/text v0.14.0
 	google.golang.org/grpc v1.60.1
 	google.golang.org/protobuf v1.32.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5

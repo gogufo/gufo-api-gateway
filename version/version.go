@@ -1,4 +1,4 @@
-// Copyright 2020-2024 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2020-2025 Alexey Yanchenko <mail@yanchenko.me>
 //
 // This file is part of the Gufo library.
 //
@@ -22,4 +22,4 @@
 
 package version
 
-const VERSION = "1.17.1.0"
+const VERSION = "1.19.0.0"

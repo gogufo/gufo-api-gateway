@@ -21,3 +21,9 @@ type Response struct {
 	TimeStamp int                    `json:"timestamp"`
 	Language  string                 `json:"lang"`
 }
+
+type GufoError struct {
+	Code    string
+	Message string
+	HTTP    int
+}

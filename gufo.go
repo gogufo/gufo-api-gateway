@@ -25,6 +25,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
@@ -62,30 +63,36 @@ func commands() {
 			Usage:  "Stop Gufo Server",
 			Action: StopApp,
 		},
-	}
-}
-
-func flags() {
-	app.Flags = []cli.Flag{
-		&cli.StringFlag{
-			Name:    "conf",
-			Aliases: []string{"c"},
+		{
+			Name:  "cert",
+			Usage: "Certificate management commands",
+			Subcommands: []*cli.Command{
+				{
+					Name:   "init",
+					Usage:  "Generate self-signed CA, server, and client certificates for mTLS",
+					Action: sf.GenerateCertificates,
+				},
+			},
 		},
 	}
 }
 
-// main is nain function in Gufo from which starts app.
-// In this function we check all nessesary settings such as
-// cinfig file, DB Connection, DB Structure, run CLI and start listen port for API requests
+// main is the entry point of Gufo API Gateway.
+// It initializes the configuration, sets up Sentry (if enabled),
+// prepares CLI commands, and starts the main service.
+
 func main() {
+	// Initialize configuration
+	sf.EnsureConfigExists()
+	if err := sf.InitConfig(); err != nil {
+		sf.SetErrorLog("config init failed: " + err.Error())
+		os.Exit(1)
+	}
+	sf.EncryptConfigPasswords()
 
-	sf.CheckForFlags()
-
-	sf.CheckConfig() // Check config file
-
+	// Initialize Sentry (optional)
 	if viper.GetBool("server.sentry") {
-
-		sf.SetLog("Connect to Setry...")
+		sf.SetLog("Connect to Sentry...")
 
 		sentryClientOptions := sentry.ClientOptions{
 			Dsn:              viper.GetString("sentry.dsn"),
@@ -94,42 +101,37 @@ func main() {
 			TracesSampleRate: viper.GetFloat64("sentry.trace"),
 		}
 
+		// Load trusted CA certificates
 		rootCAs, err := gocertifi.CACerts()
 		if err != nil {
-			sf.SetLog("Could not load CA Certificates for Sentry: " + err.Error())
-
+			sf.SetLog("Could not load CA certificates for Sentry: " + err.Error())
 		} else {
 			sentryClientOptions.CaCerts = rootCAs
 		}
 
+		// Initialize Sentry client
 		err = sentry.Init(sentryClientOptions)
-
 		if err != nil {
-			sf.SetLog("Error with sentry.Init: " + err.Error())
+			sf.SetLog("Error initializing Sentry: " + err.Error())
+		} else {
+			flushsec := viper.GetDuration("sentry.flush")
+			defer sentry.Flush(flushsec * time.Second)
 		}
-
-		flushsec := viper.GetDuration("sentry.flush")
-
-		defer sentry.Flush(flushsec * time.Second)
-
 	}
 
-	// run CLI function
+	// Setup CLI metadata and commands
 	info()
 	commands()
-	flags()
 
-	// Run CLI + Web Server
+	// Run CLI and web server
 	err := app.Run(os.Args)
 	if err != nil {
-
 		if viper.GetBool("server.sentry") {
 			sentry.CaptureException(err)
 		} else {
-			sf.SetErrorLog("gufo.go:101: " + err.Error())
+			sf.SetErrorLog("gufo.go: main: " + err.Error())
 		}
 	}
-
 }
 
 // StopApp allows to stop Gufo by CLI command "stop"
@@ -213,17 +215,33 @@ func StartGRPCService() {
 type Server struct {
 }
 
-func (s *Server) Do(c context.Context, request *pb.Request) (response *pb.Response, err error) {
+// Do handles incoming gRPC requests and verifies authentication
+func (s *Server) Do(ctx context.Context, request *pb.Request) (*pb.Response, error) {
+	mode := strings.ToLower(viper.GetString("security.mode"))
 
-	//Check for Sign
-	sign := viper.GetString("server.sign")
-	if sign != *request.Sign {
-		return sf.ErrorReturn(request, 401, "00001", "You are not authorized"), nil
+	switch mode {
+	case "hmac":
+		secret := viper.GetString("security.hmac_secret")
+		maxAge := time.Duration(viper.GetInt("security.max_age")) * time.Second
+		if request.Sign == nil || !sf.VerifyHMAC(secret, *request.Module, *request.Sign, maxAge) {
+			sf.SetErrorLog("Unauthorized gRPC request (HMAC mode)")
+			return sf.ErrorReturn(request, 401, "00001", "Invalid or expired signature"), nil
+		}
+
+	case "sign":
+		if request.Sign == nil || viper.GetString("server.sign") != *request.Sign {
+			sf.SetErrorLog("Unauthorized gRPC request (static sign mode)")
+			return sf.ErrorReturn(request, 401, "00001", "Invalid signature"), nil
+		}
+
+	case "mtls":
+		// For mTLS mode, trust gRPC layer verification — no Sign check needed
+		sf.SetLog("mTLS mode active - skipping sign verification")
+
+	default:
+		sf.SetErrorLog("Unknown security mode")
+		return sf.ErrorReturn(request, 500, "00002", "Security mode not configured"), nil
 	}
 
-	//Check connection
-
-	response = handler.InternalRequest(request)
-
-	return response, nil
+	return handler.InternalRequest(request), nil
 }

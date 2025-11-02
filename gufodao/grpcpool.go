@@ -14,8 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2024-2025 Alexey Yanchenko <mail@yanchenko.me>
-
 package gufodao
 
 import (
@@ -32,54 +30,45 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
+// connItem stores an active gRPC connection and its expiration timestamp.
 type connItem struct {
 	conn   *grpc.ClientConn
 	expiry time.Time
 }
 
 var (
-	connPool sync.Map
-	ttl      = 5 * time.Minute
-	kaParams = keepalive.ClientParameters{
-		Time:                30 * time.Second,
-		Timeout:             10 * time.Second,
-		PermitWithoutStream: true,
-	}
-	retrySC = `{
-	  "methodConfig": [{
-		"name": [{"service": "proto.Reverse"}],
-		"retryPolicy": {
-		  "MaxAttempts": 4,
-		  "InitialBackoff": "0.2s",
-		  "MaxBackoff": "2s",
-		  "BackoffMultiplier": 2.0,
-		  "RetryableStatusCodes": ["UNAVAILABLE","DEADLINE_EXCEEDED"]
-		}
-	  }]
-	}`
+	connPool sync.Map          // connection pool: addr -> connItem
+	ttl      = 5 * time.Minute // connection TTL before re-dial
 )
 
+// init launches a background sweeper that periodically removes expired connections.
 func init() {
-	// background GC for expired connections
-	go func() {
-		ticker := time.NewTicker(1 * time.Minute)
-		for range ticker.C {
-			connPool.Range(func(k, v any) bool {
-				item := v.(connItem)
-				if time.Now().After(item.expiry) {
-					item.conn.Close()
-					connPool.Delete(k)
-				}
-				return true
-			})
-		}
-	}()
+	go poolSweeper()
 }
 
-// GetGRPCConn returns cached gRPC connection (TLS or mTLS) with keepalive and retries.
+// 🧹 poolSweeper runs every 10 minutes to clean expired connections.
+func poolSweeper() {
+	ticker := time.NewTicker(10 * time.Minute)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		now := time.Now()
+		connPool.Range(func(key, value any) bool {
+			item := value.(connItem)
+			if now.After(item.expiry) {
+				item.conn.Close()
+				connPool.Delete(key)
+			}
+			return true
+		})
+	}
+}
+
+// GetGRPCConn returns a pooled gRPC connection with TLS/mTLS, keepalive, and retry policy.
 func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientConn, error) {
 	addr := fmt.Sprintf("%s:%s", host, port)
 
+	// 1️⃣ Check existing connection
 	if v, ok := connPool.Load(addr); ok {
 		item := v.(connItem)
 		if time.Now().Before(item.expiry) {
@@ -89,15 +78,16 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 		connPool.Delete(addr)
 	}
 
+	// 2️⃣ Prepare transport credentials
 	var creds credentials.TransportCredentials
 	if useMTLS {
 		certificate, err := tls.LoadX509KeyPair(cert, key)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("load keypair: %w", err)
 		}
 		caCert, err := os.ReadFile(ca)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("read CA file: %w", err)
 		}
 		caPool := x509.NewCertPool()
 		caPool.AppendCertsFromPEM(caCert)
@@ -109,6 +99,28 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 		creds = credentials.NewClientTLSFromCert(nil, "")
 	}
 
+	// 3️⃣ Keepalive parameters
+	kaParams := keepalive.ClientParameters{
+		Time:                30 * time.Second, // ping every 30s
+		Timeout:             10 * time.Second, // wait 10s for ack
+		PermitWithoutStream: true,
+	}
+
+	// 4️⃣ Retry policy
+	retrySC := `{
+		"methodConfig": [{
+			"name": [{"service": "Reverse"}],
+			"retryPolicy": {
+				"MaxAttempts": 4,
+				"InitialBackoff": "0.2s",
+				"MaxBackoff": "2s",
+				"BackoffMultiplier": 1.6,
+				"RetryableStatusCodes": ["UNAVAILABLE","RESOURCE_EXHAUSTED"]
+			}
+		}]
+	}`
+
+	// 5️⃣ Dial with context timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -121,9 +133,14 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 		grpc.WithDefaultServiceConfig(retrySC),
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("dial %s failed: %w", addr, err)
 	}
 
-	connPool.Store(addr, connItem{conn: conn, expiry: time.Now().Add(ttl)})
+	// 6️⃣ Store in pool
+	connPool.Store(addr, connItem{
+		conn:   conn,
+		expiry: time.Now().Add(ttl),
+	})
+
 	return conn, nil
 }

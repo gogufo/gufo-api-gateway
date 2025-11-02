@@ -118,6 +118,13 @@ type = "server"
 entrypointversion = "1.0.0"
 cron = false
 
+[microservices.session]
+host = "127.0.0.1"
+port = "4801"
+timeout = "5s"          # ⏱  Default gRPC timeout for requests
+stream_timeout = "2m"   # ⏳ Timeout for file streaming operations
+type = "external"
+
 
 #######################################################################
 # SENTRY (optional telemetry)

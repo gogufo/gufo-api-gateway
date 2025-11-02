@@ -81,3 +81,5 @@ enum UploadStatusCode {
   Ok = 1;
   Failed = 2;
 }
+
+message StringMap { map<string,string> entries = 1; }

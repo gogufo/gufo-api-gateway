@@ -401,35 +401,23 @@ func (s *Server) Do(ctx context.Context, request *pb.Request) (*pb.Response, err
 // Stream handles bidirectional streaming RPC calls.
 func (s *Server) Stream(stream pb.Reverse_StreamServer) error {
 	for {
-		req, err := stream.Recv()
+		_, err := stream.Recv()
 		if err == io.EOF {
-			sf.SetLog("Stream closed by client")
 			return nil
 		}
 		if err != nil {
-			sf.SetErrorLog(fmt.Sprintf("stream recv error: %v", err))
 			return err
 		}
 
-		if req.Module != nil {
-			sf.SetLog(fmt.Sprintf("Received stream request for module: %s", *req.Module))
-		}
-
-		// ✅ Properly wrap "pong" into protobuf.Any using wrapperspb
-		pongValue, err := anypb.New(&wrapperspb.StringValue{Value: "pong"})
-		if err != nil {
-			sf.SetErrorLog(fmt.Sprintf("failed to wrap string in Any: %v", err))
-			continue
-		}
+		val, _ := anypb.New(wrapperspb.String("pong"))
 
 		resp := &pb.Response{
 			Data: map[string]*anypb.Any{
-				"echo": pongValue,
+				"echo": val,
 			},
 		}
 
 		if err := stream.Send(resp); err != nil {
-			sf.SetErrorLog(fmt.Sprintf("stream send error: %v", err))
 			return err
 		}
 	}

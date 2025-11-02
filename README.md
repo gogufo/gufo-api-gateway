@@ -74,6 +74,35 @@ config/settings.toml
 ```
 
 ---
+### 🧰 Manual Installation (without Docker)
+
+You can run Gufo directly from source without using Docker.
+
+### 🧩 Requirements
+
+- **Go 1.25+**
+- **Redis** — optional, used for session caching
+- **OpenSSL** — required only if mTLS is enabled
+- **Linux or macOS** environment recommended
+
+### ⚙️ Installation
+
+```bash
+git clone https://github.com/gogufo/gufo-api-gateway.git
+cd gufo-api-gateway
+go build -o gufo gufo.go
+sudo ./gufo start
+
+
+### Quick Test
+
+```go
+mkdir -p /var/gufo/config
+cp config/settings.example.toml /var/gufo/config/settings.toml
+./gufo
+
+```
+---
 
 ## ⚙️ Configuration
 
@@ -250,6 +279,17 @@ host = "127.0.0.1"
 port = "4802"
 timeout = "8s"
 stream_timeout = "2m"
+```
+
+---
+
+## 🔌 Transport Abstraction
+
+Gufo supports pluggable transports via `transport.Transport` interface.  
+The default implementation is `GRPCTransport`, but you can register your own:
+
+```go
+transport.Register(&MyCustomTransport{})
 ```
 
 ---

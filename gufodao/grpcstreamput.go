@@ -8,12 +8,13 @@ import (
 	"time"
 
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
-	"github.com/spf13/viper"
+	viper "github.com/spf13/viper"
 	"google.golang.org/protobuf/types/known/anypb"
 )
 
 func GRPCStreamPut(host, port string, r *http.Request, t *pb.Request) map[string]interface{} {
 	answer := make(map[string]interface{})
+	module := safeModuleName(t)
 
 	conn, err := GetGRPCConn(
 		host, port,
@@ -25,11 +26,17 @@ func GRPCStreamPut(host, port string, r *http.Request, t *pb.Request) map[string
 	if err != nil {
 		return map[string]interface{}{"httpcode": 400, "message": err.Error()}
 	}
+	defer r.Body.Close()
 
-	client := pb.NewReverseClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+	timeout := viper.GetDuration(fmt.Sprintf("microservices.%s.stream_timeout", module))
+	if timeout == 0 {
+		timeout = 2 * time.Minute
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
+	client := pb.NewReverseClient(conn)
 	stream, err := client.Stream(ctx)
 	if err != nil {
 		return map[string]interface{}{"httpcode": 500, "message": err.Error()}
@@ -45,10 +52,7 @@ func GRPCStreamPut(host, port string, r *http.Request, t *pb.Request) map[string
 	for {
 		n, err := r.Body.Read(buf)
 		if n > 0 {
-			chunk := &pb.FileChunk{
-				Name: filename,
-				Data: buf[:n],
-			}
+			chunk := &pb.FileChunk{Name: filename, Data: buf[:n]}
 			anyChunk, _ := anypb.New(chunk)
 			req := &pb.Request{
 				Module: t.Module,
@@ -67,6 +71,15 @@ func GRPCStreamPut(host, port string, r *http.Request, t *pb.Request) map[string
 		}
 	}
 
+	// финальный пустой chunk как EOF-сигнал
+	final := &pb.FileChunk{Name: filename, Data: []byte{}}
+	finalAny, _ := anypb.New(final)
+	stream.Send(&pb.Request{
+		Module: t.Module,
+		Args:   map[string]*anypb.Any{"chunk": finalAny},
+		IR:     t.IR,
+	})
+
 	for {
 		resp, err := stream.Recv()
 		if err == io.EOF {
@@ -75,7 +88,7 @@ func GRPCStreamPut(host, port string, r *http.Request, t *pb.Request) map[string
 		if err != nil {
 			return map[string]interface{}{"httpcode": 500, "message": err.Error()}
 		}
-		fmt.Println("Server response:", resp.Data)
+		fmt.Println("Server:", resp.Data)
 	}
 
 	answer["httpcode"] = 200

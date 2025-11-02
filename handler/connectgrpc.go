@@ -120,27 +120,17 @@ func GetHostAndPort(t *pb.Request) (host string, port string, plygintype string)
 }
 
 func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
+	host, port, pluginType := GetHostAndPort(t)
 
-	host, port, plygintype := GetHostAndPort(t)
-
-	if plygintype == "internal" {
-
-		if len(r.Header["X-Sign"]) == 0 {
+	if pluginType == "internal" {
+		sign := r.Header.Get("X-Sign")
+		if sign == "" || sign != viper.GetString("server.sign") {
 			errorAnswer(w, r, t, 401, "0000234", "You have no rights")
 			return
 		}
-		//Check for X-Sign
-		signheader := r.Header["X-Sign"][0]
-		sgn := viper.GetString("server.sign")
-
-		if sgn != signheader {
-			errorAnswer(w, r, t, 401, "0000234", "You have no rights")
-			return
-		}
-
 	}
 
-	// PUT → stream upload (without reading body in memory)
+	// PUT → streaming upload
 	if r.Method == http.MethodPut {
 		ans := sf.GRPCStreamPut(host, port, r, t)
 		moduleAnswerv3(w, r, ans, t)
@@ -148,9 +138,7 @@ func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
 	}
 
 	ans := sf.GRPCConnect(host, port, t)
-
 	moduleAnswerv3(w, r, ans, t)
-
 }
 
 func (d *uploader) Stop() {

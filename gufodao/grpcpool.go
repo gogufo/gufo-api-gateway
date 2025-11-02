@@ -14,6 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Copyright 2024-2025 Alexey Yanchenko <mail@yanchenko.me>
+
 package gufodao
 
 import (
@@ -38,41 +40,67 @@ type connItem struct {
 var (
 	connPool sync.Map
 	ttl      = 5 * time.Minute
+	kaParams = keepalive.ClientParameters{
+		Time:                30 * time.Second,
+		Timeout:             10 * time.Second,
+		PermitWithoutStream: true,
+	}
+	retrySC = `{
+	  "methodConfig": [{
+		"name": [{"service": "proto.Reverse"}],
+		"retryPolicy": {
+		  "MaxAttempts": 4,
+		  "InitialBackoff": "0.2s",
+		  "MaxBackoff": "2s",
+		  "BackoffMultiplier": 2.0,
+		  "RetryableStatusCodes": ["UNAVAILABLE","DEADLINE_EXCEEDED"]
+		}
+	  }]
+	}`
 )
 
-// GetGRPCConn returns a cached gRPC connection (TLS or mTLS) with keepalive and timeout.
-// If no active connection exists, a new one is established and stored in the pool.
+func init() {
+	// background GC for expired connections
+	go func() {
+		ticker := time.NewTicker(1 * time.Minute)
+		for range ticker.C {
+			connPool.Range(func(k, v any) bool {
+				item := v.(connItem)
+				if time.Now().After(item.expiry) {
+					item.conn.Close()
+					connPool.Delete(k)
+				}
+				return true
+			})
+		}
+	}()
+}
+
+// GetGRPCConn returns cached gRPC connection (TLS or mTLS) with keepalive and retries.
 func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientConn, error) {
 	addr := fmt.Sprintf("%s:%s", host, port)
 
-	// 🔹 Check existing connection in pool
 	if v, ok := connPool.Load(addr); ok {
 		item := v.(connItem)
 		if time.Now().Before(item.expiry) {
 			return item.conn, nil
 		}
-		_ = item.conn.Close()
+		item.conn.Close()
 		connPool.Delete(addr)
 	}
 
-	// 🔹 Setup TLS credentials
 	var creds credentials.TransportCredentials
 	if useMTLS {
 		certificate, err := tls.LoadX509KeyPair(cert, key)
 		if err != nil {
-			return nil, fmt.Errorf("failed to load client cert/key: %w", err)
+			return nil, err
 		}
-
 		caCert, err := os.ReadFile(ca)
 		if err != nil {
-			return nil, fmt.Errorf("failed to load CA file: %w", err)
+			return nil, err
 		}
-
 		caPool := x509.NewCertPool()
-		if !caPool.AppendCertsFromPEM(caCert) {
-			return nil, fmt.Errorf("failed to append CA certs")
-		}
-
+		caPool.AppendCertsFromPEM(caCert)
 		creds = credentials.NewTLS(&tls.Config{
 			Certificates: []tls.Certificate{certificate},
 			RootCAs:      caPool,
@@ -81,14 +109,6 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 		creds = credentials.NewClientTLSFromCert(nil, "")
 	}
 
-	// 🔹 Define keepalive parameters for long-lived connections
-	kaParams := keepalive.ClientParameters{
-		Time:                30 * time.Second, // send pings every 30s
-		Timeout:             10 * time.Second, // wait 10s for ack
-		PermitWithoutStream: true,             // allow ping when idle
-	}
-
-	// 🔹 Establish new connection with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -98,16 +118,12 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 		grpc.WithTransportCredentials(creds),
 		grpc.WithBlock(),
 		grpc.WithKeepaliveParams(kaParams),
+		grpc.WithDefaultServiceConfig(retrySC),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to dial gRPC %s: %w", addr, err)
+		return nil, err
 	}
 
-	// 🔹 Store connection in pool
-	connPool.Store(addr, connItem{
-		conn:   conn,
-		expiry: time.Now().Add(ttl),
-	})
-
+	connPool.Store(addr, connItem{conn: conn, expiry: time.Now().Add(ttl)})
 	return conn, nil
 }

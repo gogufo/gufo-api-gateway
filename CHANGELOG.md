@@ -15,7 +15,7 @@
 - add timeout for grpc connections
 - add multifile upload
 
-##.1.17.1
+## 1.17.1
 - Update Golang Version to 1.23
 
 ## 1.15.0

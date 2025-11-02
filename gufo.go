@@ -21,6 +21,8 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"io"
 	"net"
@@ -32,6 +34,7 @@ import (
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -305,7 +308,6 @@ func StartService(c *cli.Context) (rtnerr error) {
 }
 
 func StartGRPCService() {
-
 	getport := strings.TrimSpace(viper.GetString("server.grpc_port"))
 	port := ":4890"
 	if getport != "" {
@@ -313,23 +315,49 @@ func StartGRPCService() {
 	}
 
 	listener, err := net.Listen("tcp", port)
-
 	if err != nil {
 		grpclog.Fatalf("failed to listen: %v", err)
-	} else {
-		sf.SetLog(fmt.Sprintf("gRPC listening on %s", port))
-
 	}
 
-	opts := []grpc.ServerOption{}
+	sf.SetLog(fmt.Sprintf("gRPC listening on %s", port))
+
+	var opts []grpc.ServerOption
+
+	if viper.GetBool("server.grpc_tls_enabled") {
+		certPath := viper.GetString("security.cert_path")
+		keyPath := viper.GetString("security.key_path")
+		caPath := viper.GetString("security.ca_path")
+
+		serverCert, err := tls.LoadX509KeyPair(certPath, keyPath)
+		if err != nil {
+			grpclog.Fatalf("cannot load server cert: %v", err)
+		}
+
+		caBytes, err := os.ReadFile(caPath)
+		if err != nil {
+			grpclog.Fatalf("cannot read CA file: %v", err)
+		}
+		caPool := x509.NewCertPool()
+		caPool.AppendCertsFromPEM(caBytes)
+
+		tlsCfg := &tls.Config{
+			Certificates: []tls.Certificate{serverCert},
+			ClientCAs:    caPool,
+		}
+		if viper.GetBool("server.grpc_mtls_enabled") {
+			tlsCfg.ClientAuth = tls.RequireAndVerifyClientCert
+			sf.SetLog("gRPC mTLS mode enabled")
+		}
+
+		opts = append(opts, grpc.Creds(credentials.NewTLS(tlsCfg)))
+	}
+
 	grpcSrv = grpc.NewServer(opts...)
+	pb.RegisterReverseServer(grpcSrv, &Server{})
 
-	s := &Server{}
-
-	pb.RegisterReverseServer(grpcSrv, s)
-
-	grpcSrv.Serve(listener)
-
+	if err := grpcSrv.Serve(listener); err != nil {
+		sf.SetErrorLog("gRPC server error: " + err.Error())
+	}
 }
 
 type Server struct {

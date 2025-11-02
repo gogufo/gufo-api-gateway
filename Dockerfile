@@ -1,30 +1,39 @@
-FROM golang:1.23.0 AS builder
+# ======================
+# Stage 1 — Build
+# ======================
+FROM golang:1.25 AS builder
 
+# Install build deps for CGO and TLS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential clang git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install build-essential clang git -y
-
-WORKDIR $GOPATH/src/project/gufo/
+WORKDIR /app
 
 COPY . .
 
+# Enable CGO (needed for TLS)
+ENV CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=clang
 
+# Build optimized binary
+RUN go build -trimpath -ldflags="-s -w" -o /go/bin/gufo gufo.go
 
-ENV CC=clang CGO_ENABLED=1 GOOS=linux GOARCH=amd64
+# ======================
+# Stage 2 — Runtime
+# ======================
+FROM debian:bookworm-slim
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
+# Copy runtime assets and binary
+COPY --from=builder /go/bin/gufo /usr/local/bin/gufo
+COPY --from=builder /app/config/settings.toml /var/gufo/config/settings.toml
+COPY --from=builder /app/var/ /var/gufo/
 
-RUN go build -o /go/bin/gufo gufo.go
+WORKDIR /var/gufo/
 
+EXPOSE 8090 4890 9100
 
-FROM ubuntu
-
-ADD var/ /var/gufo/
-COPY --from=builder /go/bin/gufo /go/bin/gufo
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /go/src/project/gufo/config/settings.toml /var/gufo/config/
-
-WORKDIR /go/bin/
-
-EXPOSE 8090
-
-ENTRYPOINT ["/go/bin/gufo"]
+ENTRYPOINT ["gufo"]

@@ -1,31 +1,37 @@
 # 🦉 Gufo API Gateway
 
-**Gufo** (from Italian — *“owl”*) is an open-source, lightweight **gRPC + REST API Gateway**  
-for modular microservice architectures.  
-Originally designed as a RESTful plugin framework, Gufo has evolved into a secure, flexible, and production-ready gateway  
+[![GoDoc](https://godoc.org/github.com/gogufo/gufo-api-gateway?status.svg)](https://godoc.org/github.com/gogufo/gufo-api-gateway)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Go Report Card](https://goreportcard.com/badge/github.com/gogufo/gufo-api-gateway)](https://goreportcard.com/report/github.com/gogufo/gufo-api-gateway)
+
+**Gufo** (from Italian — *“owl”*) is an open-source, lightweight **gRPC + REST API Gateway**
+for modular microservice architectures.
+Originally designed as a RESTful plugin framework, Gufo has evolved into a secure, flexible, and production-ready gateway
 with a focus on **simplicity**, **security**, and **extensibility**.
 
 ---
 
 ## ✨ Key Features
 
-- 🧩 **Modular Architecture** — plug in your own gRPC or REST microservices  
-- 🔐 **Secure by Default** — AES-GCM encrypted configs, TLS & mTLS support, and environment-based secrets  
-- 🚀 **Zero-Config Startup** — Gufo auto-creates a minimal config if missing  
-- 🧠 **Master-Service Discovery** — dynamic registration of connected microservices  
-- 🪶 **Lightweight Core** — written in pure Go with minimal dependencies  
-- 📦 **Docker-Ready** — one-command build and run  
-- ⚙️ **Extensible** — easily build your own plugins or sidecar services  
+* 🧩 **Modular Architecture** — plug in your own gRPC or REST microservices
+* 🔐 **Secure by Default** — AES-GCM encrypted configs, TLS & mTLS support, and environment-based secrets
+* 🚀 **Zero-Config Startup** — Gufo auto-creates a minimal config if missing
+* 🧠 **Master-Service Discovery** — dynamic registration of connected microservices
+* 🪶 **Lightweight Core** — written in pure Go with minimal dependencies
+* 📦 **Docker-Ready** — one-command build and run
+* ⚙️ **Extensible** — easily build your own plugins or sidecar services
+* 📡 **gRPC Connection Pool** — TLS/mTLS, retries, deadlines, keepalive, and per-service timeouts
+* 📁 **Streaming & Multi-File Upload** — REST `PUT` → gRPC streaming bridge
+* 📊 **Metrics & Telemetry** — Prometheus + OpenTelemetry integration
 
 ---
 
 ## 🧠 Architecture Overview
 
-Gufo acts as a **universal entry point** between REST clients and gRPC microservices.  
+Gufo acts as a **universal entry point** between REST clients and gRPC microservices.
 Each request is validated, optionally authorized, and routed to the appropriate backend module.
 
 ```
-
 [ Client ]
 ↓
 [ Gufo Gateway ]
@@ -37,10 +43,9 @@ Each request is validated, optionally authorized, and routed to the appropriate 
 ├── Notifications   — email / chat delivery
 ├── User            — user profile management
 └── Reg             — registration microservice for onboarding
+```
 
-````
-
-You can use Gufo in **standalone mode** (no auth/session)  
+You can use Gufo in **standalone mode** (no auth/session)
 or as part of a full microservice ecosystem with authentication and permissions.
 
 ---
@@ -51,7 +56,7 @@ or as part of a full microservice ecosystem with authentication and permissions.
 
 ```bash
 docker build --no-cache -t amyerp/gufo-api-gateway:latest -f Dockerfile .
-````
+```
 
 ### 2️⃣ Run the container
 
@@ -149,22 +154,103 @@ Each service runs independently — gateway failures never expose credentials or
 
 ### 4️⃣ Logging and Rotation
 
-Structured JSON logging with daily file rotation and max 10 MB per log file.
-Logs are safe to forward to ELK, Loki, or Promtail.
+Structured JSON logging with daily rotation and safe forwarding to ELK/Loki/Promtail.
 
 ---
 
-## 🧰 Generate gRPC Bindings
+## 📡 REST → gRPC Streaming & File Uploads
 
-To regenerate gRPC stubs for your microservices:
+Gufo automatically converts REST `PUT` requests into gRPC streaming calls.
+This allows file uploads (single or multiple) to be **directly streamed** from the REST client to a backend gRPC microservice —
+without ever storing files on the Gateway itself.
+
+### Example: Binary Upload
 
 ```bash
-cd proto
-docker run -v $PWD:/defs namely/protoc-all \
-  -f microservice.proto -o go/ -l go
+curl -X PUT http://localhost:8090/api/v3/storage/upload \
+  -H "X-Filename: demo.jpg" \
+  -H "Content-Type: application/octet-stream" \
+  --data-binary "@demo.jpg"
 ```
 
-You can also generate clients for other languages (Ruby, C#, Python, etc.) by changing `-l`.
+The Gateway:
+
+1. Detects the `PUT` method
+2. Sets `t.IR.Param = "stream"`
+3. Calls `GRPCStreamPut()`
+4. Streams the body in 64 KB chunks via gRPC
+
+---
+
+### Example: Multi-File Upload
+
+```bash
+curl -X PUT http://localhost:8090/api/v3/storage/upload \
+  -F "file=@file1.jpg" \
+  -F "file=@file2.jpg"
+```
+
+Each file is streamed independently to the destination gRPC service.
+
+---
+
+### Example: Server-Side Handler
+
+```go
+func (s *Server) Stream(stream pb.Reverse_StreamServer) error {
+	var currentFile string
+	var f io.WriteCloser
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF { return nil }
+		if err != nil { return err }
+
+		if anyChunk, ok := req.Args["chunk"]; ok {
+			var chunk pb.FileChunk
+			if err := anypb.UnmarshalTo(anyChunk, &chunk, proto.UnmarshalOptions{}); err != nil {
+				return err
+			}
+
+			if f == nil {
+				currentFile = chunk.Name
+				f, err = os.Create(filepath.Join("/tmp", currentFile))
+				if err != nil { return err }
+			}
+
+			if len(chunk.Data) == 0 {
+				f.Close()
+				f = nil
+				continue
+			}
+
+			f.Write(chunk.Data)
+		}
+	}
+}
+```
+
+---
+
+## 🔄 gRPC Connection Pool
+
+Located in `gufodao/grpcpool.go`, the connection pool provides:
+
+* Persistent `sync.Map` of `host:port → *grpc.ClientConn`
+* TTL: 5 minutes
+* Background sweeper that closes expired connections
+* TLS / mTLS support
+* Retry policy (`WithDefaultServiceConfig`) — up to 4 attempts on `UNAVAILABLE`
+* Keepalive every 30 seconds
+* Per-service timeouts (via `microservices.<name>.timeout`)
+
+```toml
+[microservices.storage]
+host = "127.0.0.1"
+port = "4802"
+timeout = "8s"
+stream_timeout = "2m"
+```
 
 ---
 
@@ -180,13 +266,31 @@ You can also generate clients for other languages (Ruby, C#, Python, etc.) by ch
 
 ---
 
+## 📊 Metrics & Observability
+
+Gufo exposes Prometheus metrics on port `9100`:
+
+```
+http://127.0.0.1:9100/api/v3/metrics
+```
+
+Access is protected via:
+
+```bash
+curl -H "X-Metrics-Token: gufo-metrics" http://127.0.0.1:9100/api/v3/metrics
+```
+
+Additionally, OpenTelemetry tracing can be enabled via config (`server.telemetry = true`).
+
+---
+
 ## 🧱 Development Roadmap
 
 * ✅ PR-1: Zero-Config startup, fallback creation, ENV-based secrets
 * ✅ PR-2: JSON logging, daily rotation, AES-GCM encryption
-* 🔜 PR-3: CLI toolset (key rotation, certificate management)
-* 🔜 PR-4: Prometheus / OpenTelemetry metrics
-* 🔜 PR-5: REST auto-documentation (Swagger-like)
+* ✅ PR-3: CLI toolset (key rotation, certificate management)
+* ✅ **PR-4: gRPC Connection Pool, TLS/mTLS, Streaming, File Uploads, Timeouts**
+* 🔜 PR-5: REST auto-documentation (Swagger/OpenAPI)
 
 ---
 
@@ -198,13 +302,12 @@ You can:
 
 * Open issues or pull requests on [GitHub](https://github.com/gogufo/gufo-api-gateway)
 * Submit microservice examples
-* Improve docs or translations
+* Improve documentation or translations
 
 ---
 
 ## 📜 License
 
 Licensed under the **Apache License 2.0**
-© 2019 – 2025 Alexey Yanchenko. All rights reserved.
-
+© 2019–2025 Alexey Yanchenko. All rights reserved.
 

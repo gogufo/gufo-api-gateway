@@ -28,6 +28,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
+	"github.com/gogufo/gufo-api-gateway/transport"
 	"github.com/spf13/viper"
 	pbv "gopkg.in/cheggaaa/pb.v1"
 )
@@ -120,25 +121,37 @@ func GetHostAndPort(t *pb.Request) (host string, port string, plygintype string)
 }
 
 func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
-	host, port, pluginType := GetHostAndPort(t)
-
-	if pluginType == "internal" {
+	// 1️⃣ Internal signature check (optional)
+	if r.Header.Get("X-Sign") != "" {
 		sign := r.Header.Get("X-Sign")
-		if sign == "" || sign != viper.GetString("server.sign") {
-			errorAnswer(w, r, t, 401, "0000234", "You have no rights")
+		expected := viper.GetString("server.sign")
+		if sign != expected {
+			errorAnswer(w, r, t, 401, "0000234", "Invalid internal signature")
 			return
 		}
 	}
 
-	// PUT → streaming upload
+	// 2️⃣ Handle streaming uploads (PUT)
 	if r.Method == http.MethodPut {
+		host := viper.GetString(fmt.Sprintf("microservices.%s.host", *t.Module))
+		port := viper.GetString(fmt.Sprintf("microservices.%s.port", *t.Module))
+
 		ans := sf.GRPCStreamPut(host, port, r, t)
 		moduleAnswerv3(w, r, ans, t)
 		return
 	}
 
-	ans := sf.GRPCConnect(host, port, t)
-	moduleAnswerv3(w, r, ans, t)
+	// 3️⃣ Standard call via transport abstraction
+	tr := transport.Get()
+	ctx := r.Context()
+
+	resp, err := tr.Call(ctx, *t.Module, r.Method, t)
+	if err != nil {
+		errorAnswer(w, r, t, 500, "0000500", err.Error())
+		return
+	}
+
+	moduleAnswerv3(w, r, sf.ToMapStringInterface(resp.Data), t)
 }
 
 func (d *uploader) Stop() {

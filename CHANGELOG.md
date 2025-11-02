@@ -14,6 +14,8 @@
 - TLS/mTLS + connection pool
 - add timeout for grpc connections
 - add multifile upload
+- Add Transport layer
+- Modify Dockerfile
 
 ## 1.17.1
 - Update Golang Version to 1.23

@@ -32,6 +32,7 @@ import (
 	"time"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
+	"github.com/gogufo/gufo-api-gateway/transport"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -216,6 +217,11 @@ func ExitApp(w http.ResponseWriter, r *http.Request) {
 func StartService(c *cli.Context) (rtnerr error) {
 	// Initialize Redis
 	sf.InitCache()
+
+	// Register default transport (gRPC)
+	transport.Register(&transport.GRPCTransport{})
+	sf.SetLog("✅ Registered default transport: gRPC")
+
 	port := sf.ConfigString("server.port")
 
 	m := fmt.Sprintf("Gufo v%s starting on :%s (gRPC :%s, mode=%s)",

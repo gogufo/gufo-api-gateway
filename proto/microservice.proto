@@ -7,6 +7,7 @@ option go_package = "./";
 
 service Reverse {
     rpc Do(Request) returns (Response) {}
+    rpc Stream (stream Request) returns (stream Response);
 }
 
 
@@ -62,3 +63,5 @@ message Response {
     optional UploadStatusCode Code = 3;
 
 }
+
+

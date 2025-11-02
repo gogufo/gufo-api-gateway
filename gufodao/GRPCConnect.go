@@ -1,4 +1,4 @@
-// Copyright 2024 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2024-2025 Alexey Yanchenko <mail@yanchenko.me>
 //
 // This file is part of the Gufo library.
 //
@@ -19,96 +19,119 @@ package gufodao
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
 	viper "github.com/spf13/viper"
-	"google.golang.org/grpc"
 )
 
-func GRPCConnect(host string, port string, t *pb.Request) (answer map[string]interface{}) {
-
-	answer = make(map[string]interface{})
+// GRPCConnect performs a gRPC call with connection pooling, TLS/mTLS, timeout, and streaming support.
+func GRPCConnect(host string, port string, t *pb.Request) map[string]interface{} {
+	answer := make(map[string]interface{})
 
 	if host == "" || port == "" {
 		answer["httpcode"] = 500
 		answer["code"] = "0000238"
-		answer["message"] = "Host or Port not determinated"
+		answer["message"] = "Host or Port not specified"
 		return answer
 	}
 
-	SetErrorLog(fmt.Sprintf("%s:%s", host, port))
-
-	connection := fmt.Sprintf("%s:%s", host, port)
-
-	opts := []grpc.DialOption{
-		grpc.WithInsecure(),
+	// 🔹 Handle streaming requests
+	if t.IR != nil && t.IR.Param != nil && *t.IR.Param == "stream" {
+		return GRPCStream(host, port, t)
 	}
-	//	args := os.Args
-	conn, err := grpc.Dial(connection, opts...)
 
+	addr := fmt.Sprintf("%s:%s", host, port)
+
+	// 🔹 Get connection from pool with TLS/mTLS
+	conn, err := GetGRPCConn(
+		host,
+		port,
+		viper.GetString("security.ca_path"),
+		viper.GetString("security.cert_path"),
+		viper.GetString("security.key_path"),
+		viper.GetBool("security.mtls"),
+	)
 	if err != nil {
-
-		if viper.GetBool("server.sentry") {
-			sentry.CaptureException(err)
-		} else {
-			SetErrorLog("connectgrpc: " + err.Error())
-		}
-
+		logOrSentry(fmt.Errorf("grpc dial failed for %s: %w", addr, err))
 		answer["httpcode"] = 400
 		answer["code"] = "0000234"
 		answer["message"] = err.Error()
 		return answer
-
 	}
-
-	defer conn.Close()
 
 	client := pb.NewReverseClient(conn)
 
-	response, err := client.Do(context.Background(), t)
+	// 🔹 Determine timeout per service or default (5s)
+	timeout := viper.GetDuration(fmt.Sprintf("microservices.%s.timeout", safeModuleName(t)))
+	if timeout == 0 {
+		timeout = 5 * time.Second
+	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	// 🔹 Perform RPC
+	resp, err := client.Do(ctx, t)
 	if err != nil {
-		if viper.GetBool("server.sentry") {
-			sentry.CaptureException(err)
-		} else {
-			SetErrorLog("connectgrpc: " + err.Error())
-		}
+		logOrSentry(fmt.Errorf("grpc call failed for %s: %w", addr, err))
 		answer["httpcode"] = 500
 		answer["code"] = "0000236"
 		answer["message"] = fmt.Sprintf("Module connection error: %s", err.Error())
 		return answer
-
 	}
 
-	answer = ToMapStringInterface(response.Data)
-
-	//update *sf.Request
-	if response.RequestBack.Token != t.Token {
-		t.Token = response.RequestBack.Token
-	}
-	if response.RequestBack.TokenType != t.TokenType {
-		t.TokenType = response.RequestBack.TokenType
-	}
-	if response.RequestBack.Language != t.Language {
-		t.Language = response.RequestBack.Language
-	}
-	if response.RequestBack.UID != t.UID {
-		t.UID = response.RequestBack.UID
-	}
-	if response.RequestBack.IsAdmin != t.IsAdmin {
-		t.IsAdmin = response.RequestBack.IsAdmin
-	}
-	if response.RequestBack.SessionEnd != t.SessionEnd {
-		t.SessionEnd = response.RequestBack.SessionEnd
-	}
-	if response.RequestBack.Completed != t.Completed {
-		t.Completed = response.RequestBack.Completed
-	}
-	if response.RequestBack.Readonly != t.Readonly {
-		t.Readonly = response.RequestBack.Readonly
-	}
+	answer = ToMapStringInterface(resp.Data)
+	copyRequestBack(t, resp.RequestBack)
 
 	return answer
+}
 
+// safeModuleName prevents panic if Module is nil
+func safeModuleName(t *pb.Request) string {
+	if t.Module == nil {
+		return "unknown"
+	}
+	return *t.Module
+}
+
+// copyRequestBack updates token/session fields in request
+func copyRequestBack(t *pb.Request, rb *pb.Request) {
+	if rb == nil {
+		return
+	}
+	if rb.Token != nil {
+		t.Token = rb.Token
+	}
+	if rb.TokenType != nil {
+		t.TokenType = rb.TokenType
+	}
+	if rb.Language != nil {
+		t.Language = rb.Language
+	}
+	if rb.UID != nil {
+		t.UID = rb.UID
+	}
+	if rb.IsAdmin != nil {
+		t.IsAdmin = rb.IsAdmin
+	}
+	if rb.SessionEnd != nil {
+		t.SessionEnd = rb.SessionEnd
+	}
+	if rb.Completed != nil {
+		t.Completed = rb.Completed
+	}
+	if rb.Readonly != nil {
+		t.Readonly = rb.Readonly
+	}
+}
+
+// logOrSentry logs locally or sends to Sentry if enabled
+func logOrSentry(err error) {
+	if viper.GetBool("server.sentry") {
+		sentry.CaptureException(err)
+	} else {
+		SetErrorLog(err.Error())
+	}
 }

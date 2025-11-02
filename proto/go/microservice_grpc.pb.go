@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReverseClient interface {
 	Do(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	Stream(ctx context.Context, opts ...grpc.CallOption) (Reverse_StreamClient, error)
 }
 
 type reverseClient struct {
@@ -42,11 +43,43 @@ func (c *reverseClient) Do(ctx context.Context, in *Request, opts ...grpc.CallOp
 	return out, nil
 }
 
+func (c *reverseClient) Stream(ctx context.Context, opts ...grpc.CallOption) (Reverse_StreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Reverse_ServiceDesc.Streams[0], "/Reverse/Stream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &reverseStreamClient{stream}
+	return x, nil
+}
+
+type Reverse_StreamClient interface {
+	Send(*Request) error
+	Recv() (*Response, error)
+	grpc.ClientStream
+}
+
+type reverseStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *reverseStreamClient) Send(m *Request) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *reverseStreamClient) Recv() (*Response, error) {
+	m := new(Response)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ReverseServer is the server API for Reverse service.
 // All implementations should embed UnimplementedReverseServer
 // for forward compatibility
 type ReverseServer interface {
 	Do(context.Context, *Request) (*Response, error)
+	Stream(Reverse_StreamServer) error
 }
 
 // UnimplementedReverseServer should be embedded to have forward compatible implementations.
@@ -55,6 +88,9 @@ type UnimplementedReverseServer struct {
 
 func (UnimplementedReverseServer) Do(context.Context, *Request) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Do not implemented")
+}
+func (UnimplementedReverseServer) Stream(Reverse_StreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method Stream not implemented")
 }
 
 // UnsafeReverseServer may be embedded to opt out of forward compatibility for this service.
@@ -86,6 +122,32 @@ func _Reverse_Do_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Reverse_Stream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ReverseServer).Stream(&reverseStreamServer{stream})
+}
+
+type Reverse_StreamServer interface {
+	Send(*Response) error
+	Recv() (*Request, error)
+	grpc.ServerStream
+}
+
+type reverseStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *reverseStreamServer) Send(m *Response) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *reverseStreamServer) Recv() (*Request, error) {
+	m := new(Request)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Reverse_ServiceDesc is the grpc.ServiceDesc for Reverse service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +160,13 @@ var Reverse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Reverse_Do_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Stream",
+			Handler:       _Reverse_Stream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "microservice.proto",
 }

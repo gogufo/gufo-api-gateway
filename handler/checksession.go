@@ -1,4 +1,4 @@
-// Copyright 2020 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2020-2025 Alexey Yanchenko <ay@erpamy.com>
 //
 // This file is part of the Gufo library.
 //
@@ -27,6 +27,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
@@ -34,135 +35,112 @@ import (
 	"github.com/spf13/viper"
 )
 
+// checksession validates the session of an incoming request.
+// It extracts the token from the Authorization header (Bearer format preferred)
+// or, for backward compatibility, from query parameters (?access_token=...).
+// Then it verifies the session against the Session microservice (via Masterservice or direct host).
 func checksession(t *pb.Request, r *http.Request) *pb.Request {
-
-	session := len(r.Header["Authorization"])
 	p := bluemonday.UGCPolicy()
-	xtoken := ""
-	tokenheader := ""
+	var tokenHeader string
 
-	if session == 0 {
-		//Check session from token in GET header
-
-		if r.URL.Query().Get("access_token") != "" {
-			xtoken = p.Sanitize(r.URL.Query().Get("access_token"))
-
-			tokentype := "Bearer"
-
-			if r.URL.Query().Get("token_type") != "" {
-				tokentype = p.Sanitize(r.URL.Query().Get("token_type"))
-			}
-
-			fulltoken := fmt.Sprintf("%s %s", tokentype, xtoken)
-
-			if xtoken != "" {
-				tokenheader = fulltoken
-			}
-		}
-
-	}
-
-	if session != 0 {
-
-		tokenheader = r.Header["Authorization"][0]
-
-	}
-
-	if tokenheader != "" {
-		//1. Check masterservice status
-		msmethod := viper.GetBool("server.masterservice")
-		port := ""
-		host := ""
-
-		if msmethod {
-			//Ask Masterservice for Session Host
-			//	st := PBRequest{}
-			//	st.Request = t
-
-			host = viper.GetString("microservices.masterservice.host")
-			port = viper.GetString("microservices.masterservice.port")
-
-			//Modify data for request masterservice
-
-			mst := &pb.InternalRequest{}
-			param := "getsessionhost"
-			gt := "GET"
-			mst.Param = &param
-			mst.Method = &gt
-
-			t.IR = mst
-			t.Token = &tokenheader
-
-			ans := sf.GRPCConnect(host, port, t)
-			if ans["httpcode"] != nil {
-
-				return t
-			}
-
-			host = fmt.Sprintf("%v", ans["host"])
-			port = fmt.Sprintf("%v", ans["port"])
-
+	// 1) Extract token from Authorization header (RFC 6750)
+	authHeader := strings.TrimSpace(r.Header.Get("Authorization"))
+	if authHeader != "" {
+		parts := strings.SplitN(authHeader, " ", 2)
+		if len(parts) == 2 && strings.EqualFold(parts[0], "Bearer") {
+			tokenHeader = parts[1]
 		} else {
-			//Get session host from settings
-			if !viper.IsSet("microservices.session") {
-				return t
-			}
-
-			host = viper.GetString("microservices.session.host")
-			port = viper.GetString("microservices.session.port")
-		}
-
-		//Connect to Session microservice to get session
-		mstb := &pb.InternalRequest{}
-		param := "checksession"
-		gt := "GET"
-		mstb.Param = &param
-		mstb.Method = &gt
-
-		t.IR = mstb
-
-		//Send Authorisation token to microservice
-
-		ans := sf.GRPCConnect(host, port, t)
-		if ans["error"] != nil {
+			sf.SetErrorLog("checksession: invalid Authorization header format")
 			return t
 		}
+	} else {
+		// 2) Legacy fallback: access_token in URL query
+		if q := r.URL.Query().Get("access_token"); q != "" {
+			tokenHeader = p.Sanitize(q)
+			if tt := r.URL.Query().Get("token_type"); tt != "" {
+				tokenHeader = fmt.Sprintf("%s %s", p.Sanitize(tt), tokenHeader)
+			} else {
+				tokenHeader = "Bearer " + tokenHeader
+			}
+		}
+	}
 
-		if ans["uid"] != nil {
-			uid := fmt.Sprintf("%v", ans["uid"])
-			t.UID = &uid
+	// 3) No token found — return without session data
+	if tokenHeader == "" {
+		return t
+	}
+
+	// 4) Determine session microservice host
+	var host, port string
+	if viper.GetBool("server.masterservice") {
+		host = viper.GetString("microservices.masterservice.host")
+		port = viper.GetString("microservices.masterservice.port")
+
+		mst := &pb.InternalRequest{
+			Param:  sf.StringPtr("getsessionhost"),
+			Method: sf.StringPtr("GET"),
 		}
-		if ans["isadmin"] != nil {
-			isadminint, _ := strconv.Atoi(fmt.Sprintf("%v", ans["isadmin"]))
-			isadmin32 := int32(isadminint)
-			t.IsAdmin = &isadmin32
-		}
-		if ans["sessionend"] != nil {
-			sesint, _ := strconv.Atoi(fmt.Sprintf("%v", ans["sessionend"]))
-			sesint32 := int32(sesint)
-			t.SessionEnd = &sesint32
-		}
-		if ans["completed"] != nil {
-			comint, _ := strconv.Atoi(fmt.Sprintf("%v", ans["completed"]))
-			comint32 := int32(comint)
-			t.Completed = &comint32
-		}
-		if ans["readonly"] != nil {
-			roint, _ := strconv.Atoi(fmt.Sprintf("%v", ans["readonly"]))
-			roint32 := int32(roint)
-			t.Readonly = &roint32
-		}
-		if ans["token"] != nil {
-			tkn := fmt.Sprintf("%v", ans["token"])
-			t.Token = &tkn
-		}
-		if ans["token_type"] != nil {
-			tkntp := fmt.Sprintf("%v", ans["token_type"])
-			t.TokenType = &tkntp
+		t.IR = mst
+		t.Token = &tokenHeader
+
+		ans := sf.GRPCConnect(host, port, t)
+		if ans["httpcode"] != nil {
+			return t // masterservice error
 		}
 
+		host = fmt.Sprintf("%v", ans["host"])
+		port = fmt.Sprintf("%v", ans["port"])
+	} else {
+		if !viper.IsSet("microservices.session.host") {
+			return t
+		}
+		host = viper.GetString("microservices.session.host")
+		port = viper.GetString("microservices.session.port")
+	}
+
+	// 5) Call Session microservice to validate the token
+	mstb := &pb.InternalRequest{
+		Param:  sf.StringPtr("checksession"),
+		Method: sf.StringPtr("GET"),
+	}
+	t.IR = mstb
+	t.Token = &tokenHeader
+
+	ans := sf.GRPCConnect(host, port, t)
+	if ans["error"] != nil {
+		sf.SetErrorLog(fmt.Sprintf("checksession: gRPC error: %v", ans["error"]))
+		return t
+	}
+
+	// 6) Populate response fields from Session service
+	if v := ans["uid"]; v != nil {
+		uid := fmt.Sprintf("%v", v)
+		t.UID = &uid
+	}
+	if v := ans["isadmin"]; v != nil {
+		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
+		t.IsAdmin = sf.Int32Ptr(int32(i))
+	}
+	if v := ans["sessionend"]; v != nil {
+		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
+		t.SessionEnd = sf.Int32Ptr(int32(i))
+	}
+	if v := ans["completed"]; v != nil {
+		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
+		t.Completed = sf.Int32Ptr(int32(i))
+	}
+	if v := ans["readonly"]; v != nil {
+		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
+		t.Readonly = sf.Int32Ptr(int32(i))
+	}
+	if v := ans["token"]; v != nil {
+		tkn := fmt.Sprintf("%v", v)
+		t.Token = &tkn
+	}
+	if v := ans["token_type"]; v != nil {
+		tkntp := fmt.Sprintf("%v", v)
+		t.TokenType = &tkntp
 	}
 
 	return t
-
 }

@@ -6,6 +6,13 @@
 - Rewrite config logic
 - Change Log logic
 - Change config Passwords salt logic
+- Add Prometeus metrics
+- Add Graceful shutdown
+- Minor logic improvements
+- Add telemetry hooks
+- Check Session improvememts
+- TLS/mTLS + connection pool
+- add timeout for grpc connections
 
 ##.1.17.1
 - Update Golang Version to 1.23

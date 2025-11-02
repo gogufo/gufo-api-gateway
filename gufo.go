@@ -1,4 +1,4 @@
-// Copyright 2020-2024 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2020-2025 Alexey Yanchenko <mail@yanchenko.me>
 //
 // This file is part of the Gufo library.
 //
@@ -22,6 +22,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -29,27 +30,34 @@ import (
 	"time"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	"github.com/certifi/gocertifi"
 	handler "github.com/gogufo/gufo-api-gateway/handler"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
 	v "github.com/gogufo/gufo-api-gateway/version"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	viper "github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
 )
 
 var app = cli.NewApp()
+var grpcSrv *grpc.Server
 
 // info is function for CLI.
 // in this function determinate to start Web server
 func info() {
 
 	app.Name = "Gufo API Gateway"
-	app.Usage = "RESTFull API with GRPC microservices"
+	app.Usage = "RESTful API with GRPC microservices"
 	app.Version = v.VERSION
 	app.Action = StartService
 
@@ -90,9 +98,13 @@ func main() {
 	}
 	sf.EncryptConfigPasswords()
 
+	ctx := context.Background()
+	sf.InitTelemetry(ctx)
+	defer sf.ShutdownTelemetry(ctx)
+
 	// Initialize Sentry (optional)
 	if viper.GetBool("server.sentry") {
-		sf.SetLog("Connect to Sentry...")
+		sf.SetLog("Connecting to Sentry...")
 
 		sentryClientOptions := sentry.ClientOptions{
 			Dsn:              viper.GetString("sentry.dsn"),
@@ -134,81 +146,189 @@ func main() {
 	}
 }
 
-// StopApp allows to stop Gufo by CLI command "stop"
-func StopApp(c *cli.Context) (rtnerr error) {
-	var m string = "Gufo Stop \t"
-	sf.SetLog(m)
-	fmt.Printf(m)
-	os.Exit(3)
+// StopApp gracefully stops a running Gufo instance via the /exit endpoint.
+// This ensures that telemetry, Sentry, and all servers shut down cleanly.
+// Works both in Docker and bare-metal setups.
+func StopApp(c *cli.Context) error {
+	addr := viper.GetString("server.ip")
+	port := viper.GetString("server.port")
+
+	if addr == "" {
+		addr = "127.0.0.1"
+	}
+	if port == "" {
+		port = "8090"
+	}
+
+	url := fmt.Sprintf("http://%s:%s/exit", addr, port)
+	sf.SetLog("CLI command 'gufo stop' → sending shutdown signal to " + url)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		sf.SetErrorLog("stop: cannot create request: " + err.Error())
+		return err
+	}
+
+	client := &http.Client{Timeout: 3 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		sf.SetErrorLog("stop: cannot reach Gufo server: " + err.Error())
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		sf.SetErrorLog(fmt.Sprintf("stop: server responded with %s", resp.Status))
+		fmt.Printf("Stop command failed: %s\n", resp.Status)
+		return fmt.Errorf("server responded with %s", resp.Status)
+	}
+
+	fmt.Println("✅ Shutdown signal sent — Gufo is stopping gracefully...")
+	sf.SetLog("Shutdown request acknowledged by Gufo")
 	return nil
 }
 
-// ExitApp is Handler function for stop app by GET requet. Works in Debug mode only
+// ExitApp handles graceful stop via HTTP request (debug mode only).
 func ExitApp(w http.ResponseWriter, r *http.Request) {
-	var m string = "Gufo Stop \t"
-	sf.SetLog(m)
-	fmt.Printf(m)
-	os.Exit(3)
+	if !viper.GetBool("server.debug") {
+		http.Error(w, "Forbidden", http.StatusForbidden)
+		return
+	}
+
+	sf.SetLog("Received /exit request — initiating graceful shutdown")
+
+	go func() {
+		time.Sleep(500 * time.Millisecond) // small delay to let HTTP 200 return
+		sf.WaitForShutdown(func() {
+			// This callback will stop servers gracefully (same as SIGTERM)
+			sf.SetLog("Graceful shutdown triggered by /exit endpoint")
+		})
+	}()
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Gufo is shutting down..."))
 }
 
 // StartService is function for start WEB Server to listen port
 func StartService(c *cli.Context) (rtnerr error) {
-	//Initiate redis cache
+	// Initialize Redis
 	sf.InitCache()
 	port := sf.ConfigString("server.port")
 
-	var m string = "Gufo Starting. Listen []:" + port + "\t"
+	m := fmt.Sprintf("Gufo v%s starting on :%s (gRPC :%s, mode=%s)",
+		v.VERSION,
+		viper.GetString("server.port"),
+		viper.GetString("server.grpc_port"),
+		strings.ToLower(viper.GetString("security.mode")),
+	)
+
 	sf.SetLog(m)
 	fmt.Printf(m)
-	http.HandleFunc("/api/", handler.WrongRequest)
-	http.HandleFunc("/api/v3/", func(w http.ResponseWriter, r *http.Request) { handler.API(w, r, 3) })
-	http.HandleFunc("/api/v3/health", handler.Health)
+
+	// ---------------------------------------------------
+	// Router initialization (replaces http.Handle*)
+	// ---------------------------------------------------
+	r := chi.NewRouter()
+
+	// Middlewares
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(sf.RecoveryMiddleware)          // panic-safe middleware
+	r.Use(otelhttp.NewMiddleware("gufo")) // telemetry tracing
+
+	// Routes
+	r.Route("/api/v3", func(r chi.Router) {
+		r.Get("/health", handler.Health)
+		r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			handler.API(w, r, 3)
+		}))
+	})
 
 	if viper.GetBool("server.debug") {
-		http.HandleFunc("/exit", ExitApp)
+		r.Get("/exit", ExitApp)
 	}
 
-	//Server start
-	//go http.ListenAndServe(":"+port, nil)
+	// ---------------------------------------------------
+	// Start servers
+	// ---------------------------------------------------
 	go StartGRPCService()
 
-	err := http.ListenAndServe(":"+port, nil)
-	if err != nil {
+	// Internal metrics server (localhost only, protected by X-Metrics-Token)
+	go func() {
+		metricsMux := http.NewServeMux()
+		token := viper.GetString("server.metrics_token")
 
-		if viper.GetBool("server.sentry") {
-			sentry.CaptureException(err)
-		} else {
-			sf.SetErrorLog("gufo.go: " + err.Error())
+		metricsMux.HandleFunc("/api/v3/metrics", func(w http.ResponseWriter, r *http.Request) {
+			if token == "" {
+				http.Error(w, "Metrics endpoint disabled", http.StatusForbidden)
+				return
+			}
+			if r.Header.Get("X-Metrics-Token") != token {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
+			promhttp.Handler().ServeHTTP(w, r)
+		})
+
+		if err := http.ListenAndServe(":9100", metricsMux); err != nil {
+			sf.SetErrorLog("metrics server error: " + err.Error())
 		}
+	}()
 
-		os.Exit(1)
+	srv := &http.Server{
+		Addr:         ":" + port,
+		Handler:      r,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
+
+	sf.SetLog(fmt.Sprintf("HTTP listening on :%s", port))
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			sf.SetErrorLog("HTTP server error: " + err.Error())
+		}
+	}()
+
+	sf.WaitForShutdown(func() {
+		if grpcSrv != nil {
+			grpcSrv.GracefulStop()
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		srv.Shutdown(ctx)
+	})
 
 	return nil
 }
 
 func StartGRPCService() {
 
-	getport := viper.GetString("server.grpc_port")
-	port := "4890"
+	getport := strings.TrimSpace(viper.GetString("server.grpc_port"))
+	port := ":4890"
 	if getport != "" {
-		port = fmt.Sprintf(":%s", getport)
+		port = ":" + getport
 	}
 
 	listener, err := net.Listen("tcp", port)
 
 	if err != nil {
 		grpclog.Fatalf("failed to listen: %v", err)
+	} else {
+		sf.SetLog(fmt.Sprintf("gRPC listening on %s", port))
+
 	}
 
 	opts := []grpc.ServerOption{}
-	grpcServer := grpc.NewServer(opts...)
+	grpcSrv = grpc.NewServer(opts...)
 
 	s := &Server{}
 
-	pb.RegisterReverseServer(grpcServer, s)
+	pb.RegisterReverseServer(grpcSrv, s)
 
-	grpcServer.Serve(listener)
+	grpcSrv.Serve(listener)
 
 }
 
@@ -223,7 +343,11 @@ func (s *Server) Do(ctx context.Context, request *pb.Request) (*pb.Response, err
 	case "hmac":
 		secret := viper.GetString("security.hmac_secret")
 		maxAge := time.Duration(viper.GetInt("security.max_age")) * time.Second
-		if request.Sign == nil || !sf.VerifyHMAC(secret, *request.Module, *request.Sign, maxAge) {
+
+		// Extra safety check: avoid nil dereference in request.Module or request.Sign
+		if request.Sign == nil || request.Module == nil ||
+			!sf.VerifyHMAC(secret, *request.Module, *request.Sign, maxAge) {
+
 			sf.SetErrorLog("Unauthorized gRPC request (HMAC mode)")
 			return sf.ErrorReturn(request, 401, "00001", "Invalid or expired signature"), nil
 		}
@@ -244,4 +368,41 @@ func (s *Server) Do(ctx context.Context, request *pb.Request) (*pb.Response, err
 	}
 
 	return handler.InternalRequest(request), nil
+}
+
+// Stream handles bidirectional streaming RPC calls.
+func (s *Server) Stream(stream pb.Reverse_StreamServer) error {
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			sf.SetLog("Stream closed by client")
+			return nil
+		}
+		if err != nil {
+			sf.SetErrorLog(fmt.Sprintf("stream recv error: %v", err))
+			return err
+		}
+
+		if req.Module != nil {
+			sf.SetLog(fmt.Sprintf("Received stream request for module: %s", *req.Module))
+		}
+
+		// ✅ Properly wrap "pong" into protobuf.Any using wrapperspb
+		pongValue, err := anypb.New(&wrapperspb.StringValue{Value: "pong"})
+		if err != nil {
+			sf.SetErrorLog(fmt.Sprintf("failed to wrap string in Any: %v", err))
+			continue
+		}
+
+		resp := &pb.Response{
+			Data: map[string]*anypb.Any{
+				"echo": pongValue,
+			},
+		}
+
+		if err := stream.Send(resp); err != nil {
+			sf.SetErrorLog(fmt.Sprintf("stream send error: %v", err))
+			return err
+		}
+	}
 }

@@ -63,3 +63,13 @@ func ReadUserIP(r *http.Request) string {
 	}
 	return hdrRealIP
 }
+
+// StringPtr returns a pointer to a string value.
+func StringPtr(v string) *string {
+	return &v
+}
+
+// Int32Ptr returns a pointer to an int32 value.
+func Int32Ptr(v int32) *int32 {
+	return &v
+}

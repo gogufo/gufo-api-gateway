@@ -56,6 +56,10 @@ cert = "/etc/gufo/server.pem"
 key = "/etc/gufo/server-key.pem"
 max_age = 120                # seconds (used for HMAC expiry)
 
+
+[microservices.session]
+timeout = "5s"
+
 #######################################################################
 # TOKEN SETTINGS
 #######################################################################

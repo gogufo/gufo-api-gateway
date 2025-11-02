@@ -4,64 +4,80 @@ import "google/protobuf/any.proto";
 
 option go_package = "./";
 
-
 service Reverse {
-    rpc Do(Request) returns (Response) {}
-    rpc Stream (stream Request) returns (stream Response);
+  rpc Do(Request) returns (Response);
+  rpc Stream (stream Request) returns (stream Response);
 }
 
-
-
+// -------------------
+// Client → Server
+// -------------------
 message Request {
+  optional string Module = 1;
+  optional string Param = 2;
+  optional string ParamID = 3;
+  optional string ParamIDD = 4;
+  optional string Action = 5;
+  map<string, google.protobuf.Any> Args = 6;
+  optional string Path = 7;
+  optional string Token = 8;
+  optional string Sign = 9;
+  optional string SID = 10;
+  optional string IP = 11;
+  optional string UserAgent = 12;
+  optional string TokenType = 13;
+  optional int32 TimeStamp = 14;
+  optional string Language = 15;
+  optional string APIVersion = 16;
+  optional string Method = 17;
+  optional string UID = 18;
+  optional int32 IsAdmin = 19;
+  optional int32 SessionEnd = 20;
+  optional int32 Completed = 21;
+  optional int32 Readonly = 22;
 
-optional string Module = 1;
-optional string Param = 2;
-optional string ParamID = 3;
-optional string ParamIDD = 4;
-optional string Action = 5;
-map<string, google.protobuf.Any> Args = 6;
-optional string Path = 7;
-optional string Token = 8;
-optional string Sign = 9;
-optional string SID = 10;
-optional string IP = 11;
-optional string UserAgent = 12;
-optional string TokenType = 13;
-optional int32 TimeStamp = 14;
-optional string Language = 15;
-optional string APIVersion = 16;
-optional string Method = 17;
-optional string UID = 18;
-optional int32 IsAdmin = 19;
-optional int32 SessionEnd = 20;
-optional int32 Completed = 21;
-optional int32 Readonly = 22;
-optional bytes File = 23;
-optional string Filename = 24;
-optional InternalRequest IR = 25;
+  // Single-file upload
+  optional bytes File = 23;
+  optional string Filename = 24;
+
+  repeated string Files = 25;
+
+  // Optional: for file streaming (set automatically when streaming)
+  optional InternalRequest IR = 26;
 }
 
+// -------------------
+// Nested internal request (used by gateway)
+// -------------------
 message InternalRequest {
-optional string Param = 1;
-optional string ParamID = 2;
-optional string Method = 3;
-map<string, google.protobuf.Any> Args = 4;
+  optional string Param = 1;
+  optional string ParamID = 2;
+  optional string Method = 3;
+  map<string, google.protobuf.Any> Args = 4;
 }
 
-enum UploadStatusCode {
-    Unknown = 0;
-    Ok = 1;
-    Failed = 2;
-}
-
-
-
+// -------------------
+// Server → Client
+// -------------------
 message Response {
-
-    map<string, google.protobuf.Any> Data = 1;
-    optional Request RequestBack = 2;
-    optional UploadStatusCode Code = 3;
-
+  map<string, google.protobuf.Any> Data = 1;
+  optional Request RequestBack = 2;
+  optional UploadStatusCode Code = 3;
 }
 
+// -------------------
+// Streaming data
+// -------------------
+message FileChunk {
+  string name = 1;
+  bytes data = 2;
+}
 
+// -------------------
+// Upload status
+// -------------------
+enum UploadStatusCode {
+  Unknown = 0;
+  Ok = 1;
+  Failed = 2;
+}

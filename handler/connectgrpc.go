@@ -140,6 +140,13 @@ func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
 
 	}
 
+	// PUT → stream upload (without reading body in memory)
+	if r.Method == http.MethodPut {
+		ans := sf.GRPCStreamPut(host, port, r, t)
+		moduleAnswerv3(w, r, ans, t)
+		return
+	}
+
 	ans := sf.GRPCConnect(host, port, t)
 
 	moduleAnswerv3(w, r, ans, t)

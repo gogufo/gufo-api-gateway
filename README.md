@@ -159,6 +159,25 @@ type = "server"
 entrypointversion = "1.0.0"
 cron = false
 ```
+---
+
+## 🧩 Generate gRPC Connection Files
+
+> _Tip: Always re-generate gRPC bindings after updating `microservice.proto`._
+
+
+Before building or integrating new microservices, regenerate the Go bindings from the `.proto` schema.
+
+Go to the `/proto` folder and run:
+
+```bash
+docker run -v $PWD:/defs namely/protoc-all \
+  -f microservice.proto -o go/ -l go
+```
+You can replace -l go with another language:
+ruby, python, csharp, node, php, etc.
+
+All generated gRPC files will be placed in /proto/go/
 
 ---
 
@@ -309,21 +328,47 @@ transport.Register(&MyCustomTransport{})
 
 ## 📊 Metrics & Observability
 
-Gufo exposes Prometheus metrics on port `9100`:
+Gufo includes built-in **Prometheus** and **OpenTelemetry** instrumentation for runtime visibility.
+
+### Prometheus Metrics
+
+Metrics are exposed on port `9100`:
 
 ```
-http://127.0.0.1:9100/api/v3/metrics
-```
 
-Access is protected via:
+[http://127.0.0.1:9100/api/v3/metrics](http://127.0.0.1:9100/api/v3/metrics)
+
+````
+
+Access is protected via a token:
 
 ```bash
 curl -H "X-Metrics-Token: gufo-metrics" http://127.0.0.1:9100/api/v3/metrics
+````
+
+### Available Metrics
+
+| Metric                               | Description                       |
+| ------------------------------------ | --------------------------------- |
+| `gufo_http_requests_total`           | Total number of HTTP requests     |
+| `gufo_http_request_duration_seconds` | Histogram of request latency      |
+| `gufo_grpc_pool_hits_total`          | gRPC connection pool cache hits   |
+| `gufo_grpc_pool_misses_total`        | gRPC connection pool cache misses |
+| `gufo_grpc_retries_total`            | Number of gRPC retry attempts     |
+
+### OpenTelemetry Tracing
+
+To enable distributed tracing, set in your config:
+
+```toml
+[server]
+telemetry = true
 ```
 
-Additionally, OpenTelemetry tracing can be enabled via config (`server.telemetry = true`).
+Each request automatically propagates `trace-id` and `span-id`
+through HTTP → gRPC → microservices, enabling full end-to-end observability.
 
----
+
 
 ---
 

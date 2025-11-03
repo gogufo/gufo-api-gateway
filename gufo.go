@@ -35,7 +35,7 @@ import (
 	mid "github.com/gogufo/gufo-api-gateway/middleware"
 	"github.com/gogufo/gufo-api-gateway/registry"
 	"github.com/gogufo/gufo-api-gateway/transport"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
@@ -279,10 +279,11 @@ func StartService(c *cli.Context) (rtnerr error) {
 
 	// Internal metrics server (localhost only, protected by X-Metrics-Token)
 	go func() {
-		metricsMux := http.NewServeMux()
+		mux := http.NewServeMux()
 		token := viper.GetString("server.metrics_token")
 
-		metricsMux.HandleFunc("/api/v3/metrics", func(w http.ResponseWriter, r *http.Request) {
+		// /metrics endpoint — защищённый токеном
+		mux.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
 			if token == "" {
 				http.Error(w, "Metrics endpoint disabled", http.StatusForbidden)
 				return
@@ -291,10 +292,15 @@ func StartService(c *cli.Context) (rtnerr error) {
 				http.Error(w, "Forbidden", http.StatusForbidden)
 				return
 			}
-			promhttp.Handler().ServeHTTP(w, r)
+
+			// Отдаём все Prometheus-метрики из handler/metrics.go
+			handler.MetricsHandler().ServeHTTP(w, r)
 		})
 
-		if err := http.ListenAndServe(":9100", metricsMux); err != nil {
+		addr := ":9100"
+		sf.SetLog("📊 Metrics server listening on " + addr)
+
+		if err := http.ListenAndServe(addr, mux); err != nil {
 			sf.SetErrorLog("metrics server error: " + err.Error())
 		}
 	}()

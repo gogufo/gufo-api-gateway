@@ -56,12 +56,16 @@ func API(w http.ResponseWriter, r *http.Request, version int) {
 	start := time.Now()
 
 	// 2️⃣ Core routing by HTTP method
+	status := http.StatusOK // default status
 	if h, ok := methodHandlers[r.Method]; ok {
 		h(w, r.WithContext(ctx), t, version)
 	} else {
 		ProcessOPTIONS(w, r, t, version)
+		status = http.StatusNoContent
 	}
+	// 3️⃣ Record metrics (QPS + latency)
+	ObserveHTTPRequest(r.Method, r.URL.Path, status, start)
 
-	// 3️⃣ Run middleware chain (After)
+	// 4⃣ Run middleware chain (After)
 	middleware.RunAfter(w, http.StatusOK, time.Since(start))
 }

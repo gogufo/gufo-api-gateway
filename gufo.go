@@ -220,6 +220,7 @@ func StartService(c *cli.Context) (rtnerr error) {
 	sf.InitCache()
 
 	registry.StartRefresher()
+	registry.StartSweeper()
 	sf.SetLog("🧠 Registry cache refresher started")
 
 	// Register default transport (gRPC)

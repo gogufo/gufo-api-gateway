@@ -325,6 +325,93 @@ Additionally, OpenTelemetry tracing can be enabled via config (`server.telemetry
 
 ---
 
+---
+
+## 🔄 Service Registry and Heartbeat
+
+Gufo introduces a lightweight **in-memory service registry** that keeps track of all registered microservices  
+and ensures continuous routing — even if the central **MasterService** becomes temporarily unavailable.
+
+---
+
+### 🧠 How It Works
+
+| Step | Description |
+|------|--------------|
+| 1️⃣ | **Initial discovery** — when a module is requested for the first time, Gufo queries `masterservice` via gRPC (`getmicroservicebypath`) to get its host and port. |
+| 2️⃣ | **Registry cache** — the response is stored locally (`registry.ServiceInfo`) with a time-to-live (TTL). A background refresher periodically revalidates each entry. |
+| 3️⃣ | **Failover** — if `masterservice` is unavailable, Gufo automatically uses the last valid cached entry to continue serving requests. |
+| 4️⃣ | **Heartbeat endpoint** — microservices periodically send heartbeats to inform the MasterService that they are alive and healthy. |
+| 5️⃣ | **Self-healing** — inactive or non-reporting services are automatically purged from the registry after TTL expiration. |
+
+---
+
+### ⚡ Heartbeat Endpoint
+
+Microservices should periodically send a JSON heartbeat to Gufo’s REST endpoint:
+
+```bash
+POST /api/v3/heartbeat
+Content-Type: application/json
+
+{
+  "service": "auth",
+  "host": "auth",
+  "port": "5301"
+}
+```
+
+Gufo will automatically forward this heartbeat to the masterservice through gRPC,
+updating the registry and refreshing the LastUpdate timestamp.
+
+```toml
+[masterregistry]
+ttl = "60s"              # time-to-live for cached entries
+refresh_interval = "30s" # background refresh interval
+sweeper_interval = "1m"  # periodic cleanup of expired entries
+```
+
+✅ Benefits
+* 🔁 Continuous operation even if masterservice is offline
+* ⚡ Low-latency service lookup via local cache
+* 🧩 Seamless integration with existing gRPC routing
+* 🧠 Intelligent self-cleaning and background refresh
+* 🔐 All communication still flows securely through Gufo’s /api/v3/* endpoints
+
+---
+
+## 🧩 Related Microservices and Tools
+
+Gufo works best as part of the **microservice ecosystem**, where each component  
+has a clearly defined role and communicates through secure gRPC channels.
+
+| Service | Repository | Description |
+|----------|-------------|-------------|
+| 🧭 **MasterService** | [gogufo/masterservice](https://github.com/gogufo/masterservice) | Central service registry and discovery endpoint. Handles microservice registration, heartbeats, and health monitoring. |
+| 🔐 **Session Service** | [gogufo/session-m10e](https://github.com/gogufo/session-m10e) | Handles user sessions, tokens, and permissions management for all connected clients. |
+| ⚙️ **Microservice Generator** | [gogufo/gufo-grpc-microservice-generator](https://github.com/gogufo/gufo-grpc-microservice-generator) | CLI + Docker tool to scaffold new Gufo-compatible microservices in seconds. |
+
+---
+
+### 🚀 Generate a New Microservice (via Docker)
+
+You can instantly create a new Gufo-compatible microservice skeleton  
+using the **official generator image**:
+
+```bash
+docker run --rm -v $(pwd):/src amyerp/gufo_grpc_microservice_generator:latest /go/bin/grpccreator my_new_service
+```
+
+This command will:
+
+* scaffold a ready-to-build Go microservice project under the current directory
+
+* include boilerplate gRPC definitions, Dockerfile, Makefile, and config templates
+
+* automatically register it with Gufo Gateway (via /api/v3/heartbeat) once running
+
+---
+
 ## 🧱 Development Roadmap
 
 * ✅ PR-1: Zero-Config startup, fallback creation, ENV-based secrets

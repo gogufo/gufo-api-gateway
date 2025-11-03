@@ -69,16 +69,20 @@ func GetHostAndPort(t *pb.Request) (host string, port string, plygintype string)
 		ans := sf.GRPCConnect(host, port, t)
 		if ans["httpcode"] != nil {
 
-			if viper.GetBool("server.sentry") {
-				sentry.CaptureMessage(fmt.Sprintf("%v", ans["message"]))
-			} else {
-				sf.SetErrorLog(fmt.Sprintf("%v", ans["message"]))
+			// MasterService unavailable → try fallback cache
+			cached, err := registry.GetService(*t.Module)
+			if err == nil {
+				sf.SetLog(fmt.Sprintf("⚠️ Using cached route for %s (%s:%s)", *t.Module, cached.Host, cached.Port))
+				return cached.Host, cached.Port, ""
 			}
-			//	httpcode := 0
 
-			//	httpcode, _ = strconv.Atoi(fmt.Sprintf("%v", ans["httpcode"]))
-
-			//	errorAnswer(w, r, t, httpcode, fmt.Sprintf("%v", ans["code"]), fmt.Sprintf("%v", ans["message"]))
+			// No cache — log and fail
+			msg := fmt.Sprintf("MasterService unavailable and no cached entry for %s", *t.Module)
+			if viper.GetBool("server.sentry") {
+				sentry.CaptureMessage(msg)
+			} else {
+				sf.SetErrorLog(msg)
+			}
 			return "", "", ""
 		}
 

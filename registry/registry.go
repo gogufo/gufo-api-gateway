@@ -86,3 +86,19 @@ func RefreshCache() {
 		return true
 	})
 }
+
+func StartSweeper() {
+	go func() {
+		ticker := time.NewTicker(1 * time.Minute)
+		for range ticker.C {
+			now := time.Now()
+			cache.Range(func(key, value any) bool {
+				info := value.(ServiceInfo)
+				if now.Sub(info.LastUpdate) > ttl {
+					cache.Delete(key)
+				}
+				return true
+			})
+		}
+	}()
+}

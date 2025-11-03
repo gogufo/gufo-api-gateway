@@ -32,6 +32,7 @@ import (
 	"time"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
+	mid "github.com/gogufo/gufo-api-gateway/middleware"
 	"github.com/gogufo/gufo-api-gateway/registry"
 	"github.com/gogufo/gufo-api-gateway/transport"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -226,6 +227,14 @@ func StartService(c *cli.Context) (rtnerr error) {
 	// Register default transport (gRPC)
 	transport.Register(&transport.GRPCTransport{})
 	sf.SetLog("✅ Registered default transport: gRPC")
+
+	mid.Register(mid.NewRequestID())
+	mid.Register(mid.NewLogger())
+	mid.Register(mid.NewCORS())
+	mid.Register(mid.NewRateLimiter(100, time.Second))
+	// middleware.Register(middleware.NewAuthHook()) // future extension
+
+	sf.SetLog("🧩 Middleware chain initialized")
 
 	port := sf.ConfigString("server.port")
 

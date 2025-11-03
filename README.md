@@ -412,6 +412,30 @@ This command will:
 
 ---
 
+## 🧱 Middleware Framework
+
+Gufo includes a lightweight middleware system that processes every request  
+**before** and **after** it reaches the core gateway.
+
+Built-in middlewares:
+- 🪶 `RequestID` — adds `X-Request-ID` to each request
+- 🪵 `Logger` — structured logging (method, path, latency, status)
+- 🌍 `CORS` — standard CORS headers for browser APIs
+- ⚖️ `RateLimiter` — simple in-memory token bucket
+
+Usage:
+```go
+middleware.Register(middleware.NewRequestID())
+middleware.Register(middleware.NewLogger())
+middleware.Register(middleware.NewCORS())
+middleware.Register(middleware.NewRateLimiter(100, time.Second))
+```
+
+Each middleware can modify context, block requests, or log responses.
+Custom middleware can be added by implementing the Middleware interface.
+
+---
+
 ## 🧱 Development Roadmap
 
 * ✅ PR-1: Zero-Config startup, fallback creation, ENV-based secrets

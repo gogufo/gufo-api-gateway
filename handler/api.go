@@ -25,7 +25,9 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
+	"github.com/gogufo/gufo-api-gateway/middleware"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
 )
 
@@ -40,13 +42,26 @@ var methodHandlers = map[string]func(http.ResponseWriter, *http.Request, *pb.Req
 	"PUT":     ProcessPUT,
 }
 
+// API is the main entrypoint for all REST requests in Gufo Gateway.
+// It runs the middleware chain (Before/After) around the appropriate handler.
 func API(w http.ResponseWriter, r *http.Request, version int) {
 	t := RequestInit(r)
 
+	// 1️⃣ Run global middleware chain (Before)
+	ctx, err := middleware.RunBefore(r, r.Context())
+	if err != nil {
+		errorAnswer(w, r, t, 429, "000429", err.Error())
+		return
+	}
+	start := time.Now()
+
+	// 2️⃣ Core routing by HTTP method
 	if h, ok := methodHandlers[r.Method]; ok {
-		h(w, r, t, version)
+		h(w, r.WithContext(ctx), t, version)
 	} else {
 		ProcessOPTIONS(w, r, t, version)
 	}
 
+	// 3️⃣ Run middleware chain (After)
+	middleware.RunAfter(w, http.StatusOK, time.Since(start))
 }

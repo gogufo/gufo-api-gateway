@@ -19,6 +19,7 @@
 - Add hearbeat and micrioservice cache
 - includes a lightweight middleware system that processes every request  
   **before** and **after** it reaches the core gateway.
+- Clean response builder — safe map copy, Content-Type & X-Request-ID support
 
 ## 1.17.1
 - Update Golang Version to 1.23

@@ -1,4 +1,4 @@
-// Copyright 2020 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2020 - 2025 Alexey Yanchenko <mail@yanchenko.me>
 //
 // This file is part of the Gufo library.
 //
@@ -15,11 +15,8 @@
 // limitations under the License.
 //
 //
-// This file content Handler for API
-// Each API function is independend plugin
-// and API get reguest in connect with plugin
-// Get response from plugin and answer to client
-// All data is in JSON format
+// This file contains the main response handler for Gufo API Gateway.
+// Each API module acts independently and returns JSON-formatted data.
 
 package handler
 
@@ -39,80 +36,94 @@ import (
 
 func moduleAnswerv3(w http.ResponseWriter, r *http.Request, s map[string]interface{}, t *pb.Request) {
 
-	if s["file"] != nil {
-		var filename = s["file"].(string)
-
-		base64type := false
-		if s["isbase64"] != nil {
-			base64type = s["isbase64"].(bool)
-		}
-
-		fileAnswer(w, r, filename, s["filetype"].(string), s["filename"].(string), base64type)
-
-	} else {
-		var resp sf.Response
-
-		httpsstatus := 200
-
-		if s["httpcode"] != nil {
-			//1. Determinate data types
-			//	httpcodetype := reflect.TypeOf(s["httpcode"])
-
-			switch reflect.TypeOf(s["httpcode"]).String() {
-			case "string":
-				pre := s["httpcode"].(string)
-				httpsstatus, _ = strconv.Atoi(pre)
-			case "int":
-				httpsstatus = s["httpcode"].(int)
-			case "float64":
-				httpsstatus = int(s["httpcode"].(float64))
-			}
-
-		}
-
-		resp.Language = "eng"
-
-		if s["lang"] != nil {
-			resp.Language = s["lang"].(string)
-		}
-
-		resp.TimeStamp = int(time.Now().Unix())
-
-		// Delete httpcode information from Response
-		if s["httpcode"] != nil {
-			delete(s, "httpcode")
-		}
-
-		resp.Data = s
-
-		if t.UID != nil {
-			//write session data in answer
-			session := make(map[string]interface{})
-			session["uid"] = t.UID
-			session["isAdmin"] = t.IsAdmin
-			session["Sesionexp"] = t.SessionEnd
-			session["completed"] = t.Completed
-			session["readonly"] = t.Readonly
-			resp.Session = session
-		}
-
-		answer, err := json.Marshal(resp)
-		if err != nil {
-
-			if viper.GetBool("server.sentry") {
-				sentry.CaptureException(err)
-			} else {
-				sf.SetErrorLog("api.go: " + err.Error())
-			}
-			return
-		}
-
-		for i := 0; i < len(HeaderKeys); i++ {
-			w.Header().Set(HeaderKeys[i], HeaderValues[i])
-		}
-
-		w.WriteHeader(httpsstatus)
-		w.Write([]byte(answer))
+	// 🧩 Make a copy of the incoming map to avoid side effects
+	out := make(map[string]interface{})
+	for k, v := range s {
+		out[k] = v
 	}
 
+	// --- File response handler ---
+	if out["file"] != nil {
+		filename := out["file"].(string)
+		base64type := false
+		if out["isbase64"] != nil {
+			base64type = out["isbase64"].(bool)
+		}
+		fileAnswer(w, r, filename, out["filetype"].(string), out["filename"].(string), base64type)
+		return
+	}
+
+	// --- Standard JSON response ---
+	var resp sf.Response
+	httpsstatus := 200
+
+	// Extract HTTP code from map (if provided)
+	if out["httpcode"] != nil {
+		switch reflect.TypeOf(out["httpcode"]).String() {
+		case "string":
+			pre := out["httpcode"].(string)
+			httpsstatus, _ = strconv.Atoi(pre)
+		case "int":
+			httpsstatus = out["httpcode"].(int)
+		case "float64":
+			httpsstatus = int(out["httpcode"].(float64))
+		}
+		delete(out, "httpcode")
+	}
+
+	// Allow microservice to override Content-Type
+	if ct, ok := out["Content-Type"]; ok {
+		if cts, ok2 := ct.(string); ok2 {
+			w.Header().Set("Content-Type", cts)
+			delete(out, "Content-Type")
+		}
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+	}
+
+	// Propagate X-Request-ID if present
+	if rid := r.Header.Get("X-Request-ID"); rid != "" {
+		w.Header().Set("X-Request-ID", rid)
+	}
+
+	// Language field
+	resp.Language = "eng"
+	if out["lang"] != nil {
+		resp.Language = out["lang"].(string)
+	}
+
+	// Timestamp
+	resp.TimeStamp = int(time.Now().Unix())
+	resp.Data = out
+
+	// Attach session info if present
+	if t.UID != nil {
+		session := make(map[string]interface{})
+		session["uid"] = t.UID
+		session["isAdmin"] = t.IsAdmin
+		session["Sesionexp"] = t.SessionEnd
+		session["completed"] = t.Completed
+		session["readonly"] = t.Readonly
+		resp.Session = session
+	}
+
+	// Marshal response to JSON
+	answer, err := json.Marshal(resp)
+	if err != nil {
+		if viper.GetBool("server.sentry") {
+			sentry.CaptureException(err)
+		} else {
+			sf.SetErrorLog("api.go: " + err.Error())
+		}
+		return
+	}
+
+	// Apply default headers
+	for i := 0; i < len(HeaderKeys); i++ {
+		w.Header().Set(HeaderKeys[i], HeaderValues[i])
+	}
+
+	// Final response
+	w.WriteHeader(httpsstatus)
+	w.Write([]byte(answer))
 }

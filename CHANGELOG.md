@@ -16,6 +16,7 @@
 - add multifile upload
 - Add Transport layer
 - Modify Dockerfile
+- Add hearbeat and micrioservice cache
 
 ## 1.17.1
 - Update Golang Version to 1.23

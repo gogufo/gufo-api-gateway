@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/gufo-api-gateway.iml" filepath="$PROJECT_DIR$/.idea/gufo-api-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../gufo-grpc-microservice-generator/.idea/gufo-grpc-microservice-generator.iml" filepath="$PROJECT_DIR$/../gufo-grpc-microservice-generator/.idea/gufo-grpc-microservice-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../masterservice/.idea/masterservice.iml" filepath="$PROJECT_DIR$/../masterservice/.idea/masterservice.iml" />
     </modules>
   </component>
 </project>

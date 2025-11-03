@@ -1,6 +1,7 @@
 # 🦉 Gufo API Gateway
 
 [![GoDoc](https://godoc.org/github.com/gogufo/gufo-api-gateway?status.svg)](https://godoc.org/github.com/gogufo/gufo-api-gateway)
+[![test status](https://github.com/gogufo/gufo-api-gateway/actions/workflows/build.yml/badge.svg)](https://github.com/gogufo/gufo-api-gateway/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gogufo/gufo-api-gateway)](https://goreportcard.com/report/github.com/gogufo/gufo-api-gateway)
 
@@ -92,7 +93,7 @@ git clone https://github.com/gogufo/gufo-api-gateway.git
 cd gufo-api-gateway
 go build -o gufo gufo.go
 sudo ./gufo start
-
+```
 
 ### Quick Test
 

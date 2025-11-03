@@ -32,6 +32,7 @@ import (
 	"time"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
+	"github.com/gogufo/gufo-api-gateway/registry"
 	"github.com/gogufo/gufo-api-gateway/transport"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
@@ -217,6 +218,9 @@ func ExitApp(w http.ResponseWriter, r *http.Request) {
 func StartService(c *cli.Context) (rtnerr error) {
 	// Initialize Redis
 	sf.InitCache()
+
+	registry.StartRefresher()
+	sf.SetLog("🧠 Registry cache refresher started")
 
 	// Register default transport (gRPC)
 	transport.Register(&transport.GRPCTransport{})

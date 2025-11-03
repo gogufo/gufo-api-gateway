@@ -28,7 +28,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/getsentry/sentry-go"
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
 
@@ -67,40 +66,15 @@ func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 		return
 	}
 
-	if r.Method == "POST" {
-
-		//Decode request
-		decoder := json.NewDecoder(r.Body)
-		args := make(map[string]interface{})
-		err := decoder.Decode(&args)
-		if err != nil {
-
-			if viper.GetBool("server.sentry") {
-				sentry.CaptureException(err)
-			} else {
-				sf.SetErrorLog(err.Error())
-			}
-			errorAnswer(w, r, t, 401, "0000238", "Can not decode POST body")
-			return
-
-		}
-		t.Args = sf.ToMapStringAny(args)
-
+	if *t.Module == "heartbeat" {
+		HeartbeatHandler(w, r, t)
+		return
 	}
 
-	if r.Method == "DELETE" || r.Method == "PATCH" {
-		//Decode request
-		decoder := json.NewDecoder(r.Body)
-		args := make(map[string]interface{})
-		err := decoder.Decode(&args)
-		if err == nil {
-
-			t.Args = sf.ToMapStringAny(args)
-
-		}
-
+	if r.Method == "POST" || r.Method == "DELETE" || r.Method == "PATCH" {
+		t.Args = sf.ToMapStringAny(parseJSONArgs(r))
 	}
-
+	
 	if r.Method == "GET" && r.URL.Query() != nil || r.Method == "TRACE" && r.URL.Query() != nil || r.Method == "HEAD" && r.URL.Query() != nil {
 		paramMap := make(map[string]interface{}, 0)
 		for k, v := range r.URL.Query() {
@@ -132,4 +106,12 @@ func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 	}
 	connectgrpc(w, r, t)
 
+}
+
+func parseJSONArgs(r *http.Request) map[string]interface{} {
+	var args map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&args); err != nil {
+		return nil
+	}
+	return args
 }

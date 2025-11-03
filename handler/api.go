@@ -26,37 +26,27 @@ package handler
 import (
 	"net/http"
 
-	sf "github.com/gogufo/gufo-api-gateway/gufodao"
+	pb "github.com/gogufo/gufo-api-gateway/proto/go"
 )
 
-func API(w http.ResponseWriter, r *http.Request, version int) {
-	//Log Request
-	//1. Collect need data
-	var userip = sf.ReadUserIP(r)
-	sf.SetLog(userip + " " + r.URL.Path + " " + r.Method)
+var methodHandlers = map[string]func(http.ResponseWriter, *http.Request, *pb.Request, int){
+	"OPTIONS": ProcessOPTIONS,
+	"GET":     ProcessREQ,
+	"HEAD":    ProcessREQ,
+	"TRACE":   ProcessREQ,
+	"POST":    ProcessREQ,
+	"PATCH":   ProcessREQ,
+	"DELETE":  ProcessREQ,
+	"PUT":     ProcessPUT,
+}
 
+func API(w http.ResponseWriter, r *http.Request, version int) {
 	t := RequestInit(r)
 
-	switch r.Method {
-	case "OPTIONS":
-		ProcessOPTIONS(w, r)
-	case "GET":
-		ProcessREQ(w, r, t, version)
-	case "HEAD":
-		ProcessREQ(w, r, t, version)
-	case "TRACE":
-		ProcessREQ(w, r, t, version)
-	case "POST":
-		ProcessREQ(w, r, t, version)
-	case "PATCH":
-		ProcessREQ(w, r, t, version)
-	case "DELETE":
-		ProcessREQ(w, r, t, version)
-	case "PUT":
-		ProcessPUT(w, r, t, version)
-	default:
-		ProcessOPTIONS(w, r)
-
+	if h, ok := methodHandlers[r.Method]; ok {
+		h(w, r, t, version)
+	} else {
+		ProcessOPTIONS(w, r, t, version)
 	}
 
 }

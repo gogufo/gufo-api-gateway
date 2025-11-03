@@ -25,9 +25,11 @@ package handler
 
 import (
 	"net/http"
+
+	pb "github.com/gogufo/gufo-api-gateway/proto/go"
 )
 
-func ProcessOPTIONS(w http.ResponseWriter, r *http.Request) {
+func ProcessOPTIONS(w http.ResponseWriter, r *http.Request, t *pb.Request, version int) {
 
 	for i := 0; i < len(HeaderKeys); i++ {
 		w.Header().Set(HeaderKeys[i], HeaderValues[i])

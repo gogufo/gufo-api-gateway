@@ -28,6 +28,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
+	"github.com/gogufo/gufo-api-gateway/registry"
 	"github.com/gogufo/gufo-api-gateway/transport"
 	"github.com/spf13/viper"
 	pbv "gopkg.in/cheggaaa/pb.v1"
@@ -131,12 +132,16 @@ func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
 		}
 	}
 
+	// Resolve service from registry cache
+	info, err := registry.GetService(*t.Module)
+	if err != nil {
+		errorAnswer(w, r, t, 500, "0000501", "Cannot resolve service: "+err.Error())
+		return
+	}
+
 	// 2️⃣ Handle streaming uploads (PUT)
 	if r.Method == http.MethodPut {
-		host := viper.GetString(fmt.Sprintf("microservices.%s.host", *t.Module))
-		port := viper.GetString(fmt.Sprintf("microservices.%s.port", *t.Module))
-
-		ans := sf.GRPCStreamPut(host, port, r, t)
+		ans := sf.GRPCStreamPut(info.Host, info.Port, r, t)
 		moduleAnswerv3(w, r, ans, t)
 		return
 	}

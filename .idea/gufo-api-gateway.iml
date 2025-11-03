@@ -5,5 +5,7 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="gufo-grpc-microservice-generator" />
+    <orderEntry type="module" module-name="masterservice" />
   </component>
 </module>

@@ -4,6 +4,9 @@ import "google/protobuf/any.proto";
 
 option go_package = "./";
 
+// =============================
+// Gufo gRPC Service Definition
+// =============================
 service Reverse {
   rpc Do(Request) returns (Response);
   rpc Stream (stream Request) returns (stream Response);
@@ -36,18 +39,19 @@ message Request {
   optional int32 Completed = 21;
   optional int32 Readonly = 22;
 
-  // Single-file upload
+  // Single file upload
   optional bytes File = 23;
   optional string Filename = 24;
 
+  // Multi-file upload (list of filenames)
   repeated string Files = 25;
 
-  // Optional: for file streaming (set automatically when streaming)
+  // Optional: internal request (used by gateway)
   optional InternalRequest IR = 26;
 }
 
 // -------------------
-// Nested internal request (used by gateway)
+// Internal request (used by gateway)
 // -------------------
 message InternalRequest {
   optional string Param = 1;
@@ -57,12 +61,22 @@ message InternalRequest {
 }
 
 // -------------------
+// Standardized error format
+// -------------------
+message Error {
+  int32 code = 1;                     // Numeric error code
+  string message = 2;                 // Human-readable message
+  map<string, string> meta = 3;       // Optional metadata (debug info, trace, etc.)
+}
+
+// -------------------
 // Server → Client
 // -------------------
 message Response {
-  map<string, google.protobuf.Any> Data = 1;
-  optional Request RequestBack = 2;
-  optional UploadStatusCode Code = 3;
+  map<string, google.protobuf.Any> Data = 1; // Main response payload
+  optional Request RequestBack = 2;           // Original request reference (optional)
+  optional UploadStatusCode Code = 3;         // Upload result (if file upload)
+  optional Error error = 4;                   // Unified error object (optional)
 }
 
 // -------------------
@@ -82,4 +96,9 @@ enum UploadStatusCode {
   Failed = 2;
 }
 
-message StringMap { map<string,string> entries = 1; }
+// -------------------
+// Helper maps
+// -------------------
+message StringMap {
+  map<string, string> entries = 1;
+}

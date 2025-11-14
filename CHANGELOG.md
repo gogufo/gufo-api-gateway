@@ -22,6 +22,9 @@
 - Clean response builder — safe map copy, Content-Type & X-Request-ID support
 - update proto for error response standartisation
 - Added Prometheus-based observability with request latency histograms, QPS counters, and secure /metrics endpoint.
+- Create Whitepaper
+- modify Redis connection (production-ready)
+- modify internal GRPC connection 
 
 ## 1.17.1
 - Update Golang Version to 1.23

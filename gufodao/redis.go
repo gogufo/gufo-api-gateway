@@ -17,19 +17,90 @@
 package gufodao
 
 import (
+	"crypto/tls"
+	"time"
+
 	"github.com/gomodule/redigo/redis"
+	"github.com/spf13/viper"
 )
 
-// Store the redis connection as a package level variable
-var cache redis.Conn
+var CachePool *redis.Pool
 
 func InitCache() {
-	// Initialize the redis connection to a redis instance running on your local machine
-	n := ConfigString("redis.host")
-	conn, err := redis.DialURL(n)
-	if err != nil {
-		SetErrorLog("redis.go:31: " + err.Error())
+	host := ConfigString("redis.host")
+	password := ConfigString("redis.password")
+	useTLS := ConfigBool("redis.tls")
+	maxIdle := viper.GetInt("redis.max_idle")
+	if maxIdle == 0 {
+		maxIdle = 5
 	}
-	// Assign the connection to the package level `cache` variable
-	cache = conn
+
+	maxActive := viper.GetInt("redis.max_active")
+	if maxActive == 0 {
+		maxActive = 20
+	}
+
+	idleTimeout := viper.GetInt("redis.idle_timeout")
+	if idleTimeout == 0 {
+		idleTimeout = 240
+	}
+
+	var tlsConfig *tls.Config
+	if useTLS {
+		tlsConfig = &tls.Config{
+			InsecureSkipVerify: true,
+		}
+	}
+
+	CachePool = &redis.Pool{
+		MaxIdle:     maxIdle,
+		MaxActive:   maxActive,
+		IdleTimeout: time.Duration(idleTimeout) * time.Second,
+		Wait:        true,
+
+		Dial: func() (redis.Conn, error) {
+			options := []redis.DialOption{
+				redis.DialConnectTimeout(3 * time.Second),
+				redis.DialReadTimeout(3 * time.Second),
+				redis.DialWriteTimeout(3 * time.Second),
+			}
+
+			if password != "" {
+				options = append(options, redis.DialPassword(password))
+			}
+
+			if tlsConfig != nil {
+				options = append(options, redis.DialTLSConfig(tlsConfig))
+			}
+
+			conn, err := redis.Dial("tcp", host, options...)
+			if err != nil {
+				SetErrorLog("redis: dial failed: " + err.Error())
+				return nil, err
+			}
+			return conn, nil
+		},
+
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			if time.Since(t) < 30*time.Second {
+				return nil
+			}
+			_, err := c.Do("PING")
+			if err != nil {
+				SetErrorLog("redis: ping failed: " + err.Error())
+			}
+			return err
+		},
+	}
+
+	// initial test
+	conn := CachePool.Get()
+	_, err := conn.Do("PING")
+	conn.Close()
+
+	if err != nil {
+		SetErrorLog("redis: initial ping failed: " + err.Error())
+	} else {
+		SetLog("redis: connected")
+	}
 }

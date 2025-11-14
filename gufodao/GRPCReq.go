@@ -1,94 +1,160 @@
-// Copyright 2024 Alexey Yanchenko <mail@yanchenko.me>
-//
-// This file is part of the Gufo library.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package gufodao
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net"
 	"net/http"
+	"time"
 
 	viper "github.com/spf13/viper"
 )
 
-func GRPCReq(misroservice string, param string, paramid string, args map[string]interface{}, token string, method string, sign string) map[string]interface{} {
+// HttpRetry is number of HTTP retries for internal requests
+const HttpRetry = 3
+
+// HttpTimeout is timeout per request
+const HttpTimeout = 7 * time.Second
+
+// Production-ready internal API Gateway request
+func GRPCReq(
+	microservice string,
+	param string,
+	paramID string,
+	args map[string]interface{},
+	token string,
+	method string,
+	sign string,
+) map[string]interface{} {
 
 	ans := make(map[string]interface{})
 
-	erphost := viper.GetString("server.internal_host")
-	erpport := viper.GetString("server.port")
-	tsp := "http://"
-	isssl := viper.GetBool("server.internal_ssl")
-	if isssl {
-		tsp = "https://"
+	// ---------------------------
+	// Build URL
+	// ---------------------------
+	host := viper.GetString("server.internal_host")
+	port := viper.GetString("server.port")
+
+	if host == "" || port == "" {
+		ans["error"] = "internal_host or port is empty"
+		ans["httpcode"] = 500
+		return ans
 	}
 
-	header := "Bearer " + token
-	URL := fmt.Sprintf("%s%s:%s/api/v3/%s/%s", tsp, erphost, erpport, misroservice, param)
-	if paramid != "" {
-		URL = fmt.Sprintf("%s/%s", URL, paramid)
+	proto := "http://"
+	if viper.GetBool("server.internal_ssl") {
+		proto = "https://"
 	}
 
-	json_data, err := json.Marshal(args)
-	if err != nil {
-		ans["error"] = err.Error()
-		ans["httpcode"] = 400
+	url := fmt.Sprintf("%s%s:%s/api/v3/%s/%s", proto, host, port, microservice, param)
+	if paramID != "" {
+		url += "/" + paramID
 	}
 
-	var jsonData = []byte(json_data)
-
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	// ---------------------------
+	// Prepare JSON body
+	// ---------------------------
+	var body []byte
+	if args != nil {
+		var err error
+		body, err = json.Marshal(args)
+		if err != nil {
+			ans["error"] = "json marshal error: " + err.Error()
+			ans["httpcode"] = 400
+			return ans
+		}
+	} else {
+		body = []byte("{}")
 	}
 
-	client := &http.Client{Transport: tr}
-	req, err := http.NewRequest(method, URL, bytes.NewBuffer(jsonData))
-	if err != nil {
-		ans["error"] = err.Error()
-		ans["httpcode"] = 400
-		//	return ErrorReturn(t, 400, "000005", err.Error())
-
+	// ---------------------------
+	// Prepare HTTP client
+	// ---------------------------
+	transport := &http.Transport{
+		MaxIdleConns:        100,
+		IdleConnTimeout:     30 * time.Second,
+		DisableCompression:  false,
+		TLSHandshakeTimeout: 5 * time.Second,
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
 	}
 
-	req.Header = http.Header{
-		"Content-Type":  {"application/json"},
-		"Authorization": {header},
-		"X-Sign":        {sign},
+	// secure TLS
+	if viper.GetBool("server.internal_ssl") {
+		transport.TLSClientConfig = &tls.Config{
+			MinVersion:         tls.VersionTLS12,
+			InsecureSkipVerify: false, // production: must be false
+		}
 	}
 
-	res, err := client.Do(req)
-	if err != nil {
-		ans["error"] = err.Error()
-		ans["httpcode"] = 400
-		//return ErrorReturn(t, 400, "000005", err.Error())
+	client := &http.Client{
+		Transport: transport,
+		Timeout:   HttpTimeout,
 	}
 
-	var cResp Response
+	// ---------------------------
+	// RETRY logic
+	// ---------------------------
+	var lastErr error
+	for attempt := 1; attempt <= HttpRetry; attempt++ {
 
-	if err = json.NewDecoder(res.Body).Decode(&cResp); err != nil {
-		//	return ErrorReturn(t, 400, "000005", err.Error())
-		ans["error"] = err.Error()
-		ans["httpcode"] = 400
+		// context per request
+		ctx, cancel := context.WithTimeout(context.Background(), HttpTimeout)
+		defer cancel()
+
+		req, err := http.NewRequestWithContext(ctx, method, url, bytes.NewBuffer(body))
+		if err != nil {
+			lastErr = err
+			continue
+		}
+
+		// headers
+		if token != "" {
+			req.Header.Set("Authorization", "Bearer "+token)
+		}
+
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("User-Agent", "Gufo-Microservice/2.0")
+		req.Header.Set("X-Sign", sign)
+
+		// execute
+		res, err := client.Do(req)
+		if err != nil {
+			lastErr = err
+			time.Sleep(time.Duration(attempt) * 150 * time.Millisecond)
+			continue
+		}
+
+		// ensure body close
+		defer res.Body.Close()
+
+		// parse response
+		bodyBytes, err := io.ReadAll(res.Body)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+
+		var cResp Response
+		if err := json.Unmarshal(bodyBytes, &cResp); err != nil {
+			lastErr = err
+			continue
+		}
+
+		// success
+		ans["answer"] = cResp
+		ans["httpcode"] = res.StatusCode
+		return ans
 	}
 
-	ans["answer"] = cResp
-	ans["httpcode"] = res.StatusCode
-
+	// if reached — all attempts failed
+	ans["error"] = fmt.Sprintf("request failed after %d attempts: %v", HttpRetry, lastErr)
+	ans["httpcode"] = 500
 	return ans
-
 }

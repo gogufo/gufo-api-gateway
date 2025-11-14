@@ -235,6 +235,14 @@ func ConfigString(key string) string {
 	return viper.GetString(key)
 }
 
+func ConfigBool(key string) bool {
+	return viper.GetBool(key)
+}
+
+func ConfigInt(key string) int {
+	return viper.GetInt(key)
+}
+
 // GetPass safely resolves passwords from either ENV or encrypted config values.
 // Priority: explicit ENV variable > encrypted TOML value > plaintext fallback.
 func GetPass(conf string) string {

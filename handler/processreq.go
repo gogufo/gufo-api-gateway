@@ -27,6 +27,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"time"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
@@ -35,6 +36,41 @@ import (
 )
 
 func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version int) {
+
+	// ===========================
+	//  SECURITY CHECK (same as gRPC Do)
+	// ===========================
+	mode := strings.ToLower(viper.GetString("security.mode"))
+
+	switch mode {
+	case "hmac":
+		secret := viper.GetString("security.hmac_secret")
+		maxAge := time.Duration(viper.GetInt("security.max_age")) * time.Second
+
+		if t.Sign == nil || t.Module == nil ||
+			!sf.VerifyHMAC(secret, *t.Module, *t.Sign, maxAge) {
+
+			errorAnswer(w, r, t, 401, "00001", "Invalid or expired HMAC signature")
+			return
+		}
+
+	case "sign":
+		if t.Sign == nil || viper.GetString("server.sign") != *t.Sign {
+			errorAnswer(w, r, t, 401, "00001", "Invalid signature")
+			return
+		}
+
+	case "mtls":
+		// r.TLS != nil only when HTTPS with client certificate
+		if r.TLS == nil || len(r.TLS.PeerCertificates) == 0 {
+			errorAnswer(w, r, t, 401, "00001", "Client certificate required (mTLS)")
+			return
+		}
+
+	default:
+		errorAnswer(w, r, t, 500, "00002", "Security mode not configured")
+		return
+	}
 
 	//Determinate plugin name, params etc.
 	//
@@ -74,7 +110,7 @@ func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 	if r.Method == "POST" || r.Method == "DELETE" || r.Method == "PATCH" {
 		t.Args = sf.ToMapStringAny(parseJSONArgs(r))
 	}
-	
+
 	if r.Method == "GET" && r.URL.Query() != nil || r.Method == "TRACE" && r.URL.Query() != nil || r.Method == "HEAD" && r.URL.Query() != nil {
 		paramMap := make(map[string]interface{}, 0)
 		for k, v := range r.URL.Query() {

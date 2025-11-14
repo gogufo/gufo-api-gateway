@@ -7,5 +7,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="gufo-grpc-microservice-generator" />
     <orderEntry type="module" module-name="masterservice" />
+    <orderEntry type="module" module-name="test" />
   </component>
 </module>

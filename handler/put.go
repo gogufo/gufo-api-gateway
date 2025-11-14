@@ -26,13 +26,51 @@ package handler
 import (
 	"net/http"
 	"strings"
+	"time"
 
+	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
 
 	"github.com/spf13/viper"
 )
 
 func ProcessPUT(w http.ResponseWriter, r *http.Request, t *pb.Request, version int) {
+
+	// ===========================
+	//  SECURITY CHECK (sign / HMAC / mTLS)
+	// ===========================
+	mode := strings.ToLower(viper.GetString("security.mode"))
+
+	switch mode {
+
+	case "hmac":
+		secret := viper.GetString("security.hmac_secret")
+		maxAge := time.Duration(viper.GetInt("security.max_age")) * time.Second
+
+		if t.Sign == nil || t.Module == nil ||
+			!sf.VerifyHMAC(secret, *t.Module, *t.Sign, maxAge) {
+
+			errorAnswer(w, r, t, 401, "00001", "Invalid or expired HMAC signature")
+			return
+		}
+
+	case "sign":
+		if t.Sign == nil || viper.GetString("server.sign") != *t.Sign {
+			errorAnswer(w, r, t, 401, "00001", "Invalid signature")
+			return
+		}
+
+	case "mtls":
+		if r.TLS == nil || len(r.TLS.PeerCertificates) == 0 {
+			errorAnswer(w, r, t, 401, "00001", "Client certificate required (mTLS)")
+			return
+		}
+
+	default:
+		errorAnswer(w, r, t, 500, "00002", "Security mode not configured")
+		return
+	}
+
 	path := r.URL.Path
 	patharray := strings.Split(path, "/")
 	if len(patharray) < 3 || *t.Module == "entrypoint" {

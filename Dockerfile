@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy runtime assets and binary
 COPY --from=builder /go/bin/gufo /usr/local/bin/gufo
-COPY --from=builder /app/config/settings.toml /var/gufo/config/settings.toml
+COPY --from=builder /app/config/settings.example.toml /var/gufo/config/settings.toml
 COPY --from=builder /app/var/ /var/gufo/
 
 WORKDIR /var/gufo/

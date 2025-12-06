@@ -87,7 +87,8 @@ jobs:
 
       - name: Run integration tests
         run: |
-          go test ./... -v -run TestHealth -run TestMetrics
+          go test $(go list ./... | grep -v /docs/) -v
+
 
       - name: Dump container logs on failure
         if: failure()

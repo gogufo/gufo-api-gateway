@@ -19,5 +19,10 @@ func (l *Logger) Before(r *http.Request, ctx context.Context) (context.Context, 
 }
 
 func (l *Logger) After(w http.ResponseWriter, status int, dur time.Duration) {
-	log.Printf("[REQ] %s %s → %d (%v)", w.Header().Get("X-Request-ID"), status, dur, status)
+	log.Printf("[REQ] %s status=%d duration=%v",
+		w.Header().Get("X-Request-ID"),
+		status,
+		dur,
+	)
+
 }

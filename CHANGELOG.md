@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.20.0
+- Add .env support
+- Implemented safe dual-mode routing (standalone / masterservice) in Gateway with timeout and fallback.
+- Fixed request mutation and registry SPOF issues in service resolution logic.
+- Added mock heartbeat support for standalone mode without MasterService dependency.
+- Add Kubernetes deployment and services gufo.yml 
+- Update Readme.md
+- Generate proto for C++, C#, Java, NodeJS, ObjectiveC, PHP, Python and Ruby
+- Add tests
+- Create GitHub Actions tests and push to docker hub
+
+
 ## 1.19.0
 - Update Golang Version to 1.25
 - Optimize errors

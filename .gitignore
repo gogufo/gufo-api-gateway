@@ -6,3 +6,4 @@ gufo/var/log
 gufo/var/files
 vendor/
 .env
+*.zip

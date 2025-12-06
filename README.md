@@ -75,6 +75,32 @@ config/settings.toml
 ```
 
 ---
+## Official Docker Image for Gufo API Gateway
+
+Official Gufo API Gateway image is published on Docker Hub:
+
+ https://hub.docker.com/r/amyerp/gufo-api-gateway
+
+Pull the latest version:
+
+```bash
+ docker pull amyerp/gufo-api-gateway:latest
+```
+---
+## Kubernetes Deployment
+
+Gufo API Gateway is ready for Kubernetes and exposes dedicated ports for each traffic type:
+
+- **4890** — Internal gRPC (microservices → gateway)
+- **8090** — HTTP (health checks / Ingress)
+- **9100** — Metrics (Prometheus)
+
+### Apply Deployment and Services
+
+```bash
+kubectl apply -f gufo.yml
+```
+---
 ### 🧰 Manual Installation (without Docker)
 
 You can run Gufo directly from source without using Docker.
@@ -180,6 +206,28 @@ ruby, python, csharp, node, php, etc.
 All generated gRPC files will be placed in /proto/go/
 
 ---
+
+## Control Plane & Dual-Mode Routing
+
+The Gateway supports a safe **dual-mode operation**:
+
+- **Cluster Mode** (`server.masterservice = true`):
+    - All routing, heartbeat and cron control are proxied via **MasterService**.
+    - Gateway dynamically resolves microservice hosts through MasterService.
+    - Timeout and fallback to local registry are applied for fault tolerance.
+
+- **Standalone Mode** (`server.masterservice = false`):
+    - Gateway resolves microservice hosts directly from environment configuration.
+    - MasterService is fully optional.
+    - Heartbeat requests return a local mock response (`leader=true`, `cron=true`).
+
+### Reliability Improvements
+- Eliminated unsafe request mutation during MasterService resolution.
+- Added timeout protection for MasterService calls.
+- Removed registry as a single point of failure by adding dynamic fallback resolution.
+
+This design keeps microservices **mode-agnostic**, moves all control logic into the Gateway, and fully supports both small standalone deployments and clustered production environments without code changes in microservices.
+
 
 ## 🔐 Security Model
 

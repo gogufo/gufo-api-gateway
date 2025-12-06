@@ -1,5 +1,5 @@
 # .github/workflows/build.yml
-name: Build & Docker Publish
+name: Build, Test & Docker Publish
 
 on:
   push:
@@ -7,43 +7,129 @@ on:
   pull_request:
     branches: [ main ]
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
-  build:
+
+  # ==========================================================
+  # 1️⃣ UNIT TESTS (without Docker)
+  # ==========================================================
+  unit-tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.25'
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
 
-    - name: Build
-      run: |
-        go mod tidy
-        go build -o gufo gufo.go
+      - name: Install deps
+        run: go mod tidy
 
-    - name: Run tests
-      run: go test ./... -v
+      - name: Run unit tests
+        run: go test ./... -v -short
 
-  docker:
+
+  # ==========================================================
+  # 2️⃣ BUILD BINARY (only if unit OK)
+  # ==========================================================
+  build:
+    name: Build Binary
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - name: Build binary
+        run: |
+          go mod tidy
+          go build -o gufo gufo.go
+
+
+  # ==========================================================
+  # 3️⃣ INTEGRATION TESTS (via Docker)
+  # ==========================================================
+  integration-tests:
+    name: Integration Tests (Docker)
     runs-on: ubuntu-latest
     needs: build
+
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Build Docker image
-      run: docker build -t amyerp/gufo-api-gateway:latest .
+      - name: Build Docker image from current code
+        run: |
+          docker build -t gufo-gateway-test .
 
-    - name: Push to Docker Hub
-      if: github.event_name == 'release'
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: |
-        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        docker push amyerp/gufo-api-gateway:latest
+      - name: Start Gateway container
+        run: |
+          docker run -d \
+            --name gufo-gateway-test \
+            -e SERVER_MASTERSERVICE=false \
+            -p 8090:8090 \
+            -p 9100:9100 \
+            gufo-gateway-test
+          
+          echo "Waiting for gateway startup..."
+          sleep 10
+
+      - name: Run integration tests
+        run: |
+          go test ./... -v -run TestHealth -run TestMetrics
+
+      - name: Dump container logs on failure
+        if: failure()
+        run: docker logs gufo-gateway-test
+
+      - name: Cleanup container
+        if: always()
+        run: docker rm -f gufo-gateway-test
+
+
+  # ==========================================================
+  # 4️⃣ DOCKER BUILD & PUSH (Only in RELEASE)
+  # ==========================================================
+  docker:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: [ unit-tests, build, integration-tests ]
+    if: github.event_name == 'release'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract release tag
+        id: vars
+        run: echo "TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+
+      - name: Build Docker image (latest + release tag)
+        run: |
+          docker build \
+            -t amyerp/gufo-api-gateway:latest \
+            -t amyerp/gufo-api-gateway:${TAG} \
+            .
+
+      - name: Login to Docker Hub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - name: Push Docker images
+        run: |
+          docker push amyerp/gufo-api-gateway:latest
+          docker push amyerp/gufo-api-gateway:${TAG}

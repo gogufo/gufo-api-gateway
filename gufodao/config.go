@@ -235,10 +235,12 @@ func ConfigString(key string) string {
 	return viper.GetString(key)
 }
 
+// ConfigBool returns a configuration value as bool.
 func ConfigBool(key string) bool {
 	return viper.GetBool(key)
 }
 
+// ConfigInt returns a configuration value as int.
 func ConfigInt(key string) int {
 	return viper.GetInt(key)
 }
@@ -248,7 +250,7 @@ func ConfigInt(key string) int {
 func GetPass(conf string) string {
 	pwd := viper.GetString(conf)
 
-	// 1️⃣ Check if there is an ENV override reference (like database.password_env)
+	// 1) Check if there is an ENV override reference (like database.password_env)
 	if strings.Contains(conf, "password") {
 		envKey := viper.GetString(conf + "_env")
 		if envKey != "" {
@@ -258,17 +260,17 @@ func GetPass(conf string) string {
 		}
 	}
 
-	// 2️⃣ If empty, nothing to decrypt
+	// 2) If empty, nothing to decrypt
 	if pwd == "" {
 		return ""
 	}
 
-	// 3️⃣ If encrypted, decrypt
+	// 3) If encrypted, decrypt
 	if strings.HasPrefix(pwd, "$2a##") {
 		return DecryptConfigPasswords(pwd)
 	}
 
-	// 4️⃣ Otherwise, return as is (plaintext fallback)
+	// 4) Otherwise, return as is (plaintext fallback)
 	return pwd
 }
 

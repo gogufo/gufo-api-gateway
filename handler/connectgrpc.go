@@ -48,35 +48,49 @@ type uploader struct {
 func GetHostAndPort(t *pb.Request) (host string, port string, plygintype string) {
 
 	pluginname := fmt.Sprintf("microservices.%s", *t.Module)
-
 	msmethod := viper.GetBool("server.masterservice")
 
+	// ------------------------------------------------------------
+	// CLUSTER MODE: resolve via MasterService
+	// ------------------------------------------------------------
 	if *t.Module != "masterservice" && msmethod {
 
-		//Check masterservice for host and port
 		host = viper.GetString("microservices.masterservice.host")
 		port = viper.GetString("microservices.masterservice.port")
 
-		//Modify data for request masterservice
+		// Backup original InternalRequest
+		origIR := t.IR
+		defer func() { t.IR = origIR }()
+
 		mst := &pb.InternalRequest{}
 		param := "getmicroservicebypath"
 		gt := "GET"
 		mst.Param = &param
 		mst.Method = &gt
-
 		t.IR = mst
 
-		ans := sf.GRPCConnect(host, port, t)
-		if ans["httpcode"] != nil {
+		// ---- TIMEOUT WRAPPER WITHOUT NEW API ----
+		ansChan := make(chan map[string]interface{}, 1)
+		go func() {
+			ansChan <- sf.GRPCConnect(host, port, t)
+		}()
 
-			// MasterService unavailable → try fallback cache
+		var ans map[string]interface{}
+		select {
+		case ans = <-ansChan:
+		case <-time.After(3 * time.Second):
+			ans = map[string]interface{}{"httpcode": 504}
+		}
+
+		if ans == nil || ans["httpcode"] != nil {
+
+			// MasterService unavailable → local registry fallback
 			cached, err := registry.GetService(*t.Module)
 			if err == nil {
 				sf.SetLog(fmt.Sprintf("⚠️ Using cached route for %s (%s:%s)", *t.Module, cached.Host, cached.Port))
 				return cached.Host, cached.Port, ""
 			}
 
-			// No cache — log and fail
 			msg := fmt.Sprintf("MasterService unavailable and no cached entry for %s", *t.Module)
 			if viper.GetBool("server.sentry") {
 				sentry.CaptureMessage(msg)
@@ -88,6 +102,7 @@ func GetHostAndPort(t *pb.Request) (host string, port string, plygintype string)
 
 		host = fmt.Sprintf("%v", ans["host"])
 		port = fmt.Sprintf("%v", ans["port"])
+
 		if ans["isinternal"] != nil {
 			isint, _ := strconv.ParseBool(fmt.Sprintf("%v", ans["isinternal"]))
 			if isint {
@@ -95,37 +110,35 @@ func GetHostAndPort(t *pb.Request) (host string, port string, plygintype string)
 			}
 		}
 
-		//Put previoud data back
-		//	*st.Request.Param = curparam
-		//	*st.Request.Method = curmethod
+		return host, port, plygintype
+	}
 
-	} else {
-
-		if !viper.IsSet(pluginname) {
-			msg := fmt.Sprintf("No Module %s", *t.Module)
-			if viper.GetBool("server.sentry") {
-				sentry.CaptureMessage(msg)
-			} else {
-				sf.SetErrorLog(msg)
-			}
-			//	errorAnswer(w, r, t, 401, "0000235", msg)
-			return "", "", ""
+	// ------------------------------------------------------------
+	// STANDALONE MODE: resolve from config
+	// ------------------------------------------------------------
+	if !viper.IsSet(pluginname) {
+		msg := fmt.Sprintf("No Module %s", *t.Module)
+		if viper.GetBool("server.sentry") {
+			sentry.CaptureMessage(msg)
+		} else {
+			sf.SetErrorLog(msg)
 		}
-
-		hostpath := fmt.Sprintf("%s.host", pluginname)
-		portpath := fmt.Sprintf("%s.port", pluginname)
-		host = viper.GetString(hostpath)
-		port = viper.GetString(portpath)
+		return "", "", ""
 	}
 
-	if !msmethod {
-		plygintype = fmt.Sprintf("%s.type", pluginname)
-	}
+	hostpath := fmt.Sprintf("%s.host", pluginname)
+	portpath := fmt.Sprintf("%s.port", pluginname)
+
+	host = viper.GetString(hostpath)
+	port = viper.GetString(portpath)
+
+	plygintype = viper.GetString(fmt.Sprintf("%s.type", pluginname))
 
 	return host, port, plygintype
 }
 
 func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
+
 	// 1️⃣ Internal signature check (optional)
 	if r.Header.Get("X-Sign") != "" {
 		sign := r.Header.Get("X-Sign")
@@ -136,21 +149,37 @@ func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
 		}
 	}
 
-	// Resolve service from registry cache
+	// ------------------------------------------------------------
+	// Resolve service from registry, fallback to GetHostAndPort
+	// ------------------------------------------------------------
 	info, err := registry.GetService(*t.Module)
 	if err != nil {
-		errorAnswer(w, r, t, 500, "0000501", "Cannot resolve service: "+err.Error())
-		return
+
+		host, port, _ := GetHostAndPort(t)
+		if host == "" || port == "" {
+			errorAnswer(w, r, t, 500, "0000501", "Cannot resolve service: registry and masterservice unavailable")
+			return
+		}
+
+		// Create local info object WITHOUT touching registry internals
+		info = registry.ServiceInfo{
+			Host: host,
+			Port: port,
+		}
 	}
 
-	// 2️⃣ Handle streaming uploads (PUT)
+	// ------------------------------------------------------------
+	// 2️⃣ Streaming uploads (PUT)
+	// ------------------------------------------------------------
 	if r.Method == http.MethodPut {
 		ans := sf.GRPCStreamPut(info.Host, info.Port, r, t)
 		moduleAnswerv3(w, r, ans, t)
 		return
 	}
 
-	// 3️⃣ Standard call via transport abstraction
+	// ------------------------------------------------------------
+	// 3️⃣ Standard transport call
+	// ------------------------------------------------------------
 	tr := transport.Get()
 	ctx := r.Context()
 

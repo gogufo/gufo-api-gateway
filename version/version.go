@@ -22,4 +22,8 @@
 
 package version
 
-const VERSION = "1.20.0.0"
+var (
+	VERSION   = "1.21.0"
+	GitCommit = "dev"
+	BuildDate = "unknown"
+)

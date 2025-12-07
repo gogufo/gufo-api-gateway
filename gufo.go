@@ -228,18 +228,30 @@ func StartService(c *cli.Context) (rtnerr error) {
 	transport.Register(&transport.GRPCTransport{})
 	sf.SetLog("✅ Registered default transport: gRPC")
 
+	rps := viper.GetInt("gufo.rate_limit_rps")
+	burst := viper.GetInt("gufo.rate_limit_burst")
+
+	if rps == 0 {
+		rps = 100 // safe default
+	}
+	if burst == 0 {
+		burst = rps * 2
+	}
+
 	mid.Register(mid.NewRequestID())
 	mid.Register(mid.NewLogger())
 	mid.Register(mid.NewCORS())
-	mid.Register(mid.NewRateLimiter(100, time.Second))
+	mid.Register(mid.NewRateLimiter(rps, time.Second, burst))
 	// middleware.Register(middleware.NewAuthHook()) // future extension
 
 	sf.SetLog("🧩 Middleware chain initialized")
 
 	port := sf.ConfigString("server.port")
 
-	m := fmt.Sprintf("Gufo v%s starting on :%s (gRPC :%s, mode=%s)",
+	m := fmt.Sprintf("Gufo v%s  (%s, %s) +\n\t\" \" starting on :%s (gRPC :%s, mode=%s)",
 		v.VERSION,
+		v.GitCommit,
+		v.BuildDate,
 		viper.GetString("server.port"),
 		viper.GetString("server.grpc_port"),
 		strings.ToLower(viper.GetString("security.mode")),

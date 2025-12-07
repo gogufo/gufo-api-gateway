@@ -67,5 +67,5 @@ func API(w http.ResponseWriter, r *http.Request, version int) {
 	ObserveHTTPRequest(r.Method, r.URL.Path, status, start)
 
 	// 4⃣ Run middleware chain (After)
-	middleware.RunAfter(w, http.StatusOK, time.Since(start))
+	middleware.RunAfter(w, status, time.Since(start))
 }

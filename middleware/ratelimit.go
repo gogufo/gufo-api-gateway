@@ -10,20 +10,29 @@ import (
 
 // RateLimiter provides simple in-memory token bucket limiting.
 type RateLimiter struct {
-	capacity int
-	tokens   int
-	refill   time.Duration
-	mu       sync.Mutex
-	last     time.Time
+	rps    int
+	tokens int
+	burst  int
+	refill time.Duration
+	mu     sync.Mutex
+	last   time.Time
 }
 
 // NewRateLimiter creates a new limiter (e.g., 100 req/s).
-func NewRateLimiter(capacity int, refill time.Duration) *RateLimiter {
+func NewRateLimiter(rps int, refill time.Duration, burst int) *RateLimiter {
+	if rps <= 0 {
+		rps = 100
+	}
+	if burst <= rps {
+		burst = rps * 2
+	}
+
 	return &RateLimiter{
-		capacity: capacity,
-		tokens:   capacity,
-		refill:   refill,
-		last:     time.Now(),
+		rps:    rps,
+		tokens: burst, // start with full bucket
+		burst:  burst,
+		refill: refill,
+		last:   time.Now(),
 	}
 }
 
@@ -31,8 +40,12 @@ func (rl *RateLimiter) refillTokens() {
 	now := time.Now()
 	elapsed := now.Sub(rl.last)
 	tokensToAdd := int(elapsed / rl.refill)
+
 	if tokensToAdd > 0 {
-		rl.tokens = min(rl.capacity, rl.tokens+tokensToAdd)
+		rl.tokens += tokensToAdd
+		if rl.tokens > rl.burst {
+			rl.tokens = rl.burst
+		}
 		rl.last = now
 	}
 }

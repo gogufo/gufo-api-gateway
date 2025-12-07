@@ -1,26 +1,9 @@
-// Copyright 2020 Alexey Yanchenko <mail@yanchenko.me>
-//
-// This file is part of the Gufo library.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-// Copyright 2025 Alexey Yanchenko <mail@yanchenko.me>
-// SPDX-License-Identifier: Apache-2.0
-
 package gufodao
 
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -35,37 +18,12 @@ var (
 	once        sync.Once
 )
 
-// InitLogger initializes the JSON logger with daily rotation and size limit.
+// InitLogger initializes the JSON logger.
+// If GUFO_LOG_TO_FILE=false -> logs go to stdout/stderr (Kubernetes-friendly).
+// If GUFO_LOG_TO_FILE=true  -> logs are written to rotating files.
 func InitLogger() {
 	once.Do(func() {
-		logDir := GetLogDir()
-		if logDir == "" {
-			logDir = "/var/gufo/log/"
-		}
-
-		// Create directories if needed
-		_ = EnsureDir(logDir)
-
-		// Daily log file name (e.g. gufo-2025-11-01.log)
-		date := time.Now().Format("2006-01-02")
-		mainLogPath := filepath.Join(logDir, "gufo-"+date+".log")
-		errorLogPath := filepath.Join(logDir, "error-"+date+".log")
-
-		mainWriter := zapcore.AddSync(&lumberjack.Logger{
-			Filename:   mainLogPath,
-			MaxSize:    10, // MB
-			MaxBackups: 7,
-			MaxAge:     30, // days
-			Compress:   true,
-		})
-
-		errorWriter := zapcore.AddSync(&lumberjack.Logger{
-			Filename:   errorLogPath,
-			MaxSize:    10,
-			MaxBackups: 7,
-			MaxAge:     30,
-			Compress:   true,
-		})
+		logToFile := strings.ToLower(os.Getenv("GUFO_LOG_TO_FILE")) == "true"
 
 		encoderCfg := zapcore.EncoderConfig{
 			TimeKey:        "time",
@@ -81,6 +39,42 @@ func InitLogger() {
 			EncodeCaller:   zapcore.ShortCallerEncoder,
 		}
 
+		var mainWriter zapcore.WriteSyncer
+		var errorWriter zapcore.WriteSyncer
+
+		if logToFile {
+			logDir := GetLogDir()
+			if logDir == "" {
+				logDir = "/var/gufo/log/"
+			}
+
+			_ = EnsureDir(logDir)
+
+			date := time.Now().Format("2006-01-02")
+			mainLogPath := filepath.Join(logDir, "gufo-"+date+".log")
+			errorLogPath := filepath.Join(logDir, "error-"+date+".log")
+
+			mainWriter = zapcore.AddSync(&lumberjack.Logger{
+				Filename:   mainLogPath,
+				MaxSize:    10, // MB
+				MaxBackups: 7,
+				MaxAge:     30, // days
+				Compress:   true,
+			})
+
+			errorWriter = zapcore.AddSync(&lumberjack.Logger{
+				Filename:   errorLogPath,
+				MaxSize:    10,
+				MaxBackups: 7,
+				MaxAge:     30,
+				Compress:   true,
+			})
+		} else {
+			// ✅ Kubernetes / container-friendly logging
+			mainWriter = zapcore.AddSync(os.Stdout)
+			errorWriter = zapcore.AddSync(os.Stderr)
+		}
+
 		core := zapcore.NewCore(
 			zapcore.NewJSONEncoder(encoderCfg),
 			mainWriter,
@@ -93,8 +87,8 @@ func InitLogger() {
 			zapcore.ErrorLevel,
 		)
 
-		logger = zap.New(core, zap.AddCaller())
-		errorLogger = zap.New(errCore, zap.AddCaller())
+		logger = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
+		errorLogger = zap.New(errCore, zap.AddCaller(), zap.AddCallerSkip(1))
 	})
 }
 
@@ -103,7 +97,7 @@ func EnsureDir(path string) error {
 	return os.MkdirAll(path, 0755)
 }
 
-// SetLog writes an info message to the main log in JSON format
+// SetLog writes an info message
 func SetLog(msg string) {
 	if logger == nil {
 		InitLogger()
@@ -111,7 +105,7 @@ func SetLog(msg string) {
 	logger.Info(msg)
 }
 
-// SetErrorLog writes an error message to the error log in JSON format
+// SetErrorLog writes an error message
 func SetErrorLog(msg string) {
 	if errorLogger == nil {
 		InitLogger()
@@ -119,7 +113,7 @@ func SetErrorLog(msg string) {
 	errorLogger.Error(msg)
 }
 
-// FlushLog ensures buffered data is written to disk (call before exit)
+// FlushLog ensures buffered data is written (noop for stdout)
 func FlushLog() {
 	if logger != nil {
 		_ = logger.Sync()

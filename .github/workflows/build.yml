@@ -89,7 +89,6 @@ jobs:
         run: |
           go test $(go list ./... | grep -v /docs/) -v
 
-
       - name: Dump container logs on failure
         if: failure()
         run: docker logs gufo-gateway-test
@@ -113,12 +112,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Extract release tag
-        id: vars
         run: echo "TAG=${GITHUB_REF_NAME}" >> $GITHUB_ENV
 
-      - name: Build Docker image (latest + release tag)
+      - name: Extract Git commit and build date
+        run: |
+          echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
+
+      - name: Build Docker image (latest + release + commit)
         run: |
           docker build \
+            --build-arg GIT_COMMIT=${GIT_COMMIT} \
+            --build-arg BUILD_DATE=${BUILD_DATE} \
             -t amyerp/gufo-api-gateway:latest \
             -t amyerp/gufo-api-gateway:${TAG} \
             .

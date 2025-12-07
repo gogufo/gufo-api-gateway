@@ -30,6 +30,7 @@ spec:
               value: "masterservice"
             - name: MICROSERVICES_MASTERSERVICE_PORT
               value: "5300"
+
           readinessProbe:
             httpGet:
               path: /health

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.21.0
+- Logs modifications - now it supports stdout
+- Add k8s hps expample
+- Middleware improvements
+
 ## 1.20.0
 - Add .env support
 - Implemented safe dual-mode routing (standalone / masterservice) in Gateway with timeout and fallback.

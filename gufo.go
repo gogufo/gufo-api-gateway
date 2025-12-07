@@ -62,9 +62,11 @@ var grpcSrv *grpc.Server
 // in this function determinate to start Web server
 func info() {
 
+	msg := fmt.Sprintf("%s  (%s, %s)", v.VERSION, v.GitCommit, v.BuildDate)
+
 	app.Name = "Gufo API Gateway"
 	app.Usage = "RESTful API with GRPC microservices"
-	app.Version = v.VERSION
+	app.Version = msg
 	app.Action = StartService
 
 }
@@ -217,8 +219,12 @@ func ExitApp(w http.ResponseWriter, r *http.Request) {
 
 // StartService is function for start WEB Server to listen port
 func StartService(c *cli.Context) (rtnerr error) {
-	// Initialize Redis
-	sf.InitCache()
+	if viper.GetBool("server.masterservice") {
+		sf.SetLog("MasterService mode enabled — initializing Redis")
+		sf.InitCache()
+	} else {
+		sf.SetLog("Standalone mode — Redis disabled, using in-memory registry only")
+	}
 
 	registry.StartRefresher()
 	registry.StartSweeper()
@@ -273,7 +279,7 @@ func StartService(c *cli.Context) (rtnerr error) {
 	r.Use(otelhttp.NewMiddleware("gufo")) // telemetry tracing
 
 	// Routes
-	r.Route("/api/v3", func(r chi.Router) {
+	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/health", handler.Health)
 		r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			handler.API(w, r, 3)

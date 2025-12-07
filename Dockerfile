@@ -15,8 +15,16 @@ COPY . .
 # Enable CGO (needed for TLS)
 ENV CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=clang
 
+ARG GIT_COMMIT=dev
+ARG BUILD_DATE=unknown
+
+
 # Build optimized binary
-RUN go build -trimpath -ldflags="-s -w" -o /go/bin/gufo gufo.go
+RUN go build -trimpath -ldflags="-s -w \
+  -X github.com/gogufo/gufo-api-gateway/version.GitCommit=${GIT_COMMIT} \
+  -X github.com/gogufo/gufo-api-gateway/version.BuildDate=${BUILD_DATE}" \
+  -o /go/bin/gufo gufo.go
+
 
 # ======================
 # Stage 2 — Runtime

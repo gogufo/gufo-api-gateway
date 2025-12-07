@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  gufo-gateway:
+    image: amyerp/gufo-api-gateway:latest
+    container_name: gufo-gateway
+    restart: unless-stopped
+
+    environment:
+      GUFO_SERVER_MASTERSERVICE: "false"
+      GUFO_SECURITY_MODE: "sign"
+      GUFO_SERVER_SIGN: "dev"
+      GUFO_SERVER_PORT: "8090"
+      GUFO_SERVER_GRPC_PORT: "4890"
+
+    ports:
+      - "8090:8090"
+      - "4890:4890"
+      - "9100:9100"

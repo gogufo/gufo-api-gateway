@@ -16,6 +16,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
@@ -31,8 +32,10 @@ func Info(w http.ResponseWriter, r *http.Request, t *pb.Request) {
 	var userip = sf.ReadUserIP(r)
 	sf.SetLog(userip + " /info " + r.Method)
 
+	msg := fmt.Sprintf("%s  (%s, %s)", v.VERSION, v.GitCommit, v.BuildDate)
+
 	ans := make(map[string]interface{})
-	ans["version"] = v.VERSION
+	ans["version"] = msg
 	ans["registration"] = viper.GetBool("settings.registration")
 
 	moduleAnswerv3(w, r, ans, t)

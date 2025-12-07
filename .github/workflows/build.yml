@@ -77,11 +77,11 @@ jobs:
         run: |
           docker run -d \
             --name gufo-gateway-test \
-            -e SERVER_MASTERSERVICE=false \
+            -e GUFO_SERVER_MASTERSERVICE=false \
             -p 8090:8090 \
             -p 9100:9100 \
             gufo-gateway-test
-          
+
           echo "Waiting for gateway startup..."
           sleep 10
 
@@ -99,10 +99,48 @@ jobs:
 
 
   # ==========================================================
-  # 4️⃣ DOCKER BUILD & PUSH (Only in RELEASE)
+  # 4️⃣ DEV DOCKER BUILD & PUSH (on every push to main)
   # ==========================================================
-  docker:
-    name: Build & Push Docker Image
+  docker-dev:
+    name: Build & Push DEV Docker Image
+    runs-on: ubuntu-latest
+    needs: [ unit-tests, build, integration-tests ]
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract Git commit and build date
+        run: |
+          echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
+
+      - name: Build DEV Docker image
+        run: |
+          docker build \
+            --build-arg GIT_COMMIT=${GIT_COMMIT} \
+            --build-arg BUILD_DATE=${BUILD_DATE} \
+            -t amyerp/gufo-api-gateway:dev \
+            .
+
+      - name: Login to Docker Hub (DEV)
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - name: Push DEV image
+        run: |
+          docker push amyerp/gufo-api-gateway:dev
+
+
+  # ==========================================================
+  # 5️⃣ RELEASE DOCKER BUILD & PUSH
+  # ==========================================================
+  docker-release:
+    name: Build & Push RELEASE Docker Image
     runs-on: ubuntu-latest
     needs: [ unit-tests, build, integration-tests ]
     if: github.event_name == 'release'
@@ -119,7 +157,7 @@ jobs:
           echo "GIT_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
           echo "BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
 
-      - name: Build Docker image (latest + release + commit)
+      - name: Build Docker image (latest + release)
         run: |
           docker build \
             --build-arg GIT_COMMIT=${GIT_COMMIT} \
@@ -128,14 +166,14 @@ jobs:
             -t amyerp/gufo-api-gateway:${TAG} \
             .
 
-      - name: Login to Docker Hub
+      - name: Login to Docker Hub (RELEASE)
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-      - name: Push Docker images
+      - name: Push RELEASE images
         run: |
           docker push amyerp/gufo-api-gateway:latest
           docker push amyerp/gufo-api-gateway:${TAG}

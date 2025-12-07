@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.22.0 - 2025-12-07
+ - PRODUCTION READY!
+
+### Added
+- Standalone mode without Redis
+- Dual routing (standalone / masterservice)
+- Rate limiting (429)
+- Metrics endpoint with token
+- Git commit & build date in /info
+
+### Fixed
+- Heartbeat standalone behavior
+- Registry SPOF
+- gRPC routing mutation bug
+
+### Infrastructure
+- GitHub Actions CI/CD
+- Docker auto-build on release
+- Kubernetes manifests added
+
 ## 1.21.0
 - Logs modifications - now it supports stdout
 - Add k8s hps expample

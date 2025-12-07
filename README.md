@@ -5,10 +5,32 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gogufo/gufo-api-gateway)](https://goreportcard.com/report/github.com/gogufo/gufo-api-gateway)
 
-**Gufo** (from Italian — *“owl”*) is an open-source, lightweight **gRPC + REST API Gateway**
+**Gufo** (from Italian — *“owl”*) is an open-source, lightweight production-grade **gRPC + REST API Gateway**
 for modular microservice architectures.
 Originally designed as a RESTful plugin framework, Gufo has evolved into a secure, flexible, and production-ready gateway
 with a focus on **simplicity**, **security**, and **extensibility**.
+
+
+Gufo can operate as:
+- a **standalone gateway** for small deployments
+- or a **cluster gateway** with central MasterService and Redis-backed discovery
+
+Designed for **high-load production environments**, Kubernetes, and secure internal traffic.
+
+---
+
+## ✅ Production Readiness
+
+Gufo is officially verified for production:
+
+📄 **Production Checklist:**  
+→ [`/docs/PRODUCTION-CHECKLIST.md`](./docs/PRODUCTION-CHECKLIST.md)
+
+Verified:
+- Standalone Mode
+- Cluster Mode with MasterService
+- Kubernetes
+- Rate limiting, metrics, mTLS, CI/CD
 
 ---
 
@@ -49,6 +71,54 @@ Each request is validated, optionally authorized, and routed to the appropriate 
 You can use Gufo in **standalone mode** (no auth/session)
 or as part of a full microservice ecosystem with authentication and permissions.
 
+
+---
+
+## ⚙️ Operating Modes
+
+### 🟢 Standalone Mode (default, minimal)
+
+Used for:
+- Local development
+- Edge gateway
+- Small deployments
+
+```bash
+GUFO_SERVER_MASTERSERVICE=false
+````
+
+Characteristics:
+
+* ✅ No Redis
+* ✅ No MasterService
+* ✅ Heartbeat returns local mock
+* ✅ Routing via ENV only
+* ✅ Fully production safe
+
+---
+
+### 🔵 Cluster Mode (production microservices)
+
+Used for:
+
+* Kubernetes clusters
+* Multi-service platforms
+
+```bash
+GUFO_SERVER_MASTERSERVICE=true
+```
+
+Requirements:
+
+* ✅ MasterService running
+* ✅ Redis mandatory
+* ✅ Heartbeat through gRPC
+* ✅ Dynamic service registry
+* ✅ TTL, sweeper, fallback cache
+
+⚠️ **Redis is required ONLY when `masterservice=true`.**
+
+
 ---
 
 ## 🛠️ Quick Start
@@ -62,8 +132,15 @@ docker build --no-cache -t amyerp/gufo-api-gateway:latest -f Dockerfile .
 ### 2️⃣ Run the container
 
 ```bash
-docker run -p 8090:8090 \
-  -v $(pwd)/config:/config \
+docker run --rm -it \
+  -e GUFO_SERVER_MASTERSERVICE=false \
+  -e GUFO_SECURITY_MODE=sign \
+  -e GUFO_SERVER_SIGN=dev \
+  -e GUFO_SERVER_PORT=8090 \
+  -e GUFO_SERVER_GRPC_PORT=4890 \
+  -p 8090:8090 \
+  -p 4890:4890 \
+  -p 9100:9100 \
   amyerp/gufo-api-gateway:latest
 ```
 
@@ -75,7 +152,35 @@ config/settings.toml
 ```
 
 ---
-## Official Docker Image for Gufo API Gateway
+
+## ✅ Core Production Endpoints
+
+| Endpoint            | Description                                            |
+| ------------------- | ------------------------------------------------------ |
+| `/api/v1/info`      | **Primary production endpoint** (version, build, mode) |
+| `/api/v1/health`    | Kubernetes / Load balancer healthcheck                 |
+| `/api/v1/heartbeat` | Microservice registration                              |
+| `/metrics`          | Prometheus metrics (token-protected)                   |
+
+### Example
+
+```bash
+curl http://127.0.0.1:8090/api/v1/info
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "registration": false,
+    "version": "1.21.0 (9d0398b, 2025-12-07T04:44:03Z)"
+  }
+}
+```
+
+---
+## 📦 Official Docker Image for Gufo API Gateway
 
 Official Gufo API Gateway image is published on Docker Hub:
 
@@ -86,6 +191,14 @@ Pull the latest version:
 ```bash
  docker pull amyerp/gufo-api-gateway:latest
 ```
+
+Tags:
+
+* `latest` — stable
+* `vX.Y.Z` — releases
+* `dev` — CI auto-build
+
+
 ---
 ## Kubernetes Deployment
 
@@ -374,6 +487,43 @@ transport.Register(&MyCustomTransport{})
 
 ---
 
+
+## 🔄 Service Registry & Heartbeat
+
+```bash
+POST /api/v1/heartbeat
+{
+  "service": "auth",
+  "host": "auth",
+  "port": "5301"
+}
+```
+
+Cluster mode:
+
+* forwarded to MasterService
+* cached with TTL
+* fallback used on failure
+
+Standalone:
+
+* local mock response
+
+---
+
+## 🧱 Middleware Chain
+
+* Request ID
+* Logger
+* CORS
+* Rate Limiter (RPS + Burst)
+
+Returns:
+
+* `HTTP 429` on limit exceed
+
+---
+
 ## 📊 Metrics & Observability
 
 Gufo includes built-in **Prometheus** and **OpenTelemetry** instrumentation for runtime visibility.
@@ -527,17 +677,6 @@ middleware.Register(middleware.NewRateLimiter(100, time.Second))
 Each middleware can modify context, block requests, or log responses.
 Custom middleware can be added by implementing the Middleware interface.
 
----
-
-## 🧱 Development Roadmap
-
-* ✅ PR-1: Zero-Config startup, fallback creation, ENV-based secrets
-* ✅ PR-2: JSON logging, daily rotation, AES-GCM encryption
-* ✅ PR-3: CLI toolset (key rotation, certificate management)
-* ✅ **PR-4: gRPC Connection Pool, TLS/mTLS, Streaming, File Uploads, Timeouts**
-* 🔜 PR-5: REST auto-documentation (Swagger/OpenAPI)
-
----
 
 ## 💬 Contributing
 

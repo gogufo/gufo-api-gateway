@@ -2,7 +2,6 @@
 
 [![GoDoc](https://godoc.org/github.com/gogufo/gufo-api-gateway?status.svg)](https://godoc.org/github.com/gogufo/gufo-api-gateway)
 [![test status](https://github.com/gogufo/gufo-api-gateway/actions/workflows/build.yml/badge.svg)](https://github.com/gogufo/gufo-api-gateway/actions)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gogufo/gufo-api-gateway)](https://goreportcard.com/report/github.com/gogufo/gufo-api-gateway)
 
 **Gufo** (from Italian — *“owl”*) is an open-source, lightweight production-grade **gRPC + REST API Gateway**
@@ -16,6 +15,13 @@ Gufo can operate as:
 - or a **cluster gateway** with central MasterService and Redis-backed discovery
 
 Designed for **high-load production environments**, Kubernetes, and secure internal traffic.
+
+Gufo versions <= 1.21 are licensed under the Apache License, Version 2.0.
+Gufo versions >= 1.22 are licensed under the Business Source License 1.1 (BSL).
+
+The Change Date for BSL-licensed versions is January 1, 2029.
+On that date, the code will automatically be re-licensed under the Apache License, Version 2.0.
+
 
 ---
 

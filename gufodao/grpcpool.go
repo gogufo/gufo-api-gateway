@@ -1,18 +1,18 @@
-// Copyright 2024-2025 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2019-2025 Alexey Yanchenko <mail@yanchenko.me>
 //
 // This file is part of the Gufo library.
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed under the Business Source License 1.1 (the "License");
 // you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+// You may obtain a copy of the License in the LICENSE file at the root of this repository.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// As of the Change Date specified in that file, in accordance with the Business Source
+// License, use of this software will be governed by the Apache License, Version 2.0.
+//
+// THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+// PURPOSE AND NON-INFRINGEMENT.
 
 package gufodao
 
@@ -22,11 +22,14 @@ import (
 	"crypto/x509"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 )
 
@@ -65,7 +68,7 @@ func poolSweeper() {
 }
 
 // GetGRPCConn returns a pooled gRPC connection with TLS/mTLS, keepalive, and retry policy.
-func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientConn, error) {
+func GetGRPCConn(host, port, ca, cert, key string) (*grpc.ClientConn, error) {
 	addr := fmt.Sprintf("%s:%s", host, port)
 
 	// 1️⃣ Check existing connection
@@ -80,7 +83,9 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 
 	// 2️⃣ Prepare transport credentials
 	var creds credentials.TransportCredentials
-	if useMTLS {
+	mode := strings.ToLower(viper.GetString("security.mode"))
+
+	if mode == "mtls" {
 		certificate, err := tls.LoadX509KeyPair(cert, key)
 		if err != nil {
 			return nil, fmt.Errorf("load keypair: %w", err)
@@ -96,7 +101,7 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 			RootCAs:      caPool,
 		})
 	} else {
-		creds = credentials.NewClientTLSFromCert(nil, "")
+		creds = insecure.NewCredentials()
 	}
 
 	// 3️⃣ Keepalive parameters
@@ -124,6 +129,9 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	fmt.Fprintln(os.Stderr, ">>> GRPC DIAL ADDR =", addr)
+	fmt.Fprintln(os.Stderr, ">>> GRPC DIAL OPTS =", grpc.WithTransportCredentials(creds))
+
 	conn, err := grpc.DialContext(
 		ctx,
 		addr,
@@ -133,6 +141,7 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 		grpc.WithDefaultServiceConfig(retrySC),
 	)
 	if err != nil {
+		fmt.Fprintln(os.Stderr, ">>> GRPC DIAL ERROR =", err.Error())
 		return nil, fmt.Errorf("dial %s failed: %w", addr, err)
 	}
 
@@ -141,6 +150,8 @@ func GetGRPCConn(host, port, ca, cert, key string, useMTLS bool) (*grpc.ClientCo
 		conn:   conn,
 		expiry: time.Now().Add(ttl),
 	})
+
+	fmt.Fprintln(os.Stderr, ">>> GRPC DIAL OK =", addr)
 
 	return conn, nil
 }

@@ -1,0 +1,67 @@
+# ======================
+# Stage 1 — Build
+# ======================
+FROM golang:1.25 AS builder
+
+# Install build deps for CGO and TLS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential clang git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY . .
+
+# Enable CGO (needed for TLS)
+ENV CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=clang
+
+ARG GIT_COMMIT=dev
+ARG BUILD_DATE=unknown
+
+# Build optimized binary
+RUN go build -trimpath -ldflags="-s -w \
+  -X github.com/gogufo/gufo-api-gateway/version.GitCommit=${GIT_COMMIT} \
+  -X github.com/gogufo/gufo-api-gateway/version.BuildDate=${BUILD_DATE}" \
+  -o /go/bin/gufo gufo.go
+
+
+# ======================
+# Stage 2 — Runtime + DEBUG TOOLS
+# ======================
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ===== DEBUG + NETWORK TOOLS =====
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    wget \
+    net-tools \
+    iproute2 \
+    iputils-ping \
+    dnsutils \
+    telnet \
+    netcat-openbsd \
+    tcpdump \
+    traceroute \
+    procps \
+    vim \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# ===== gRPC DEBUG TOOL =====
+RUN curl -L https://github.com/fullstorydev/grpcurl/releases/latest/download/grpcurl-linux-amd64 \
+    -o /usr/local/bin/grpcurl && \
+    chmod +x /usr/local/bin/grpcurl
+
+# ===== Copy runtime assets and binary =====
+COPY --from=builder /go/bin/gufo /usr/local/bin/gufo
+COPY --from=builder /app/config/settings.example.toml /var/gufo/config/settings.toml
+COPY --from=builder /app/var/ /var/gufo/
+
+WORKDIR /var/gufo/
+
+EXPOSE 8090 4890 9100
+
+ENTRYPOINT ["gufo"]

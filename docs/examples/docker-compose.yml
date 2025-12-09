@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+  gufo-gateway:
+    image: amyerp/gufo-api-gateway:latest
+    container_name: gufo-gateway
+    restart: unless-stopped
+
+    environment:
+      GUFO_SERVER_MASTERSERVICE: "false"
+      GUFO_SECURITY_MODE: "sign"
+      GUFO_SERVER_SIGN: "123"
+      GUFO_SERVER_PORT: "8090"
+      GUFO_SERVER_GRPC_PORT: "4890"
+      GUFO_SERVER_METRICS_TOKEN: "gufo-metrics"
+      GUFO_SERVER_REGISTRY_MODE: "static"
+
+      # ===== STATIC MICROSERVICE REGISTRATION (NO MASTERSERVICE) =====
+      GUFO_MICROSERVICES_TEST_TYPE: "server"
+      GUFO_MICROSERVICES_TEST_HOST: "test"
+      GUFO_MICROSERVICES_TEST_PORT: "5300"
+      GUFO_MICROSERVICES_TEST_ENTRYPOINTVERSION: "1.22.0"
+      GUFO_MICROSERVICES_TEST_CRON: "false"
+
+    ports:
+      - "8090:8090"
+      - "4890:4890"
+      - "9100:9100"
+
+    networks:
+      - gufo-net
+
+  test-ms:
+    image: test:latest
+    container_name: test
+
+    environment:
+      - GO_ENV=dev
+      - SECURITY_MODE=sign
+      - SERVER_SIGN=123
+      - SERVER_HEARTBEAT=10
+      - MICROSERVICES_TEST_ADMIN=false
+      - MICROSERVICES_TEST_CRON=false
+      - SERVER_INTERNAL_HOST=gufo-gateway
+      - SERVER_PORT=4890
+
+    ports:
+      - "5300:5300"
+
+    networks:
+      - gufo-net
+
+networks:
+  gufo-net:
+    driver: bridge

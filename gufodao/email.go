@@ -28,7 +28,7 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-//Request struct
+// Request struct
 type MailRequest struct {
 	from    string
 	to      []string

@@ -16,16 +16,15 @@ services:
       GUFO_SERVER_REGISTRY_MODE: "static"
 
       # ===== STATIC MICROSERVICE REGISTRATION (NO MASTERSERVICE) =====
-      GUFO_MICROSERVICES_TEST_TYPE: "server"
       GUFO_MICROSERVICES_TEST_HOST: "test"
       GUFO_MICROSERVICES_TEST_PORT: "5300"
-      GUFO_MICROSERVICES_TEST_ENTRYPOINTVERSION: "1.22.0"
-      GUFO_MICROSERVICES_TEST_CRON: "false"
+
 
     ports:
       - "8090:8090"
       - "4890:4890"
       - "9100:9100"
+
 
     networks:
       - gufo-net

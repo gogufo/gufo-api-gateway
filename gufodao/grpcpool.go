@@ -28,6 +28,7 @@ import (
 
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
@@ -44,12 +45,11 @@ var (
 	ttl      = 5 * time.Minute // connection TTL before re-dial
 )
 
-// init launches a background sweeper that periodically removes expired connections.
 func init() {
 	go poolSweeper()
 }
 
-// 🧹 poolSweeper runs every 10 minutes to clean expired connections.
+// delete expired connections in background
 func poolSweeper() {
 	ticker := time.NewTicker(10 * time.Minute)
 	defer ticker.Stop()
@@ -67,25 +67,45 @@ func poolSweeper() {
 	}
 }
 
-// GetGRPCConn returns a pooled gRPC connection with TLS/mTLS, keepalive, and retry policy.
+// FINAL: stable, production-ready, health-checked pooled dial
 func GetGRPCConn(host, port, ca, cert, key string) (*grpc.ClientConn, error) {
+
 	addr := fmt.Sprintf("%s:%s", host, port)
 
-	// 1️⃣ Check existing connection
+	// ============================
+	// 1) CHECK POOL FOR EXISTING
+	// ============================
 	if v, ok := connPool.Load(addr); ok {
 		item := v.(connItem)
-		if time.Now().Before(item.expiry) {
-			return item.conn, nil
+
+		// expired → drop
+		if time.Now().After(item.expiry) {
+			item.conn.Close()
+			connPool.Delete(addr)
+		} else {
+			// check connection health
+			st := item.conn.GetState()
+
+			// READY = only valid working state
+			if st == connectivity.Ready {
+				return item.conn, nil
+			}
+
+			// DEAD → drop and re-dial
+			// fmt.Fprintln(os.Stderr, ">>> GRPC CONN DEAD (state =", st, ") — redialing", addr)
+			item.conn.Close()
+			connPool.Delete(addr)
 		}
-		item.conn.Close()
-		connPool.Delete(addr)
 	}
 
-	// 2️⃣ Prepare transport credentials
+	// ============================
+	// 2) BUILD TRANSPORT AUTH
+	// ============================
 	var creds credentials.TransportCredentials
 	mode := strings.ToLower(viper.GetString("security.mode"))
 
 	if mode == "mtls" {
+		// mutual TLS
 		certificate, err := tls.LoadX509KeyPair(cert, key)
 		if err != nil {
 			return nil, fmt.Errorf("load keypair: %w", err)
@@ -101,17 +121,20 @@ func GetGRPCConn(host, port, ca, cert, key string) (*grpc.ClientConn, error) {
 			RootCAs:      caPool,
 		})
 	} else {
+		// plaintext / insecure TLS
 		creds = insecure.NewCredentials()
 	}
 
-	// 3️⃣ Keepalive parameters
-	kaParams := keepalive.ClientParameters{
-		Time:                30 * time.Second, // ping every 30s
-		Timeout:             10 * time.Second, // wait 10s for ack
+	// ============================
+	// 3) KEEPALIVE SETTINGS
+	// ============================
+	ka := keepalive.ClientParameters{
+		Time:                30 * time.Second,
+		Timeout:             10 * time.Second,
 		PermitWithoutStream: true,
 	}
 
-	// 4️⃣ Retry policy
+	// Retry policy
 	retrySC := `{
 		"methodConfig": [{
 			"name": [{"service": "Reverse"}],
@@ -125,33 +148,35 @@ func GetGRPCConn(host, port, ca, cert, key string) (*grpc.ClientConn, error) {
 		}]
 	}`
 
-	// 5️⃣ Dial with context timeout
+	// ============================
+	// 4) DIAL NEW CONNECTION
+	// ============================
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	fmt.Fprintln(os.Stderr, ">>> GRPC DIAL ADDR =", addr)
-	fmt.Fprintln(os.Stderr, ">>> GRPC DIAL OPTS =", grpc.WithTransportCredentials(creds))
+	// fmt.Fprintln(os.Stderr, ">>> GRPC DIAL =", addr)
 
 	conn, err := grpc.DialContext(
 		ctx,
 		addr,
 		grpc.WithTransportCredentials(creds),
 		grpc.WithBlock(),
-		grpc.WithKeepaliveParams(kaParams),
+		grpc.WithKeepaliveParams(ka),
 		grpc.WithDefaultServiceConfig(retrySC),
 	)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, ">>> GRPC DIAL ERROR =", err.Error())
+		// fmt.Fprintln(os.Stderr, ">>> GRPC DIAL ERROR =", err.Error())
 		return nil, fmt.Errorf("dial %s failed: %w", addr, err)
 	}
 
-	// 6️⃣ Store in pool
+	// ============================
+	// 5) STORE IN POOL
+	// ============================
 	connPool.Store(addr, connItem{
 		conn:   conn,
 		expiry: time.Now().Add(ttl),
 	})
 
-	fmt.Fprintln(os.Stderr, ">>> GRPC DIAL OK =", addr)
-
+	// fmt.Fprintln(os.Stderr, ">>> GRPC DIAL OK =", addr)
 	return conn, nil
 }

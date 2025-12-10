@@ -46,7 +46,7 @@ var methodHandlers = map[string]func(http.ResponseWriter, *http.Request, *pb.Req
 // API is the main entrypoint for all REST requests in Gufo Gateway.
 // It runs the middleware chain (Before/After) around the appropriate handler.
 func API(w http.ResponseWriter, r *http.Request, version int) {
-	fmt.Fprintln(os.Stderr, ">>> HTTP IN:", r.Method, r.URL.Path)
+	// fmt.Fprintln(os.Stderr, ">>> HTTP IN:", r.Method, r.URL.Path)
 
 	t := RequestInit(r)
 

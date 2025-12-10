@@ -127,6 +127,6 @@ func GetGRPCCredentials() (grpc.DialOption, error) {
 		}
 		return grpc.WithTransportCredentials(creds), nil
 	}
-	
+
 	return grpc.WithTransportCredentials(insecure.NewCredentials()), nil
 }

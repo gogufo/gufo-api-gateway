@@ -19,6 +19,7 @@ package gufodao
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -43,6 +44,7 @@ func GRPCConnect(host string, port string, t *pb.Request) map[string]interface{}
 	}
 
 	addr := fmt.Sprintf("%s:%s", host, port)
+	// fmt.Fprintln(os.Stderr, ">>> Address:", addr)
 
 	// 🔹 Get connection from pool with TLS/mTLS
 	conn, err := GetGRPCConn(

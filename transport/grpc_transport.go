@@ -18,6 +18,7 @@ package transport
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -72,6 +73,8 @@ func resolveService(svc string, req *pb.Request) (string, string) {
 	// 1. Check in-memory cache
 	if v, ok := svcCache.Load(svc); ok {
 		addr := v.(string)
+		// fmt.Fprintln(os.Stderr, ">>> Address in cache: ", addr)
+
 		h, p, _ := splitAddr(addr)
 		return h, p
 	}
@@ -104,9 +107,14 @@ func resolveService(svc string, req *pb.Request) (string, string) {
 }
 
 func splitAddr(addr string) (string, string, error) {
-	var host, port string
-	n, err := fmt.Sscanf(addr, "%[^:]:%s", &host, &port)
-	if n < 2 || err != nil {
+	addr = strings.TrimSpace(addr)
+	parts := strings.Split(addr, ":")
+	if len(parts) != 2 {
+		return "", "", fmt.Errorf("invalid addr: %s", addr)
+	}
+	host := strings.TrimSpace(parts[0])
+	port := strings.TrimSpace(parts[1])
+	if host == "" || port == "" {
 		return "", "", fmt.Errorf("invalid addr: %s", addr)
 	}
 	return host, port, nil

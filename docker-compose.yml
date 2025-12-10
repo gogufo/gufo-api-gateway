@@ -4,7 +4,7 @@ services:
   gufo-gateway:
     image: amyerp/gufo-api-gateway:latest
     container_name: gufo-gateway
-    restart: unless-stopped
+    restart: always
 
     environment:
       GUFO_SERVER_MASTERSERVICE: "false"
@@ -13,6 +13,7 @@ services:
       GUFO_SERVER_PORT: "8090"
       GUFO_SERVER_GRPC_PORT: "4890"
       GUFO_SERVER_METRICS_TOKEN: "gufo-metrics"
+
 
     ports:
       - "8090:8090"

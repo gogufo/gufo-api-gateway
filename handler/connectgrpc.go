@@ -155,6 +155,7 @@ func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
 	if err != nil {
 
 		host, port, _ := GetHostAndPort(t)
+
 		if host == "" || port == "" {
 			errorAnswer(w, r, t, 500, "0000501", "Cannot resolve service: registry and masterservice unavailable")
 			return
@@ -164,6 +165,16 @@ func connectgrpc(w http.ResponseWriter, r *http.Request, t *pb.Request) {
 		info = registry.ServiceInfo{
 			Host: host,
 			Port: port,
+		}
+
+		if info.Host == "" || info.Port == "" {
+			// fallback to static config
+			host, port, _ := GetHostAndPort(t)
+			if host != "" && port != "" {
+				sf.SetLog(fmt.Sprintf("REGISTRY FIX: empty registry -> using static %s:%s", host, port))
+				info.Host = host
+				info.Port = port
+			}
 		}
 	}
 

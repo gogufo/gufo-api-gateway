@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.24.0  2025-12-10
+- Fixed critical bug in static registry cache: incorrect address parsing caused host/port to become empty after first request.
+- Replaced unstable fmt.Sscanf split logic with reliable string-based parser.
+- Ensured cached endpoints always return valid host:port across repeated calls.
+- Stabilized gRPC dialing logic in high-frequency request scenarios (no more context deadline exceeded).
+- Improved debug logs for registry cache hits and resolved endpoints.
+
 ## 1.22.0 - 2025-12-07
  - PRODUCTION READY!
 

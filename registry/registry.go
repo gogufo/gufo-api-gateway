@@ -117,7 +117,7 @@ func getServiceFromMaster(module string) (ServiceInfo, error) {
 // GetService resolves microservice endpoint either from cache,
 // static config/env, or masterservice, depending on registry mode.
 func GetService(module string) (ServiceInfo, error) {
-	fmt.Fprintln(os.Stderr, ">>> REGISTRY GetService:", module)
+	// fmt.Fprintln(os.Stderr, ">>> REGISTRY GetService:", module)
 
 	// 1️⃣ Cache
 	if v, ok := cache.Load(module); ok {
@@ -126,11 +126,11 @@ func GetService(module string) (ServiceInfo, error) {
 			return info, nil
 		}
 	}
-	fmt.Fprintln(os.Stderr, ">>> REGISTRY cache miss:", module)
+	// fmt.Fprintln(os.Stderr, ">>> REGISTRY cache miss:", module)
 
 	// 2️⃣ STATIC REGISTRY MODE
 	mode := strings.ToLower(viper.GetString("server.registry_mode"))
-	fmt.Fprintln(os.Stderr, ">>> REGISTRY static lookup for:", module)
+	// fmt.Fprintln(os.Stderr, ">>> REGISTRY static lookup for:", module)
 
 	if mode == "static" || viper.GetBool("server.masterservice") == false {
 
@@ -139,7 +139,7 @@ func GetService(module string) (ServiceInfo, error) {
 		host := viper.GetString("microservices." + key + ".host")
 		port := viper.GetString("microservices." + key + ".port")
 
-		fmt.Fprintln(os.Stderr, ">>> REGISTRY static result host=", host, "port=", port)
+		// fmt.Fprintln(os.Stderr, ">>> REGISTRY static result host=", host, "port=", port)
 
 		if host == "" || port == "" {
 			return ServiceInfo{}, errors.New("static registry: host or port not set for " + key)
@@ -167,11 +167,11 @@ func GetService(module string) (ServiceInfo, error) {
 			Args:   map[string]*anypb.Any{},
 		},
 	}
-	fmt.Fprintln(os.Stderr, ">>> REGISTRY fallback to MASTER for:", module)
+	// fmt.Fprintln(os.Stderr, ">>> REGISTRY fallback to MASTER for:", module)
 
 	ans := sf.GRPCConnect(host, port, req)
 	if ans["httpcode"] != nil {
-		fmt.Fprintln(os.Stderr, ">>> REGISTRY ERROR: cannot resolve", module)
+		// fmt.Fprintln(os.Stderr, ">>> REGISTRY ERROR: cannot resolve", module)
 
 		return ServiceInfo{}, errors.New("masterservice unavailable")
 	}

@@ -34,6 +34,7 @@ import (
 	mid "github.com/gogufo/gufo-api-gateway/middleware"
 	"github.com/gogufo/gufo-api-gateway/registry"
 	"github.com/gogufo/gufo-api-gateway/transport"
+	"google.golang.org/grpc/keepalive"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -365,6 +366,19 @@ func StartGRPCService() {
 	sf.SetLog(fmt.Sprintf("gRPC listening on %s", port))
 
 	var opts []grpc.ServerOption
+
+	opts = append(opts, grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
+		MinTime:             1 * time.Second,
+		PermitWithoutStream: true,
+	}))
+
+	opts = append(opts, grpc.KeepaliveParams(keepalive.ServerParameters{
+		MaxConnectionIdle:     0,
+		MaxConnectionAge:      0,
+		MaxConnectionAgeGrace: 0,
+		Time:                  30 * time.Second,
+		Timeout:               10 * time.Second,
+	}))
 
 	if viper.GetBool("server.grpc_tls_enabled") {
 		certPath := viper.GetString("security.cert_path")

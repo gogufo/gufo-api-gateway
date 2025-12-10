@@ -21,7 +21,7 @@ import (
 )
 
 func TestHealth(t *testing.T) {
-	resp, err := http.Get("http://localhost:8090/api/v3/health")
+	resp, err := http.Get("http://localhost:8090/api/v1/health")
 	if err != nil {
 		t.Fatalf("health request failed: %v", err)
 	}
@@ -33,7 +33,7 @@ func TestHealth(t *testing.T) {
 }
 
 func TestMetrics(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:9100/api/v3/metrics", nil)
+	req, err := http.NewRequest("GET", "http://localhost:9100/api/v1/metrics", nil)
 	if err != nil {
 		t.Fatalf("cannot create metrics request: %v", err)
 	}

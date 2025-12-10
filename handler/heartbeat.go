@@ -29,7 +29,7 @@ import (
 // Universal heartbeat entry through Gateway.
 // Microservices POST here -> Gufo routes to masterservice.
 func HeartbeatHandler(w http.ResponseWriter, r *http.Request, t *pb.Request) {
-	fmt.Fprintln(os.Stderr, ">>> HeartbeatHandler")
+	// fmt.Fprintln(os.Stderr, ">>> HeartbeatHandler")
 
 	var payload map[string]interface{}
 

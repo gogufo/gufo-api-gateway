@@ -23,9 +23,8 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
-	"os"
+
 	"time"
 
 	"github.com/gogufo/gufo-api-gateway/middleware"

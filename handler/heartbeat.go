@@ -18,7 +18,6 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"

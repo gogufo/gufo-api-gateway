@@ -19,7 +19,6 @@ package gufodao
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/getsentry/sentry-go"

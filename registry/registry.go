@@ -19,7 +19,6 @@ package registry
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"sync"
 	"time"

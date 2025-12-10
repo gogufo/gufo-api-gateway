@@ -33,7 +33,7 @@ func TestHealth(t *testing.T) {
 }
 
 func TestMetrics(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:9100/api/v1/metrics", nil)
+	req, err := http.NewRequest("GET", "http://localhost:9100/metrics", nil)
 	if err != nil {
 		t.Fatalf("cannot create metrics request: %v", err)
 	}

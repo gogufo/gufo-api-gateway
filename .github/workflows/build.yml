@@ -12,7 +12,7 @@ on:
 jobs:
 
   # ==========================================================
-  # 1️⃣ UNIT TESTS (without Docker)
+  # 1️⃣ UNIT TESTS
   # ==========================================================
   unit-tests:
     name: Unit Tests
@@ -30,8 +30,9 @@ jobs:
       - name: Install deps
         run: go mod tidy
 
-      - name: Run unit tests
-        run: go test $(go list ./... | grep -v /docs/) -v -short
+      - name: Run unit tests (без ./tests)
+        run: |
+          go test $(go list ./... | grep -v /docs/ | grep -v /tests) -v -short
 
 
   # ==========================================================
@@ -58,7 +59,7 @@ jobs:
 
 
   # ==========================================================
-  # 3️⃣ INTEGRATION TESTS (via Docker)
+  # 3️⃣ INTEGRATION TESTS 
   # ==========================================================
   integration-tests:
     name: Integration Tests (Docker)
@@ -69,9 +70,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
       - name: Build Docker image from current code
         run: |
-          docker build -t gufo-gateway-test .
+          docker build --no-cache -t gufo-gateway-test .
 
       - name: Start Gateway container
         run: |
@@ -91,9 +97,9 @@ jobs:
           echo "Waiting for gateway startup..."
           sleep 10
 
-      - name: Run integration tests
+      - name: Run integration tests (пакет ./tests)
         run: |
-          go test $(go list ./... | grep -v /docs/) -v
+          go test ./tests -v -count=1
 
       - name: Dump container logs on failure
         if: failure()

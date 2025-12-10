@@ -59,7 +59,7 @@ jobs:
 
 
   # ==========================================================
-  # 3️⃣ INTEGRATION TESTS 
+  # 3️⃣ INTEGRATION TESTS
   # ==========================================================
   integration-tests:
     name: Integration Tests (Docker)
@@ -97,7 +97,7 @@ jobs:
           echo "Waiting for gateway startup..."
           sleep 10
 
-      - name: Run integration tests (пакет ./tests)
+      - name: Run integration tests
         run: |
           go test ./tests -v -count=1
 

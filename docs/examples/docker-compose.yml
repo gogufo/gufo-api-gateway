@@ -16,8 +16,8 @@ services:
       GUFO_SERVER_REGISTRY_MODE: "static"
 
       # ===== STATIC MICROSERVICE REGISTRATION (NO MASTERSERVICE) =====
-      GUFO_MICROSERVICES_TEST_HOST: "test"
-      GUFO_MICROSERVICES_TEST_PORT: "5300"
+      GUFO_MICROSERVICES_SECOND_HOST: "second"
+      GUFO_MICROSERVICES_SECOND_PORT: "5300"
 
 
     ports:
@@ -30,8 +30,8 @@ services:
       - gufo-net
 
   test-ms:
-    image: test:latest
-    container_name: test
+    image: second:latest
+    container_name: second
 
     environment:
       - GO_ENV=dev

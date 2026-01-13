@@ -53,7 +53,7 @@ func (t *GRPCTransport) Call(ctx context.Context, svc, method string, req *pb.Re
 	client := pb.NewReverseClient(conn)
 
 	// Timeout per microservice
-	timeout := viper.GetDuration(fmt.Sprintf("microservices.%s.timeout", svc))
+	timeout := viper.GetDuration("server.grpc_timeout")
 	if timeout == 0 {
 		timeout = 5 * time.Second
 	}

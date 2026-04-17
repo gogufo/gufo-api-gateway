@@ -26,12 +26,16 @@
 // Forward declarations of Objective C classes that we can use as
 // static values in struct initializers.
 // We don't use [Foo class] because it is not a static value.
+GPBObjCClassDeclaration(AuthContext);
 GPBObjCClassDeclaration(Error);
+GPBObjCClassDeclaration(FileRef);
+GPBObjCClassDeclaration(FileUpload);
 GPBObjCClassDeclaration(GPBAny);
-GPBObjCClassDeclaration(InternalRequest);
+GPBObjCClassDeclaration(GPBTimestamp);
 GPBObjCClassDeclaration(Request);
+GPBObjCClassDeclaration(RequestContext);
 GPBObjCClassDeclaration(Response);
-GPBObjCClassDeclaration(StringMap);
+GPBObjCClassDeclaration(ResponseMeta);
 
 #pragma mark - MicroserviceRoot
 
@@ -50,7 +54,7 @@ static GPBFileDescriptor *MicroserviceRoot_FileDescriptor(void) {
   static GPBFileDescriptor *descriptor = NULL;
   if (!descriptor) {
     GPB_DEBUG_CHECK_RUNTIME_VERSIONS();
-    descriptor = [[GPBFileDescriptor alloc] initWithPackage:@""
+    descriptor = [[GPBFileDescriptor alloc] initWithPackage:@"gufo"
                                                      syntax:GPBFileSyntaxProto3];
   }
   return descriptor;
@@ -62,20 +66,19 @@ GPBEnumDescriptor *UploadStatusCode_EnumDescriptor(void) {
   static _Atomic(GPBEnumDescriptor*) descriptor = nil;
   if (!descriptor) {
     static const char *valueNames =
-        "Unknown\000Ok\000Failed\000";
+        "UploadStatusUnknown\000UploadStatusOk\000Uploa"
+        "dStatusFailed\000";
     static const int32_t values[] = {
-        UploadStatusCode_Unknown,
-        UploadStatusCode_Ok,
-        UploadStatusCode_Failed,
+        UploadStatusCode_UploadStatusUnknown,
+        UploadStatusCode_UploadStatusOk,
+        UploadStatusCode_UploadStatusFailed,
     };
-    static const char *extraTextFormatInfo = "\003\000\007\000\001\002\000\002\006\000";
     GPBEnumDescriptor *worker =
         [GPBEnumDescriptor allocDescriptorForName:GPBNSStringifySymbol(UploadStatusCode)
                                        valueNames:valueNames
                                            values:values
                                             count:(uint32_t)(sizeof(values) / sizeof(int32_t))
-                                     enumVerifier:UploadStatusCode_IsValidValue
-                              extraTextFormatInfo:extraTextFormatInfo];
+                                     enumVerifier:UploadStatusCode_IsValidValue];
     GPBEnumDescriptor *expected = nil;
     if (!atomic_compare_exchange_strong(&descriptor, &expected, worker)) {
       [worker release];
@@ -86,9 +89,53 @@ GPBEnumDescriptor *UploadStatusCode_EnumDescriptor(void) {
 
 BOOL UploadStatusCode_IsValidValue(int32_t value__) {
   switch (value__) {
-    case UploadStatusCode_Unknown:
-    case UploadStatusCode_Ok:
-    case UploadStatusCode_Failed:
+    case UploadStatusCode_UploadStatusUnknown:
+    case UploadStatusCode_UploadStatusOk:
+    case UploadStatusCode_UploadStatusFailed:
+      return YES;
+    default:
+      return NO;
+  }
+}
+
+#pragma mark - Enum Method_Enum
+
+GPBEnumDescriptor *Method_Enum_EnumDescriptor(void) {
+  static _Atomic(GPBEnumDescriptor*) descriptor = nil;
+  if (!descriptor) {
+    static const char *valueNames =
+        "MethodUnspecified\000MethodGet\000MethodPost\000M"
+        "ethodPut\000MethodPatch\000MethodDelete\000";
+    static const int32_t values[] = {
+        Method_Enum_MethodUnspecified,
+        Method_Enum_MethodGet,
+        Method_Enum_MethodPost,
+        Method_Enum_MethodPut,
+        Method_Enum_MethodPatch,
+        Method_Enum_MethodDelete,
+    };
+    GPBEnumDescriptor *worker =
+        [GPBEnumDescriptor allocDescriptorForName:GPBNSStringifySymbol(Method_Enum)
+                                       valueNames:valueNames
+                                           values:values
+                                            count:(uint32_t)(sizeof(values) / sizeof(int32_t))
+                                     enumVerifier:Method_Enum_IsValidValue];
+    GPBEnumDescriptor *expected = nil;
+    if (!atomic_compare_exchange_strong(&descriptor, &expected, worker)) {
+      [worker release];
+    }
+  }
+  return descriptor;
+}
+
+BOOL Method_Enum_IsValidValue(int32_t value__) {
+  switch (value__) {
+    case Method_Enum_MethodUnspecified:
+    case Method_Enum_MethodGet:
+    case Method_Enum_MethodPost:
+    case Method_Enum_MethodPut:
+    case Method_Enum_MethodPatch:
+    case Method_Enum_MethodDelete:
       return YES;
     default:
       return NO;
@@ -99,61 +146,35 @@ BOOL UploadStatusCode_IsValidValue(int32_t value__) {
 
 @implementation Request
 
-@dynamic hasModule, module;
-@dynamic hasParam, param;
-@dynamic hasParamId, paramId;
-@dynamic hasParamIdd, paramIdd;
-@dynamic hasAction, action;
-@dynamic args, args_Count;
-@dynamic hasPath, path;
-@dynamic hasToken, token;
-@dynamic hasSign, sign;
-@dynamic hasSid, sid;
-@dynamic hasIp, ip;
-@dynamic hasUserAgent, userAgent;
-@dynamic hasTokenType, tokenType;
-@dynamic hasTimeStamp, timeStamp;
-@dynamic hasLanguage, language;
-@dynamic hasApiversion, apiversion;
-@dynamic hasMethod, method;
-@dynamic hasUid, uid;
-@dynamic hasIsAdmin, isAdmin;
-@dynamic hasSessionEnd, sessionEnd;
-@dynamic hasCompleted, completed;
-@dynamic hasReadonly, readonly;
+@dynamic module;
+@dynamic param;
+@dynamic paramId;
+@dynamic paramIdd;
+@dynamic action;
+@dynamic query, query_Count;
+@dynamic hasBody, body;
+@dynamic path;
+@dynamic method;
+@dynamic hasAuth, auth;
+@dynamic hasContext, context;
 @dynamic hasFile, file;
-@dynamic hasFilename, filename;
 @dynamic filesArray, filesArray_Count;
-@dynamic hasIr, ir;
 
 typedef struct Request__storage_ {
   uint32_t _has_storage_[1];
-  int32_t timeStamp;
-  int32_t isAdmin;
-  int32_t sessionEnd;
-  int32_t completed;
-  int32_t readonly;
+  Method_Enum method;
   NSString *module;
   NSString *param;
   NSString *paramId;
   NSString *paramIdd;
   NSString *action;
-  NSMutableDictionary *args;
+  NSMutableDictionary *query;
+  GPBAny *body;
   NSString *path;
-  NSString *token;
-  NSString *sign;
-  NSString *sid;
-  NSString *ip;
-  NSString *userAgent;
-  NSString *tokenType;
-  NSString *language;
-  NSString *apiversion;
-  NSString *method;
-  NSString *uid;
-  NSData *file;
-  NSString *filename;
+  AuthContext *auth;
+  RequestContext *context;
+  FileUpload *file;
   NSMutableArray *filesArray;
-  InternalRequest *ir;
 } Request__storage_;
 
 // This method is threadsafe because it is initially called
@@ -168,7 +189,7 @@ typedef struct Request__storage_ {
         .number = Request_FieldNumber_Module,
         .hasIndex = 0,
         .offset = (uint32_t)offsetof(Request__storage_, module),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
@@ -177,7 +198,7 @@ typedef struct Request__storage_ {
         .number = Request_FieldNumber_Param,
         .hasIndex = 1,
         .offset = (uint32_t)offsetof(Request__storage_, param),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
@@ -186,7 +207,7 @@ typedef struct Request__storage_ {
         .number = Request_FieldNumber_ParamId,
         .hasIndex = 2,
         .offset = (uint32_t)offsetof(Request__storage_, paramId),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
@@ -195,7 +216,7 @@ typedef struct Request__storage_ {
         .number = Request_FieldNumber_ParamIdd,
         .hasIndex = 3,
         .offset = (uint32_t)offsetof(Request__storage_, paramIdd),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
@@ -204,196 +225,79 @@ typedef struct Request__storage_ {
         .number = Request_FieldNumber_Action,
         .hasIndex = 4,
         .offset = (uint32_t)offsetof(Request__storage_, action),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
-        .name = "args",
-        .dataTypeSpecific.clazz = GPBObjCClass(GPBAny),
-        .number = Request_FieldNumber_Args,
+        .name = "query",
+        .dataTypeSpecific.clazz = Nil,
+        .number = Request_FieldNumber_Query,
         .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(Request__storage_, args),
-        .flags = (GPBFieldFlags)(GPBFieldMapKeyString | GPBFieldTextFormatNameCustom),
+        .offset = (uint32_t)offsetof(Request__storage_, query),
+        .flags = GPBFieldMapKeyString,
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "body",
+        .dataTypeSpecific.clazz = GPBObjCClass(GPBAny),
+        .number = Request_FieldNumber_Body,
+        .hasIndex = 5,
+        .offset = (uint32_t)offsetof(Request__storage_, body),
+        .flags = GPBFieldOptional,
         .dataType = GPBDataTypeMessage,
       },
       {
         .name = "path",
         .dataTypeSpecific.clazz = Nil,
         .number = Request_FieldNumber_Path,
-        .hasIndex = 5,
-        .offset = (uint32_t)offsetof(Request__storage_, path),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "token",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Token,
         .hasIndex = 6,
-        .offset = (uint32_t)offsetof(Request__storage_, token),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "sign",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Sign,
-        .hasIndex = 7,
-        .offset = (uint32_t)offsetof(Request__storage_, sign),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "sid",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Sid,
-        .hasIndex = 8,
-        .offset = (uint32_t)offsetof(Request__storage_, sid),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "ip",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Ip,
-        .hasIndex = 9,
-        .offset = (uint32_t)offsetof(Request__storage_, ip),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "userAgent",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_UserAgent,
-        .hasIndex = 10,
-        .offset = (uint32_t)offsetof(Request__storage_, userAgent),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "tokenType",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_TokenType,
-        .hasIndex = 11,
-        .offset = (uint32_t)offsetof(Request__storage_, tokenType),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "timeStamp",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_TimeStamp,
-        .hasIndex = 12,
-        .offset = (uint32_t)offsetof(Request__storage_, timeStamp),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeInt32,
-      },
-      {
-        .name = "language",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Language,
-        .hasIndex = 13,
-        .offset = (uint32_t)offsetof(Request__storage_, language),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "apiversion",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Apiversion,
-        .hasIndex = 14,
-        .offset = (uint32_t)offsetof(Request__storage_, apiversion),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .offset = (uint32_t)offsetof(Request__storage_, path),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
         .name = "method",
-        .dataTypeSpecific.clazz = Nil,
+        .dataTypeSpecific.enumDescFunc = Method_Enum_EnumDescriptor,
         .number = Request_FieldNumber_Method,
-        .hasIndex = 15,
+        .hasIndex = 7,
         .offset = (uint32_t)offsetof(Request__storage_, method),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldHasEnumDescriptor | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeEnum,
       },
       {
-        .name = "uid",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Uid,
-        .hasIndex = 16,
-        .offset = (uint32_t)offsetof(Request__storage_, uid),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
+        .name = "auth",
+        .dataTypeSpecific.clazz = GPBObjCClass(AuthContext),
+        .number = Request_FieldNumber_Auth,
+        .hasIndex = 8,
+        .offset = (uint32_t)offsetof(Request__storage_, auth),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
       },
       {
-        .name = "isAdmin",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_IsAdmin,
-        .hasIndex = 17,
-        .offset = (uint32_t)offsetof(Request__storage_, isAdmin),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeInt32,
-      },
-      {
-        .name = "sessionEnd",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_SessionEnd,
-        .hasIndex = 18,
-        .offset = (uint32_t)offsetof(Request__storage_, sessionEnd),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeInt32,
-      },
-      {
-        .name = "completed",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Completed,
-        .hasIndex = 19,
-        .offset = (uint32_t)offsetof(Request__storage_, completed),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeInt32,
-      },
-      {
-        .name = "readonly",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Readonly,
-        .hasIndex = 20,
-        .offset = (uint32_t)offsetof(Request__storage_, readonly),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeInt32,
+        .name = "context",
+        .dataTypeSpecific.clazz = GPBObjCClass(RequestContext),
+        .number = Request_FieldNumber_Context,
+        .hasIndex = 9,
+        .offset = (uint32_t)offsetof(Request__storage_, context),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
       },
       {
         .name = "file",
-        .dataTypeSpecific.clazz = Nil,
+        .dataTypeSpecific.clazz = GPBObjCClass(FileUpload),
         .number = Request_FieldNumber_File,
-        .hasIndex = 21,
+        .hasIndex = 10,
         .offset = (uint32_t)offsetof(Request__storage_, file),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeBytes,
-      },
-      {
-        .name = "filename",
-        .dataTypeSpecific.clazz = Nil,
-        .number = Request_FieldNumber_Filename,
-        .hasIndex = 22,
-        .offset = (uint32_t)offsetof(Request__storage_, filename),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
       },
       {
         .name = "filesArray",
-        .dataTypeSpecific.clazz = Nil,
+        .dataTypeSpecific.clazz = GPBObjCClass(FileRef),
         .number = Request_FieldNumber_FilesArray,
         .hasIndex = GPBNoHasBit,
         .offset = (uint32_t)offsetof(Request__storage_, filesArray),
-        .flags = (GPBFieldFlags)(GPBFieldRepeated | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeString,
-      },
-      {
-        .name = "ir",
-        .dataTypeSpecific.clazz = GPBObjCClass(InternalRequest),
-        .number = Request_FieldNumber_Ir,
-        .hasIndex = 23,
-        .offset = (uint32_t)offsetof(Request__storage_, ir),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .flags = GPBFieldRepeated,
         .dataType = GPBDataTypeMessage,
       },
     };
@@ -405,13 +309,6 @@ typedef struct Request__storage_ {
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(Request__storage_)
                                          flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
-#if !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
-    static const char *extraTextFormatInfo =
-        "\032\001F\000\002E\000\003FA\000\004Fb\000\005F\000\006D\000\007D\000\010E\000\tD\000\nc\000\013b\000\014I\000\r"
-        "I\000\016I\000\017H\000\020d\006\000\021F\000\022c\000\023G\000\024J\000\025I\000\026H\000\027D\000\030H\000\031\000Fi"
-        "les\000\032b\000";
-    [localDescriptor setupExtraTextInfo:extraTextFormatInfo];
-#endif  // !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     #if defined(DEBUG) && DEBUG
       NSAssert(descriptor == nil, @"Startup recursed!");
     #endif  // DEBUG
@@ -422,22 +319,42 @@ typedef struct Request__storage_ {
 
 @end
 
-#pragma mark - InternalRequest
+int32_t Request_Method_RawValue(Request *message) {
+  GPBDescriptor *descriptor = [Request descriptor];
+  GPBFieldDescriptor *field = [descriptor fieldWithNumber:Request_FieldNumber_Method];
+  return GPBGetMessageRawEnumField(message, field);
+}
 
-@implementation InternalRequest
+void SetRequest_Method_RawValue(Request *message, int32_t value) {
+  GPBDescriptor *descriptor = [Request descriptor];
+  GPBFieldDescriptor *field = [descriptor fieldWithNumber:Request_FieldNumber_Method];
+  GPBSetMessageRawEnumField(message, field, value);
+}
 
-@dynamic hasParam, param;
-@dynamic hasParamId, paramId;
-@dynamic hasMethod, method;
-@dynamic args, args_Count;
+#pragma mark - AuthContext
 
-typedef struct InternalRequest__storage_ {
+@implementation AuthContext
+
+@dynamic token;
+@dynamic tokenType;
+@dynamic sid;
+@dynamic uid;
+@dynamic sign;
+@dynamic isAdmin;
+@dynamic readonly;
+@dynamic sessionEnd;
+@dynamic meta, meta_Count;
+
+typedef struct AuthContext__storage_ {
   uint32_t _has_storage_[1];
-  NSString *param;
-  NSString *paramId;
-  NSString *method;
-  NSMutableDictionary *args;
-} InternalRequest__storage_;
+  NSString *token;
+  NSString *tokenType;
+  NSString *sid;
+  NSString *uid;
+  NSString *sign;
+  NSMutableDictionary *meta;
+  int64_t sessionEnd;
+} AuthContext__storage_;
 
 // This method is threadsafe because it is initially called
 // in +initialize for each subclass.
@@ -446,55 +363,95 @@ typedef struct InternalRequest__storage_ {
   if (!descriptor) {
     static GPBMessageFieldDescription fields[] = {
       {
-        .name = "param",
+        .name = "token",
         .dataTypeSpecific.clazz = Nil,
-        .number = InternalRequest_FieldNumber_Param,
+        .number = AuthContext_FieldNumber_Token,
         .hasIndex = 0,
-        .offset = (uint32_t)offsetof(InternalRequest__storage_, param),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .offset = (uint32_t)offsetof(AuthContext__storage_, token),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
-        .name = "paramId",
+        .name = "tokenType",
         .dataTypeSpecific.clazz = Nil,
-        .number = InternalRequest_FieldNumber_ParamId,
+        .number = AuthContext_FieldNumber_TokenType,
         .hasIndex = 1,
-        .offset = (uint32_t)offsetof(InternalRequest__storage_, paramId),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .offset = (uint32_t)offsetof(AuthContext__storage_, tokenType),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
-        .name = "method",
+        .name = "sid",
         .dataTypeSpecific.clazz = Nil,
-        .number = InternalRequest_FieldNumber_Method,
+        .number = AuthContext_FieldNumber_Sid,
         .hasIndex = 2,
-        .offset = (uint32_t)offsetof(InternalRequest__storage_, method),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .offset = (uint32_t)offsetof(AuthContext__storage_, sid),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
-        .name = "args",
-        .dataTypeSpecific.clazz = GPBObjCClass(GPBAny),
-        .number = InternalRequest_FieldNumber_Args,
+        .name = "uid",
+        .dataTypeSpecific.clazz = Nil,
+        .number = AuthContext_FieldNumber_Uid,
+        .hasIndex = 3,
+        .offset = (uint32_t)offsetof(AuthContext__storage_, uid),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "sign",
+        .dataTypeSpecific.clazz = Nil,
+        .number = AuthContext_FieldNumber_Sign,
+        .hasIndex = 4,
+        .offset = (uint32_t)offsetof(AuthContext__storage_, sign),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "isAdmin",
+        .dataTypeSpecific.clazz = Nil,
+        .number = AuthContext_FieldNumber_IsAdmin,
+        .hasIndex = 5,
+        .offset = 6,  // Stored in _has_storage_ to save space.
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeBool,
+      },
+      {
+        .name = "readonly",
+        .dataTypeSpecific.clazz = Nil,
+        .number = AuthContext_FieldNumber_Readonly,
+        .hasIndex = 7,
+        .offset = 8,  // Stored in _has_storage_ to save space.
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeBool,
+      },
+      {
+        .name = "sessionEnd",
+        .dataTypeSpecific.clazz = Nil,
+        .number = AuthContext_FieldNumber_SessionEnd,
+        .hasIndex = 9,
+        .offset = (uint32_t)offsetof(AuthContext__storage_, sessionEnd),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeInt64,
+      },
+      {
+        .name = "meta",
+        .dataTypeSpecific.clazz = Nil,
+        .number = AuthContext_FieldNumber_Meta,
         .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(InternalRequest__storage_, args),
-        .flags = (GPBFieldFlags)(GPBFieldMapKeyString | GPBFieldTextFormatNameCustom),
-        .dataType = GPBDataTypeMessage,
+        .offset = (uint32_t)offsetof(AuthContext__storage_, meta),
+        .flags = GPBFieldMapKeyString,
+        .dataType = GPBDataTypeString,
       },
     };
     GPBDescriptor *localDescriptor =
-        [GPBDescriptor allocDescriptorForClass:[InternalRequest class]
+        [GPBDescriptor allocDescriptorForClass:[AuthContext class]
                                      rootClass:[MicroserviceRoot class]
                                           file:MicroserviceRoot_FileDescriptor()
                                         fields:fields
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
-                                   storageSize:sizeof(InternalRequest__storage_)
+                                   storageSize:sizeof(AuthContext__storage_)
                                          flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
-#if !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
-    static const char *extraTextFormatInfo =
-        "\004\001E\000\002FA\000\003F\000\004D\000";
-    [localDescriptor setupExtraTextInfo:extraTextFormatInfo];
-#endif  // !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     #if defined(DEBUG) && DEBUG
       NSAssert(descriptor == nil, @"Startup recursed!");
     #endif  // DEBUG
@@ -505,20 +462,32 @@ typedef struct InternalRequest__storage_ {
 
 @end
 
-#pragma mark - Error
+#pragma mark - RequestContext
 
-@implementation Error
+@implementation RequestContext
 
-@dynamic code;
-@dynamic message;
+@dynamic ip;
+@dynamic userAgent;
+@dynamic language;
+@dynamic apiVersion;
+@dynamic timestamp;
+@dynamic traceId;
+@dynamic requestId;
+@dynamic caller;
 @dynamic meta, meta_Count;
 
-typedef struct Error__storage_ {
+typedef struct RequestContext__storage_ {
   uint32_t _has_storage_[1];
-  int32_t code;
-  NSString *message;
+  NSString *ip;
+  NSString *userAgent;
+  NSString *language;
+  NSString *apiVersion;
+  NSString *traceId;
+  NSString *requestId;
+  NSString *caller;
   NSMutableDictionary *meta;
-} Error__storage_;
+  int64_t timestamp;
+} RequestContext__storage_;
 
 // This method is threadsafe because it is initially called
 // in +initialize for each subclass.
@@ -527,40 +496,228 @@ typedef struct Error__storage_ {
   if (!descriptor) {
     static GPBMessageFieldDescription fields[] = {
       {
-        .name = "code",
+        .name = "ip",
         .dataTypeSpecific.clazz = Nil,
-        .number = Error_FieldNumber_Code,
+        .number = RequestContext_FieldNumber_Ip,
         .hasIndex = 0,
-        .offset = (uint32_t)offsetof(Error__storage_, code),
+        .offset = (uint32_t)offsetof(RequestContext__storage_, ip),
         .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
-        .dataType = GPBDataTypeInt32,
+        .dataType = GPBDataTypeString,
       },
       {
-        .name = "message",
+        .name = "userAgent",
         .dataTypeSpecific.clazz = Nil,
-        .number = Error_FieldNumber_Message,
+        .number = RequestContext_FieldNumber_UserAgent,
         .hasIndex = 1,
-        .offset = (uint32_t)offsetof(Error__storage_, message),
+        .offset = (uint32_t)offsetof(RequestContext__storage_, userAgent),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "language",
+        .dataTypeSpecific.clazz = Nil,
+        .number = RequestContext_FieldNumber_Language,
+        .hasIndex = 2,
+        .offset = (uint32_t)offsetof(RequestContext__storage_, language),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "apiVersion",
+        .dataTypeSpecific.clazz = Nil,
+        .number = RequestContext_FieldNumber_ApiVersion,
+        .hasIndex = 3,
+        .offset = (uint32_t)offsetof(RequestContext__storage_, apiVersion),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "timestamp",
+        .dataTypeSpecific.clazz = Nil,
+        .number = RequestContext_FieldNumber_Timestamp,
+        .hasIndex = 4,
+        .offset = (uint32_t)offsetof(RequestContext__storage_, timestamp),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeInt64,
+      },
+      {
+        .name = "traceId",
+        .dataTypeSpecific.clazz = Nil,
+        .number = RequestContext_FieldNumber_TraceId,
+        .hasIndex = 5,
+        .offset = (uint32_t)offsetof(RequestContext__storage_, traceId),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "requestId",
+        .dataTypeSpecific.clazz = Nil,
+        .number = RequestContext_FieldNumber_RequestId,
+        .hasIndex = 6,
+        .offset = (uint32_t)offsetof(RequestContext__storage_, requestId),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "caller",
+        .dataTypeSpecific.clazz = Nil,
+        .number = RequestContext_FieldNumber_Caller,
+        .hasIndex = 7,
+        .offset = (uint32_t)offsetof(RequestContext__storage_, caller),
         .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeString,
       },
       {
         .name = "meta",
         .dataTypeSpecific.clazz = Nil,
-        .number = Error_FieldNumber_Meta,
+        .number = RequestContext_FieldNumber_Meta,
         .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(Error__storage_, meta),
+        .offset = (uint32_t)offsetof(RequestContext__storage_, meta),
         .flags = GPBFieldMapKeyString,
         .dataType = GPBDataTypeString,
       },
     };
     GPBDescriptor *localDescriptor =
-        [GPBDescriptor allocDescriptorForClass:[Error class]
+        [GPBDescriptor allocDescriptorForClass:[RequestContext class]
                                      rootClass:[MicroserviceRoot class]
                                           file:MicroserviceRoot_FileDescriptor()
                                         fields:fields
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
-                                   storageSize:sizeof(Error__storage_)
+                                   storageSize:sizeof(RequestContext__storage_)
+                                         flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
+    #if defined(DEBUG) && DEBUG
+      NSAssert(descriptor == nil, @"Startup recursed!");
+    #endif  // DEBUG
+    descriptor = localDescriptor;
+  }
+  return descriptor;
+}
+
+@end
+
+#pragma mark - FileUpload
+
+@implementation FileUpload
+
+@dynamic data_p;
+@dynamic filename;
+@dynamic contentType;
+@dynamic size;
+
+typedef struct FileUpload__storage_ {
+  uint32_t _has_storage_[1];
+  NSData *data_p;
+  NSString *filename;
+  NSString *contentType;
+  int64_t size;
+} FileUpload__storage_;
+
+// This method is threadsafe because it is initially called
+// in +initialize for each subclass.
++ (GPBDescriptor *)descriptor {
+  static GPBDescriptor *descriptor = nil;
+  if (!descriptor) {
+    static GPBMessageFieldDescription fields[] = {
+      {
+        .name = "data_p",
+        .dataTypeSpecific.clazz = Nil,
+        .number = FileUpload_FieldNumber_Data_p,
+        .hasIndex = 0,
+        .offset = (uint32_t)offsetof(FileUpload__storage_, data_p),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeBytes,
+      },
+      {
+        .name = "filename",
+        .dataTypeSpecific.clazz = Nil,
+        .number = FileUpload_FieldNumber_Filename,
+        .hasIndex = 1,
+        .offset = (uint32_t)offsetof(FileUpload__storage_, filename),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "contentType",
+        .dataTypeSpecific.clazz = Nil,
+        .number = FileUpload_FieldNumber_ContentType,
+        .hasIndex = 2,
+        .offset = (uint32_t)offsetof(FileUpload__storage_, contentType),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "size",
+        .dataTypeSpecific.clazz = Nil,
+        .number = FileUpload_FieldNumber_Size,
+        .hasIndex = 3,
+        .offset = (uint32_t)offsetof(FileUpload__storage_, size),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeInt64,
+      },
+    };
+    GPBDescriptor *localDescriptor =
+        [GPBDescriptor allocDescriptorForClass:[FileUpload class]
+                                     rootClass:[MicroserviceRoot class]
+                                          file:MicroserviceRoot_FileDescriptor()
+                                        fields:fields
+                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
+                                   storageSize:sizeof(FileUpload__storage_)
+                                         flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
+    #if defined(DEBUG) && DEBUG
+      NSAssert(descriptor == nil, @"Startup recursed!");
+    #endif  // DEBUG
+    descriptor = localDescriptor;
+  }
+  return descriptor;
+}
+
+@end
+
+#pragma mark - FileRef
+
+@implementation FileRef
+
+@dynamic name;
+@dynamic uri;
+
+typedef struct FileRef__storage_ {
+  uint32_t _has_storage_[1];
+  NSString *name;
+  NSString *uri;
+} FileRef__storage_;
+
+// This method is threadsafe because it is initially called
+// in +initialize for each subclass.
++ (GPBDescriptor *)descriptor {
+  static GPBDescriptor *descriptor = nil;
+  if (!descriptor) {
+    static GPBMessageFieldDescription fields[] = {
+      {
+        .name = "name",
+        .dataTypeSpecific.clazz = Nil,
+        .number = FileRef_FieldNumber_Name,
+        .hasIndex = 0,
+        .offset = (uint32_t)offsetof(FileRef__storage_, name),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "uri",
+        .dataTypeSpecific.clazz = Nil,
+        .number = FileRef_FieldNumber_Uri,
+        .hasIndex = 1,
+        .offset = (uint32_t)offsetof(FileRef__storage_, uri),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+    };
+    GPBDescriptor *localDescriptor =
+        [GPBDescriptor allocDescriptorForClass:[FileRef class]
+                                     rootClass:[MicroserviceRoot class]
+                                          file:MicroserviceRoot_FileDescriptor()
+                                        fields:fields
+                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
+                                   storageSize:sizeof(FileRef__storage_)
                                          flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
     #if defined(DEBUG) && DEBUG
       NSAssert(descriptor == nil, @"Startup recursed!");
@@ -577,16 +734,18 @@ typedef struct Error__storage_ {
 @implementation Response
 
 @dynamic data_p, data_p_Count;
-@dynamic hasRequestBack, requestBack;
-@dynamic hasCode, code;
 @dynamic hasError, error;
+@dynamic hasMeta, meta;
+@dynamic code;
+@dynamic hasRequestBack, requestBack;
 
 typedef struct Response__storage_ {
   uint32_t _has_storage_[1];
   UploadStatusCode code;
   NSMutableDictionary *data_p;
-  Request *requestBack;
   Error *error;
+  ResponseMeta *meta;
+  Request *requestBack;
 } Response__storage_;
 
 // This method is threadsafe because it is initially called
@@ -601,33 +760,42 @@ typedef struct Response__storage_ {
         .number = Response_FieldNumber_Data_p,
         .hasIndex = GPBNoHasBit,
         .offset = (uint32_t)offsetof(Response__storage_, data_p),
-        .flags = (GPBFieldFlags)(GPBFieldMapKeyString | GPBFieldTextFormatNameCustom),
+        .flags = GPBFieldMapKeyString,
         .dataType = GPBDataTypeMessage,
       },
       {
-        .name = "requestBack",
-        .dataTypeSpecific.clazz = GPBObjCClass(Request),
-        .number = Response_FieldNumber_RequestBack,
+        .name = "error",
+        .dataTypeSpecific.clazz = GPBObjCClass(Error),
+        .number = Response_FieldNumber_Error,
         .hasIndex = 0,
-        .offset = (uint32_t)offsetof(Response__storage_, requestBack),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .offset = (uint32_t)offsetof(Response__storage_, error),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
+      },
+      {
+        .name = "meta",
+        .dataTypeSpecific.clazz = GPBObjCClass(ResponseMeta),
+        .number = Response_FieldNumber_Meta,
+        .hasIndex = 1,
+        .offset = (uint32_t)offsetof(Response__storage_, meta),
+        .flags = GPBFieldOptional,
         .dataType = GPBDataTypeMessage,
       },
       {
         .name = "code",
         .dataTypeSpecific.enumDescFunc = UploadStatusCode_EnumDescriptor,
         .number = Response_FieldNumber_Code,
-        .hasIndex = 1,
+        .hasIndex = 2,
         .offset = (uint32_t)offsetof(Response__storage_, code),
-        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom | GPBFieldHasEnumDescriptor),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldHasEnumDescriptor | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeEnum,
       },
       {
-        .name = "error",
-        .dataTypeSpecific.clazz = GPBObjCClass(Error),
-        .number = Response_FieldNumber_Error,
-        .hasIndex = 2,
-        .offset = (uint32_t)offsetof(Response__storage_, error),
+        .name = "requestBack",
+        .dataTypeSpecific.clazz = GPBObjCClass(Request),
+        .number = Response_FieldNumber_RequestBack,
+        .hasIndex = 3,
+        .offset = (uint32_t)offsetof(Response__storage_, requestBack),
         .flags = GPBFieldOptional,
         .dataType = GPBDataTypeMessage,
       },
@@ -640,11 +808,6 @@ typedef struct Response__storage_ {
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(Response__storage_)
                                          flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
-#if !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
-    static const char *extraTextFormatInfo =
-        "\003\001\000Data\000\002K\000\003D\000";
-    [localDescriptor setupExtraTextInfo:extraTextFormatInfo];
-#endif  // !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     #if defined(DEBUG) && DEBUG
       NSAssert(descriptor == nil, @"Startup recursed!");
     #endif  // DEBUG
@@ -666,6 +829,194 @@ void SetResponse_Code_RawValue(Response *message, int32_t value) {
   GPBFieldDescriptor *field = [descriptor fieldWithNumber:Response_FieldNumber_Code];
   GPBSetMessageRawEnumField(message, field, value);
 }
+
+#pragma mark - Error
+
+@implementation Error
+
+@dynamic code;
+@dynamic key;
+@dynamic message;
+@dynamic meta, meta_Count;
+@dynamic retryable;
+
+typedef struct Error__storage_ {
+  uint32_t _has_storage_[1];
+  int32_t code;
+  NSString *key;
+  NSString *message;
+  NSMutableDictionary *meta;
+} Error__storage_;
+
+// This method is threadsafe because it is initially called
+// in +initialize for each subclass.
++ (GPBDescriptor *)descriptor {
+  static GPBDescriptor *descriptor = nil;
+  if (!descriptor) {
+    static GPBMessageFieldDescription fields[] = {
+      {
+        .name = "code",
+        .dataTypeSpecific.clazz = Nil,
+        .number = Error_FieldNumber_Code,
+        .hasIndex = 0,
+        .offset = (uint32_t)offsetof(Error__storage_, code),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeInt32,
+      },
+      {
+        .name = "key",
+        .dataTypeSpecific.clazz = Nil,
+        .number = Error_FieldNumber_Key,
+        .hasIndex = 1,
+        .offset = (uint32_t)offsetof(Error__storage_, key),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "message",
+        .dataTypeSpecific.clazz = Nil,
+        .number = Error_FieldNumber_Message,
+        .hasIndex = 2,
+        .offset = (uint32_t)offsetof(Error__storage_, message),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "meta",
+        .dataTypeSpecific.clazz = Nil,
+        .number = Error_FieldNumber_Meta,
+        .hasIndex = GPBNoHasBit,
+        .offset = (uint32_t)offsetof(Error__storage_, meta),
+        .flags = GPBFieldMapKeyString,
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "retryable",
+        .dataTypeSpecific.clazz = Nil,
+        .number = Error_FieldNumber_Retryable,
+        .hasIndex = 3,
+        .offset = 4,  // Stored in _has_storage_ to save space.
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeBool,
+      },
+    };
+    GPBDescriptor *localDescriptor =
+        [GPBDescriptor allocDescriptorForClass:[Error class]
+                                     rootClass:[MicroserviceRoot class]
+                                          file:MicroserviceRoot_FileDescriptor()
+                                        fields:fields
+                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
+                                   storageSize:sizeof(Error__storage_)
+                                         flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
+    #if defined(DEBUG) && DEBUG
+      NSAssert(descriptor == nil, @"Startup recursed!");
+    #endif  // DEBUG
+    descriptor = localDescriptor;
+  }
+  return descriptor;
+}
+
+@end
+
+#pragma mark - ResponseMeta
+
+@implementation ResponseMeta
+
+@dynamic status;
+@dynamic traceId;
+@dynamic requestId;
+@dynamic node;
+@dynamic hasTs, ts;
+@dynamic extra, extra_Count;
+
+typedef struct ResponseMeta__storage_ {
+  uint32_t _has_storage_[1];
+  int32_t status;
+  NSString *traceId;
+  NSString *requestId;
+  NSString *node;
+  GPBTimestamp *ts;
+  NSMutableDictionary *extra;
+} ResponseMeta__storage_;
+
+// This method is threadsafe because it is initially called
+// in +initialize for each subclass.
++ (GPBDescriptor *)descriptor {
+  static GPBDescriptor *descriptor = nil;
+  if (!descriptor) {
+    static GPBMessageFieldDescription fields[] = {
+      {
+        .name = "status",
+        .dataTypeSpecific.clazz = Nil,
+        .number = ResponseMeta_FieldNumber_Status,
+        .hasIndex = 0,
+        .offset = (uint32_t)offsetof(ResponseMeta__storage_, status),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeInt32,
+      },
+      {
+        .name = "traceId",
+        .dataTypeSpecific.clazz = Nil,
+        .number = ResponseMeta_FieldNumber_TraceId,
+        .hasIndex = 1,
+        .offset = (uint32_t)offsetof(ResponseMeta__storage_, traceId),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "requestId",
+        .dataTypeSpecific.clazz = Nil,
+        .number = ResponseMeta_FieldNumber_RequestId,
+        .hasIndex = 2,
+        .offset = (uint32_t)offsetof(ResponseMeta__storage_, requestId),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "node",
+        .dataTypeSpecific.clazz = Nil,
+        .number = ResponseMeta_FieldNumber_Node,
+        .hasIndex = 3,
+        .offset = (uint32_t)offsetof(ResponseMeta__storage_, node),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeString,
+      },
+      {
+        .name = "ts",
+        .dataTypeSpecific.clazz = GPBObjCClass(GPBTimestamp),
+        .number = ResponseMeta_FieldNumber_Ts,
+        .hasIndex = 4,
+        .offset = (uint32_t)offsetof(ResponseMeta__storage_, ts),
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeMessage,
+      },
+      {
+        .name = "extra",
+        .dataTypeSpecific.clazz = Nil,
+        .number = ResponseMeta_FieldNumber_Extra,
+        .hasIndex = GPBNoHasBit,
+        .offset = (uint32_t)offsetof(ResponseMeta__storage_, extra),
+        .flags = GPBFieldMapKeyString,
+        .dataType = GPBDataTypeString,
+      },
+    };
+    GPBDescriptor *localDescriptor =
+        [GPBDescriptor allocDescriptorForClass:[ResponseMeta class]
+                                     rootClass:[MicroserviceRoot class]
+                                          file:MicroserviceRoot_FileDescriptor()
+                                        fields:fields
+                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
+                                   storageSize:sizeof(ResponseMeta__storage_)
+                                         flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
+    #if defined(DEBUG) && DEBUG
+      NSAssert(descriptor == nil, @"Startup recursed!");
+    #endif  // DEBUG
+    descriptor = localDescriptor;
+  }
+  return descriptor;
+}
+
+@end
 
 #pragma mark - FileChunk
 
@@ -712,51 +1063,6 @@ typedef struct FileChunk__storage_ {
                                         fields:fields
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(FileChunk__storage_)
-                                         flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
-    #if defined(DEBUG) && DEBUG
-      NSAssert(descriptor == nil, @"Startup recursed!");
-    #endif  // DEBUG
-    descriptor = localDescriptor;
-  }
-  return descriptor;
-}
-
-@end
-
-#pragma mark - StringMap
-
-@implementation StringMap
-
-@dynamic entries, entries_Count;
-
-typedef struct StringMap__storage_ {
-  uint32_t _has_storage_[1];
-  NSMutableDictionary *entries;
-} StringMap__storage_;
-
-// This method is threadsafe because it is initially called
-// in +initialize for each subclass.
-+ (GPBDescriptor *)descriptor {
-  static GPBDescriptor *descriptor = nil;
-  if (!descriptor) {
-    static GPBMessageFieldDescription fields[] = {
-      {
-        .name = "entries",
-        .dataTypeSpecific.clazz = Nil,
-        .number = StringMap_FieldNumber_Entries,
-        .hasIndex = GPBNoHasBit,
-        .offset = (uint32_t)offsetof(StringMap__storage_, entries),
-        .flags = GPBFieldMapKeyString,
-        .dataType = GPBDataTypeString,
-      },
-    };
-    GPBDescriptor *localDescriptor =
-        [GPBDescriptor allocDescriptorForClass:[StringMap class]
-                                     rootClass:[MicroserviceRoot class]
-                                          file:MicroserviceRoot_FileDescriptor()
-                                        fields:fields
-                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
-                                   storageSize:sizeof(StringMap__storage_)
                                          flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
     #if defined(DEBUG) && DEBUG
       NSAssert(descriptor == nil, @"Startup recursed!");

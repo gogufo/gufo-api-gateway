@@ -1,4 +1,4 @@
-// Copyright 2019-2025 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2019-2026 Alexey Yanchenko <mail@yanchenko.me>
 //
 // This file is part of the Gufo library.
 //
@@ -30,11 +30,18 @@ import (
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
-
 	"github.com/spf13/viper"
 )
 
 func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version int) {
+
+	// Initialize nested proto structs if missing
+	if t.Auth == nil {
+		t.Auth = &pb.AuthContext{}
+	}
+	if t.Context == nil {
+		t.Context = &pb.RequestContext{}
+	}
 
 	// ===========================
 	//  SECURITY CHECK (same as gRPC Do)
@@ -46,15 +53,15 @@ func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 		secret := viper.GetString("security.hmac_secret")
 		maxAge := time.Duration(viper.GetInt("security.max_age")) * time.Second
 
-		if t.Sign == nil || t.Module == nil ||
-			!sf.VerifyHMAC(secret, *t.Module, *t.Sign, maxAge) {
+		if t.Auth.Sign == "" || t.Module == "" ||
+			!sf.VerifyHMAC(secret, t.Module, t.Auth.Sign, maxAge) {
 
 			errorAnswer(w, r, t, 401, "00001", "Invalid or expired HMAC signature")
 			return
 		}
 
 	case "sign":
-		if t.Sign == nil || viper.GetString("server.sign") != *t.Sign {
+		if t.Auth.Sign == "" || viper.GetString("server.sign") != t.Auth.Sign {
 			errorAnswer(w, r, t, 401, "00001", "Invalid signature")
 			return
 		}
@@ -89,39 +96,40 @@ func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 	//Plagin Name
 
 	vrs := "v1"
-	t.APIVersion = &vrs
+	t.Context.ApiVersion = vrs
 
-	if *t.Module == "entrypoint" {
+	if t.Module == "entrypoint" {
 		errorAnswer(w, r, t, 401, "0000235", "Wrong module")
 		return
 	}
 
-	if *t.Module == "heartbeat" {
+	if t.Module == "heartbeat" {
 		HeartbeatHandler(w, r, t)
 		return
 	}
 
 	if r.Method == "POST" || r.Method == "DELETE" || r.Method == "PATCH" {
-		t.Args = sf.ToMapStringAny(parseJSONArgs(r))
+		payload := parseJSONArgs(r)
+		if payload != nil {
+			t.Body, _ = sf.ConvertInterfaceToAny(payload)
+		}
 	}
 
-	if r.Method == "GET" && r.URL.Query() != nil || r.Method == "TRACE" && r.URL.Query() != nil || r.Method == "HEAD" && r.URL.Query() != nil {
-		paramMap := make(map[string]interface{}, 0)
+	if (r.Method == "GET" && r.URL.Query() != nil) || (r.Method == "TRACE" && r.URL.Query() != nil) || (r.Method == "HEAD" && r.URL.Query() != nil) {
+		paramMap := make(map[string]string, 0)
 		for k, v := range r.URL.Query() {
 			if len(v) == 1 && len(v[0]) != 0 {
 				paramMap[k] = v[0]
 			}
 		}
-		anydt := sf.ToMapStringAny(paramMap)
-		t.Args = anydt
-
+		t.Query = paramMap
 	}
 
 	//check for session
 	if viper.GetBool("server.session") {
 		t = checksession(t, r)
 
-		if t.UID != nil && *t.Readonly == int32(1) {
+		if t.Auth != nil && t.Auth.Uid != "" && t.Auth.Readonly {
 
 			errorAnswer(w, r, t, 401, "0000235", "Read Only User")
 			return
@@ -130,7 +138,7 @@ func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 	}
 
 	//Load microservice
-	if *t.Module == "info" {
+	if t.Module == "info" {
 		Info(w, r, t)
 		return
 	}

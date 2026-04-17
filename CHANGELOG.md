@@ -1,5 +1,61 @@
 # Changelog
 
+## 1.30.0 2026-04-17
+
+### 🚨 Breaking Changes
+- Fully redesigned protobuf schema for Request/Response
+- Removed legacy pointer-based fields (`*string`, `*int`, etc.)
+- Removed `InternalRequest` layer (IR) from request pipeline
+- Removed legacy `Response` struct (map[string]interface{}-based)
+- Removed direct session fields from request/response (`Token`, `UID`, etc.)
+
+### ✨ Added
+- Introduced structured `Request` model:
+    - `AuthContext` (auth, session, permissions)
+    - `RequestContext` (ip, user agent, trace, metadata)
+    - `Body` using `google.protobuf.Any`
+    - `Query` as typed map
+- Introduced structured `Response` model:
+    - `Data` as `map[string]*anypb.Any`
+    - `Error` object with code/key/message/retryable
+    - `ResponseMeta` (status, trace_id, request_id, timestamp)
+    - `RequestBack` for session/token propagation
+- Added enum-based HTTP method (`Method`)
+
+### 🔄 Changed
+- Replaced `t.Sign` → `t.Auth.Sign`
+- Replaced pointer-based access (`*t.Module`) → value-based (`t.Module`)
+- Unified request handling between HTTP and gRPC
+- Updated security layer:
+    - HMAC signing now uses structured request fields
+    - mTLS mode removes dependency on signature
+- Refactored service discovery:
+    - Removed `InternalRequest`
+    - Direct gRPC routing via registry/masterservice
+- Refactored streaming:
+    - Removed `Args`
+    - Introduced `Body (Any)` for chunk transfer
+    - Updated file upload pipeline to use `FileChunk`
+
+### 🧹 Removed
+- `Args map[string]interface{}`
+- `Session map[string]interface{}`
+- `TimeStamp`, `Language` (moved to `RequestContext` / `ResponseMeta`)
+- Legacy helper functions:
+    - `InternalRequest`
+    - `GetHostAndPort`
+- Mixed REST/gRPC response models
+
+### ⚙️ Technical Improvements
+- Strong typing across transport layer
+- Cleaner separation:
+    - transport (HTTP/gRPC)
+    - auth (AuthContext)
+    - metadata (RequestContext)
+- Reduced risk of nil dereference
+- Improved forward compatibility of API
+
+
 ## 1.24.0  2025-12-10
 - Fixed critical bug in static registry cache: incorrect address parsing caused host/port to become empty after first request.
 - Replaced unstable fmt.Sscanf split logic with reliable string-based parser.

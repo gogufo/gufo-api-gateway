@@ -35,6 +35,7 @@
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 #include <google/protobuf/any.pb.h>
+#include <google/protobuf/timestamp.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_microservice_2eproto
@@ -49,6 +50,13 @@ struct TableStruct_microservice_2eproto {
   static const uint32_t offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_microservice_2eproto;
+namespace gufo {
+class AuthContext;
+struct AuthContextDefaultTypeInternal;
+extern AuthContextDefaultTypeInternal _AuthContext_default_instance_;
+class AuthContext_MetaEntry_DoNotUse;
+struct AuthContext_MetaEntry_DoNotUseDefaultTypeInternal;
+extern AuthContext_MetaEntry_DoNotUseDefaultTypeInternal _AuthContext_MetaEntry_DoNotUse_default_instance_;
 class Error;
 struct ErrorDefaultTypeInternal;
 extern ErrorDefaultTypeInternal _Error_default_instance_;
@@ -58,54 +66,66 @@ extern Error_MetaEntry_DoNotUseDefaultTypeInternal _Error_MetaEntry_DoNotUse_def
 class FileChunk;
 struct FileChunkDefaultTypeInternal;
 extern FileChunkDefaultTypeInternal _FileChunk_default_instance_;
-class InternalRequest;
-struct InternalRequestDefaultTypeInternal;
-extern InternalRequestDefaultTypeInternal _InternalRequest_default_instance_;
-class InternalRequest_ArgsEntry_DoNotUse;
-struct InternalRequest_ArgsEntry_DoNotUseDefaultTypeInternal;
-extern InternalRequest_ArgsEntry_DoNotUseDefaultTypeInternal _InternalRequest_ArgsEntry_DoNotUse_default_instance_;
+class FileRef;
+struct FileRefDefaultTypeInternal;
+extern FileRefDefaultTypeInternal _FileRef_default_instance_;
+class FileUpload;
+struct FileUploadDefaultTypeInternal;
+extern FileUploadDefaultTypeInternal _FileUpload_default_instance_;
 class Request;
 struct RequestDefaultTypeInternal;
 extern RequestDefaultTypeInternal _Request_default_instance_;
-class Request_ArgsEntry_DoNotUse;
-struct Request_ArgsEntry_DoNotUseDefaultTypeInternal;
-extern Request_ArgsEntry_DoNotUseDefaultTypeInternal _Request_ArgsEntry_DoNotUse_default_instance_;
+class RequestContext;
+struct RequestContextDefaultTypeInternal;
+extern RequestContextDefaultTypeInternal _RequestContext_default_instance_;
+class RequestContext_MetaEntry_DoNotUse;
+struct RequestContext_MetaEntry_DoNotUseDefaultTypeInternal;
+extern RequestContext_MetaEntry_DoNotUseDefaultTypeInternal _RequestContext_MetaEntry_DoNotUse_default_instance_;
+class Request_QueryEntry_DoNotUse;
+struct Request_QueryEntry_DoNotUseDefaultTypeInternal;
+extern Request_QueryEntry_DoNotUseDefaultTypeInternal _Request_QueryEntry_DoNotUse_default_instance_;
 class Response;
 struct ResponseDefaultTypeInternal;
 extern ResponseDefaultTypeInternal _Response_default_instance_;
+class ResponseMeta;
+struct ResponseMetaDefaultTypeInternal;
+extern ResponseMetaDefaultTypeInternal _ResponseMeta_default_instance_;
+class ResponseMeta_ExtraEntry_DoNotUse;
+struct ResponseMeta_ExtraEntry_DoNotUseDefaultTypeInternal;
+extern ResponseMeta_ExtraEntry_DoNotUseDefaultTypeInternal _ResponseMeta_ExtraEntry_DoNotUse_default_instance_;
 class Response_DataEntry_DoNotUse;
 struct Response_DataEntry_DoNotUseDefaultTypeInternal;
 extern Response_DataEntry_DoNotUseDefaultTypeInternal _Response_DataEntry_DoNotUse_default_instance_;
-class StringMap;
-struct StringMapDefaultTypeInternal;
-extern StringMapDefaultTypeInternal _StringMap_default_instance_;
-class StringMap_EntriesEntry_DoNotUse;
-struct StringMap_EntriesEntry_DoNotUseDefaultTypeInternal;
-extern StringMap_EntriesEntry_DoNotUseDefaultTypeInternal _StringMap_EntriesEntry_DoNotUse_default_instance_;
+}  // namespace gufo
 PROTOBUF_NAMESPACE_OPEN
-template<> ::Error* Arena::CreateMaybeMessage<::Error>(Arena*);
-template<> ::Error_MetaEntry_DoNotUse* Arena::CreateMaybeMessage<::Error_MetaEntry_DoNotUse>(Arena*);
-template<> ::FileChunk* Arena::CreateMaybeMessage<::FileChunk>(Arena*);
-template<> ::InternalRequest* Arena::CreateMaybeMessage<::InternalRequest>(Arena*);
-template<> ::InternalRequest_ArgsEntry_DoNotUse* Arena::CreateMaybeMessage<::InternalRequest_ArgsEntry_DoNotUse>(Arena*);
-template<> ::Request* Arena::CreateMaybeMessage<::Request>(Arena*);
-template<> ::Request_ArgsEntry_DoNotUse* Arena::CreateMaybeMessage<::Request_ArgsEntry_DoNotUse>(Arena*);
-template<> ::Response* Arena::CreateMaybeMessage<::Response>(Arena*);
-template<> ::Response_DataEntry_DoNotUse* Arena::CreateMaybeMessage<::Response_DataEntry_DoNotUse>(Arena*);
-template<> ::StringMap* Arena::CreateMaybeMessage<::StringMap>(Arena*);
-template<> ::StringMap_EntriesEntry_DoNotUse* Arena::CreateMaybeMessage<::StringMap_EntriesEntry_DoNotUse>(Arena*);
+template<> ::gufo::AuthContext* Arena::CreateMaybeMessage<::gufo::AuthContext>(Arena*);
+template<> ::gufo::AuthContext_MetaEntry_DoNotUse* Arena::CreateMaybeMessage<::gufo::AuthContext_MetaEntry_DoNotUse>(Arena*);
+template<> ::gufo::Error* Arena::CreateMaybeMessage<::gufo::Error>(Arena*);
+template<> ::gufo::Error_MetaEntry_DoNotUse* Arena::CreateMaybeMessage<::gufo::Error_MetaEntry_DoNotUse>(Arena*);
+template<> ::gufo::FileChunk* Arena::CreateMaybeMessage<::gufo::FileChunk>(Arena*);
+template<> ::gufo::FileRef* Arena::CreateMaybeMessage<::gufo::FileRef>(Arena*);
+template<> ::gufo::FileUpload* Arena::CreateMaybeMessage<::gufo::FileUpload>(Arena*);
+template<> ::gufo::Request* Arena::CreateMaybeMessage<::gufo::Request>(Arena*);
+template<> ::gufo::RequestContext* Arena::CreateMaybeMessage<::gufo::RequestContext>(Arena*);
+template<> ::gufo::RequestContext_MetaEntry_DoNotUse* Arena::CreateMaybeMessage<::gufo::RequestContext_MetaEntry_DoNotUse>(Arena*);
+template<> ::gufo::Request_QueryEntry_DoNotUse* Arena::CreateMaybeMessage<::gufo::Request_QueryEntry_DoNotUse>(Arena*);
+template<> ::gufo::Response* Arena::CreateMaybeMessage<::gufo::Response>(Arena*);
+template<> ::gufo::ResponseMeta* Arena::CreateMaybeMessage<::gufo::ResponseMeta>(Arena*);
+template<> ::gufo::ResponseMeta_ExtraEntry_DoNotUse* Arena::CreateMaybeMessage<::gufo::ResponseMeta_ExtraEntry_DoNotUse>(Arena*);
+template<> ::gufo::Response_DataEntry_DoNotUse* Arena::CreateMaybeMessage<::gufo::Response_DataEntry_DoNotUse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
+namespace gufo {
 
 enum UploadStatusCode : int {
-  Unknown = 0,
-  Ok = 1,
-  Failed = 2,
+  UPLOAD_STATUS_UNKNOWN = 0,
+  UPLOAD_STATUS_OK = 1,
+  UPLOAD_STATUS_FAILED = 2,
   UploadStatusCode_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   UploadStatusCode_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool UploadStatusCode_IsValid(int value);
-constexpr UploadStatusCode UploadStatusCode_MIN = Unknown;
-constexpr UploadStatusCode UploadStatusCode_MAX = Failed;
+constexpr UploadStatusCode UploadStatusCode_MIN = UPLOAD_STATUS_UNKNOWN;
+constexpr UploadStatusCode UploadStatusCode_MAX = UPLOAD_STATUS_FAILED;
 constexpr int UploadStatusCode_ARRAYSIZE = UploadStatusCode_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* UploadStatusCode_descriptor();
@@ -122,27 +142,58 @@ inline bool UploadStatusCode_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<UploadStatusCode>(
     UploadStatusCode_descriptor(), name, value);
 }
+enum Method : int {
+  METHOD_UNSPECIFIED = 0,
+  METHOD_GET = 1,
+  METHOD_POST = 2,
+  METHOD_PUT = 3,
+  METHOD_PATCH = 4,
+  METHOD_DELETE = 5,
+  Method_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  Method_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool Method_IsValid(int value);
+constexpr Method Method_MIN = METHOD_UNSPECIFIED;
+constexpr Method Method_MAX = METHOD_DELETE;
+constexpr int Method_ARRAYSIZE = Method_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Method_descriptor();
+template<typename T>
+inline const std::string& Method_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, Method>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function Method_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    Method_descriptor(), enum_t_value);
+}
+inline bool Method_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, Method* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Method>(
+    Method_descriptor(), name, value);
+}
 // ===================================================================
 
-class Request_ArgsEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<Request_ArgsEntry_DoNotUse, 
-    std::string, ::PROTOBUF_NAMESPACE_ID::Any,
+class Request_QueryEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<Request_QueryEntry_DoNotUse, 
+    std::string, std::string,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE> {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> {
 public:
-  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<Request_ArgsEntry_DoNotUse, 
-    std::string, ::PROTOBUF_NAMESPACE_ID::Any,
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<Request_QueryEntry_DoNotUse, 
+    std::string, std::string,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE> SuperType;
-  Request_ArgsEntry_DoNotUse();
-  explicit PROTOBUF_CONSTEXPR Request_ArgsEntry_DoNotUse(
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> SuperType;
+  Request_QueryEntry_DoNotUse();
+  explicit PROTOBUF_CONSTEXPR Request_QueryEntry_DoNotUse(
       ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-  explicit Request_ArgsEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  void MergeFrom(const Request_ArgsEntry_DoNotUse& other);
-  static const Request_ArgsEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const Request_ArgsEntry_DoNotUse*>(&_Request_ArgsEntry_DoNotUse_default_instance_); }
+  explicit Request_QueryEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const Request_QueryEntry_DoNotUse& other);
+  static const Request_QueryEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const Request_QueryEntry_DoNotUse*>(&_Request_QueryEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(std::string* s) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "Request.ArgsEntry.key");
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.Request.QueryEntry.key");
  }
-  static bool ValidateValue(void*) { return true; }
+  static bool ValidateValue(std::string* s) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.Request.QueryEntry.value");
+ }
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
   ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
   friend struct ::TableStruct_microservice_2eproto;
@@ -151,7 +202,7 @@ public:
 // -------------------------------------------------------------------
 
 class Request final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Request) */ {
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.Request) */ {
  public:
   inline Request() : Request(nullptr) {}
   ~Request() override;
@@ -254,7 +305,7 @@ class Request final :
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Request";
+    return "gufo.Request";
   }
   protected:
   explicit Request(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -274,79 +325,56 @@ class Request final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kArgsFieldNumber = 6,
-    kFilesFieldNumber = 25,
+    kQueryFieldNumber = 6,
+    kFilesFieldNumber = 13,
     kModuleFieldNumber = 1,
     kParamFieldNumber = 2,
-    kParamIDFieldNumber = 3,
-    kParamIDDFieldNumber = 4,
+    kParamIdFieldNumber = 3,
+    kParamIddFieldNumber = 4,
     kActionFieldNumber = 5,
-    kPathFieldNumber = 7,
-    kTokenFieldNumber = 8,
-    kSignFieldNumber = 9,
-    kSIDFieldNumber = 10,
-    kIPFieldNumber = 11,
-    kUserAgentFieldNumber = 12,
-    kTokenTypeFieldNumber = 13,
-    kLanguageFieldNumber = 15,
-    kAPIVersionFieldNumber = 16,
-    kMethodFieldNumber = 17,
-    kUIDFieldNumber = 18,
-    kFileFieldNumber = 23,
-    kFilenameFieldNumber = 24,
-    kIRFieldNumber = 26,
-    kTimeStampFieldNumber = 14,
-    kIsAdminFieldNumber = 19,
-    kSessionEndFieldNumber = 20,
-    kCompletedFieldNumber = 21,
-    kReadonlyFieldNumber = 22,
+    kPathFieldNumber = 8,
+    kBodyFieldNumber = 7,
+    kAuthFieldNumber = 10,
+    kContextFieldNumber = 11,
+    kFileFieldNumber = 12,
+    kMethodFieldNumber = 9,
   };
-  // map<string, .google.protobuf.Any> Args = 6;
-  int args_size() const;
+  // map<string, string> query = 6;
+  int query_size() const;
   private:
-  int _internal_args_size() const;
+  int _internal_query_size() const;
   public:
-  void clear_args();
+  void clear_query();
   private:
-  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-      _internal_args() const;
-  ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-      _internal_mutable_args();
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+      _internal_query() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+      _internal_mutable_query();
   public:
-  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-      args() const;
-  ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-      mutable_args();
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+      query() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+      mutable_query();
 
-  // repeated string Files = 25;
+  // repeated .gufo.FileRef files = 13;
   int files_size() const;
   private:
   int _internal_files_size() const;
   public:
   void clear_files();
-  const std::string& files(int index) const;
-  std::string* mutable_files(int index);
-  void set_files(int index, const std::string& value);
-  void set_files(int index, std::string&& value);
-  void set_files(int index, const char* value);
-  void set_files(int index, const char* value, size_t size);
-  std::string* add_files();
-  void add_files(const std::string& value);
-  void add_files(std::string&& value);
-  void add_files(const char* value);
-  void add_files(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& files() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_files();
+  ::gufo::FileRef* mutable_files(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::gufo::FileRef >*
+      mutable_files();
   private:
-  const std::string& _internal_files(int index) const;
-  std::string* _internal_add_files();
+  const ::gufo::FileRef& _internal_files(int index) const;
+  ::gufo::FileRef* _internal_add_files();
   public:
+  const ::gufo::FileRef& files(int index) const;
+  ::gufo::FileRef* add_files();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::gufo::FileRef >&
+      files() const;
 
-  // optional string Module = 1;
-  bool has_module() const;
-  private:
-  bool _internal_has_module() const;
-  public:
+  // string module = 1;
   void clear_module();
   const std::string& module() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -360,11 +388,7 @@ class Request final :
   std::string* _internal_mutable_module();
   public:
 
-  // optional string Param = 2;
-  bool has_param() const;
-  private:
-  bool _internal_has_param() const;
-  public:
+  // string param = 2;
   void clear_param();
   const std::string& param() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -378,47 +402,35 @@ class Request final :
   std::string* _internal_mutable_param();
   public:
 
-  // optional string ParamID = 3;
-  bool has_paramid() const;
-  private:
-  bool _internal_has_paramid() const;
-  public:
-  void clear_paramid();
-  const std::string& paramid() const;
+  // string param_id = 3;
+  void clear_param_id();
+  const std::string& param_id() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_paramid(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_paramid();
-  PROTOBUF_NODISCARD std::string* release_paramid();
-  void set_allocated_paramid(std::string* paramid);
+  void set_param_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_param_id();
+  PROTOBUF_NODISCARD std::string* release_param_id();
+  void set_allocated_param_id(std::string* param_id);
   private:
-  const std::string& _internal_paramid() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_paramid(const std::string& value);
-  std::string* _internal_mutable_paramid();
+  const std::string& _internal_param_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_param_id(const std::string& value);
+  std::string* _internal_mutable_param_id();
   public:
 
-  // optional string ParamIDD = 4;
-  bool has_paramidd() const;
-  private:
-  bool _internal_has_paramidd() const;
-  public:
-  void clear_paramidd();
-  const std::string& paramidd() const;
+  // string param_idd = 4;
+  void clear_param_idd();
+  const std::string& param_idd() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_paramidd(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_paramidd();
-  PROTOBUF_NODISCARD std::string* release_paramidd();
-  void set_allocated_paramidd(std::string* paramidd);
+  void set_param_idd(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_param_idd();
+  PROTOBUF_NODISCARD std::string* release_param_idd();
+  void set_allocated_param_idd(std::string* param_idd);
   private:
-  const std::string& _internal_paramidd() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_paramidd(const std::string& value);
-  std::string* _internal_mutable_paramidd();
+  const std::string& _internal_param_idd() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_param_idd(const std::string& value);
+  std::string* _internal_mutable_param_idd();
   public:
 
-  // optional string Action = 5;
-  bool has_action() const;
-  private:
-  bool _internal_has_action() const;
-  public:
+  // string action = 5;
   void clear_action();
   const std::string& action() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -432,11 +444,7 @@ class Request final :
   std::string* _internal_mutable_action();
   public:
 
-  // optional string Path = 7;
-  bool has_path() const;
-  private:
-  bool _internal_has_path() const;
-  public:
+  // string path = 8;
   void clear_path();
   const std::string& path() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -450,306 +458,88 @@ class Request final :
   std::string* _internal_mutable_path();
   public:
 
-  // optional string Token = 8;
-  bool has_token() const;
+  // .google.protobuf.Any body = 7;
+  bool has_body() const;
   private:
-  bool _internal_has_token() const;
+  bool _internal_has_body() const;
   public:
-  void clear_token();
-  const std::string& token() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_token(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_token();
-  PROTOBUF_NODISCARD std::string* release_token();
-  void set_allocated_token(std::string* token);
+  void clear_body();
+  const ::PROTOBUF_NAMESPACE_ID::Any& body() const;
+  PROTOBUF_NODISCARD ::PROTOBUF_NAMESPACE_ID::Any* release_body();
+  ::PROTOBUF_NAMESPACE_ID::Any* mutable_body();
+  void set_allocated_body(::PROTOBUF_NAMESPACE_ID::Any* body);
   private:
-  const std::string& _internal_token() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_token(const std::string& value);
-  std::string* _internal_mutable_token();
+  const ::PROTOBUF_NAMESPACE_ID::Any& _internal_body() const;
+  ::PROTOBUF_NAMESPACE_ID::Any* _internal_mutable_body();
   public:
+  void unsafe_arena_set_allocated_body(
+      ::PROTOBUF_NAMESPACE_ID::Any* body);
+  ::PROTOBUF_NAMESPACE_ID::Any* unsafe_arena_release_body();
 
-  // optional string Sign = 9;
-  bool has_sign() const;
+  // .gufo.AuthContext auth = 10;
+  bool has_auth() const;
   private:
-  bool _internal_has_sign() const;
+  bool _internal_has_auth() const;
   public:
-  void clear_sign();
-  const std::string& sign() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_sign(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_sign();
-  PROTOBUF_NODISCARD std::string* release_sign();
-  void set_allocated_sign(std::string* sign);
+  void clear_auth();
+  const ::gufo::AuthContext& auth() const;
+  PROTOBUF_NODISCARD ::gufo::AuthContext* release_auth();
+  ::gufo::AuthContext* mutable_auth();
+  void set_allocated_auth(::gufo::AuthContext* auth);
   private:
-  const std::string& _internal_sign() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_sign(const std::string& value);
-  std::string* _internal_mutable_sign();
+  const ::gufo::AuthContext& _internal_auth() const;
+  ::gufo::AuthContext* _internal_mutable_auth();
   public:
+  void unsafe_arena_set_allocated_auth(
+      ::gufo::AuthContext* auth);
+  ::gufo::AuthContext* unsafe_arena_release_auth();
 
-  // optional string SID = 10;
-  bool has_sid() const;
+  // .gufo.RequestContext context = 11;
+  bool has_context() const;
   private:
-  bool _internal_has_sid() const;
+  bool _internal_has_context() const;
   public:
-  void clear_sid();
-  const std::string& sid() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_sid(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_sid();
-  PROTOBUF_NODISCARD std::string* release_sid();
-  void set_allocated_sid(std::string* sid);
+  void clear_context();
+  const ::gufo::RequestContext& context() const;
+  PROTOBUF_NODISCARD ::gufo::RequestContext* release_context();
+  ::gufo::RequestContext* mutable_context();
+  void set_allocated_context(::gufo::RequestContext* context);
   private:
-  const std::string& _internal_sid() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_sid(const std::string& value);
-  std::string* _internal_mutable_sid();
+  const ::gufo::RequestContext& _internal_context() const;
+  ::gufo::RequestContext* _internal_mutable_context();
   public:
+  void unsafe_arena_set_allocated_context(
+      ::gufo::RequestContext* context);
+  ::gufo::RequestContext* unsafe_arena_release_context();
 
-  // optional string IP = 11;
-  bool has_ip() const;
-  private:
-  bool _internal_has_ip() const;
-  public:
-  void clear_ip();
-  const std::string& ip() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_ip(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_ip();
-  PROTOBUF_NODISCARD std::string* release_ip();
-  void set_allocated_ip(std::string* ip);
-  private:
-  const std::string& _internal_ip() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_ip(const std::string& value);
-  std::string* _internal_mutable_ip();
-  public:
-
-  // optional string UserAgent = 12;
-  bool has_useragent() const;
-  private:
-  bool _internal_has_useragent() const;
-  public:
-  void clear_useragent();
-  const std::string& useragent() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_useragent(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_useragent();
-  PROTOBUF_NODISCARD std::string* release_useragent();
-  void set_allocated_useragent(std::string* useragent);
-  private:
-  const std::string& _internal_useragent() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_useragent(const std::string& value);
-  std::string* _internal_mutable_useragent();
-  public:
-
-  // optional string TokenType = 13;
-  bool has_tokentype() const;
-  private:
-  bool _internal_has_tokentype() const;
-  public:
-  void clear_tokentype();
-  const std::string& tokentype() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_tokentype(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_tokentype();
-  PROTOBUF_NODISCARD std::string* release_tokentype();
-  void set_allocated_tokentype(std::string* tokentype);
-  private:
-  const std::string& _internal_tokentype() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_tokentype(const std::string& value);
-  std::string* _internal_mutable_tokentype();
-  public:
-
-  // optional string Language = 15;
-  bool has_language() const;
-  private:
-  bool _internal_has_language() const;
-  public:
-  void clear_language();
-  const std::string& language() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_language(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_language();
-  PROTOBUF_NODISCARD std::string* release_language();
-  void set_allocated_language(std::string* language);
-  private:
-  const std::string& _internal_language() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_language(const std::string& value);
-  std::string* _internal_mutable_language();
-  public:
-
-  // optional string APIVersion = 16;
-  bool has_apiversion() const;
-  private:
-  bool _internal_has_apiversion() const;
-  public:
-  void clear_apiversion();
-  const std::string& apiversion() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_apiversion(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_apiversion();
-  PROTOBUF_NODISCARD std::string* release_apiversion();
-  void set_allocated_apiversion(std::string* apiversion);
-  private:
-  const std::string& _internal_apiversion() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_apiversion(const std::string& value);
-  std::string* _internal_mutable_apiversion();
-  public:
-
-  // optional string Method = 17;
-  bool has_method() const;
-  private:
-  bool _internal_has_method() const;
-  public:
-  void clear_method();
-  const std::string& method() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_method(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_method();
-  PROTOBUF_NODISCARD std::string* release_method();
-  void set_allocated_method(std::string* method);
-  private:
-  const std::string& _internal_method() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_method(const std::string& value);
-  std::string* _internal_mutable_method();
-  public:
-
-  // optional string UID = 18;
-  bool has_uid() const;
-  private:
-  bool _internal_has_uid() const;
-  public:
-  void clear_uid();
-  const std::string& uid() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_uid(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_uid();
-  PROTOBUF_NODISCARD std::string* release_uid();
-  void set_allocated_uid(std::string* uid);
-  private:
-  const std::string& _internal_uid() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_uid(const std::string& value);
-  std::string* _internal_mutable_uid();
-  public:
-
-  // optional bytes File = 23;
+  // .gufo.FileUpload file = 12;
   bool has_file() const;
   private:
   bool _internal_has_file() const;
   public:
   void clear_file();
-  const std::string& file() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_file(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_file();
-  PROTOBUF_NODISCARD std::string* release_file();
-  void set_allocated_file(std::string* file);
+  const ::gufo::FileUpload& file() const;
+  PROTOBUF_NODISCARD ::gufo::FileUpload* release_file();
+  ::gufo::FileUpload* mutable_file();
+  void set_allocated_file(::gufo::FileUpload* file);
   private:
-  const std::string& _internal_file() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_file(const std::string& value);
-  std::string* _internal_mutable_file();
+  const ::gufo::FileUpload& _internal_file() const;
+  ::gufo::FileUpload* _internal_mutable_file();
+  public:
+  void unsafe_arena_set_allocated_file(
+      ::gufo::FileUpload* file);
+  ::gufo::FileUpload* unsafe_arena_release_file();
+
+  // .gufo.Method method = 9;
+  void clear_method();
+  ::gufo::Method method() const;
+  void set_method(::gufo::Method value);
+  private:
+  ::gufo::Method _internal_method() const;
+  void _internal_set_method(::gufo::Method value);
   public:
 
-  // optional string Filename = 24;
-  bool has_filename() const;
-  private:
-  bool _internal_has_filename() const;
-  public:
-  void clear_filename();
-  const std::string& filename() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_filename(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_filename();
-  PROTOBUF_NODISCARD std::string* release_filename();
-  void set_allocated_filename(std::string* filename);
-  private:
-  const std::string& _internal_filename() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_filename(const std::string& value);
-  std::string* _internal_mutable_filename();
-  public:
-
-  // optional .InternalRequest IR = 26;
-  bool has_ir() const;
-  private:
-  bool _internal_has_ir() const;
-  public:
-  void clear_ir();
-  const ::InternalRequest& ir() const;
-  PROTOBUF_NODISCARD ::InternalRequest* release_ir();
-  ::InternalRequest* mutable_ir();
-  void set_allocated_ir(::InternalRequest* ir);
-  private:
-  const ::InternalRequest& _internal_ir() const;
-  ::InternalRequest* _internal_mutable_ir();
-  public:
-  void unsafe_arena_set_allocated_ir(
-      ::InternalRequest* ir);
-  ::InternalRequest* unsafe_arena_release_ir();
-
-  // optional int32 TimeStamp = 14;
-  bool has_timestamp() const;
-  private:
-  bool _internal_has_timestamp() const;
-  public:
-  void clear_timestamp();
-  int32_t timestamp() const;
-  void set_timestamp(int32_t value);
-  private:
-  int32_t _internal_timestamp() const;
-  void _internal_set_timestamp(int32_t value);
-  public:
-
-  // optional int32 IsAdmin = 19;
-  bool has_isadmin() const;
-  private:
-  bool _internal_has_isadmin() const;
-  public:
-  void clear_isadmin();
-  int32_t isadmin() const;
-  void set_isadmin(int32_t value);
-  private:
-  int32_t _internal_isadmin() const;
-  void _internal_set_isadmin(int32_t value);
-  public:
-
-  // optional int32 SessionEnd = 20;
-  bool has_sessionend() const;
-  private:
-  bool _internal_has_sessionend() const;
-  public:
-  void clear_sessionend();
-  int32_t sessionend() const;
-  void set_sessionend(int32_t value);
-  private:
-  int32_t _internal_sessionend() const;
-  void _internal_set_sessionend(int32_t value);
-  public:
-
-  // optional int32 Completed = 21;
-  bool has_completed() const;
-  private:
-  bool _internal_has_completed() const;
-  public:
-  void clear_completed();
-  int32_t completed() const;
-  void set_completed(int32_t value);
-  private:
-  int32_t _internal_completed() const;
-  void _internal_set_completed(int32_t value);
-  public:
-
-  // optional int32 Readonly = 22;
-  bool has_readonly() const;
-  private:
-  bool _internal_has_readonly() const;
-  public:
-  void clear_readonly();
-  int32_t readonly() const;
-  void set_readonly(int32_t value);
-  private:
-  int32_t _internal_readonly() const;
-  void _internal_set_readonly(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Request)
+  // @@protoc_insertion_point(class_scope:gufo.Request)
  private:
   class _Internal;
 
@@ -757,314 +547,50 @@ class Request final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::MapField<
-        Request_ArgsEntry_DoNotUse,
-        std::string, ::PROTOBUF_NAMESPACE_ID::Any,
+        Request_QueryEntry_DoNotUse,
+        std::string, std::string,
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE> args_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> files_;
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> query_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::gufo::FileRef > files_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr module_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr paramid_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr paramidd_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param_id_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param_idd_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr action_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr path_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr sign_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr sid_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr ip_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr useragent_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr tokentype_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr language_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr apiversion_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr method_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr uid_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr file_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr filename_;
-    ::InternalRequest* ir_;
-    int32_t timestamp_;
-    int32_t isadmin_;
-    int32_t sessionend_;
-    int32_t completed_;
-    int32_t readonly_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_microservice_2eproto;
-};
-// -------------------------------------------------------------------
-
-class InternalRequest_ArgsEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<InternalRequest_ArgsEntry_DoNotUse, 
-    std::string, ::PROTOBUF_NAMESPACE_ID::Any,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE> {
-public:
-  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<InternalRequest_ArgsEntry_DoNotUse, 
-    std::string, ::PROTOBUF_NAMESPACE_ID::Any,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE> SuperType;
-  InternalRequest_ArgsEntry_DoNotUse();
-  explicit PROTOBUF_CONSTEXPR InternalRequest_ArgsEntry_DoNotUse(
-      ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-  explicit InternalRequest_ArgsEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  void MergeFrom(const InternalRequest_ArgsEntry_DoNotUse& other);
-  static const InternalRequest_ArgsEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const InternalRequest_ArgsEntry_DoNotUse*>(&_InternalRequest_ArgsEntry_DoNotUse_default_instance_); }
-  static bool ValidateKey(std::string* s) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "InternalRequest.ArgsEntry.key");
- }
-  static bool ValidateValue(void*) { return true; }
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  friend struct ::TableStruct_microservice_2eproto;
-};
-
-// -------------------------------------------------------------------
-
-class InternalRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:InternalRequest) */ {
- public:
-  inline InternalRequest() : InternalRequest(nullptr) {}
-  ~InternalRequest() override;
-  explicit PROTOBUF_CONSTEXPR InternalRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  InternalRequest(const InternalRequest& from);
-  InternalRequest(InternalRequest&& from) noexcept
-    : InternalRequest() {
-    *this = ::std::move(from);
-  }
-
-  inline InternalRequest& operator=(const InternalRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline InternalRequest& operator=(InternalRequest&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const InternalRequest& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const InternalRequest* internal_default_instance() {
-    return reinterpret_cast<const InternalRequest*>(
-               &_InternalRequest_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    3;
-
-  friend void swap(InternalRequest& a, InternalRequest& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(InternalRequest* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(InternalRequest* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  InternalRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<InternalRequest>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const InternalRequest& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const InternalRequest& from) {
-    InternalRequest::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(InternalRequest* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "InternalRequest";
-  }
-  protected:
-  explicit InternalRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  private:
-  static void ArenaDtor(void* object);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kArgsFieldNumber = 4,
-    kParamFieldNumber = 1,
-    kParamIDFieldNumber = 2,
-    kMethodFieldNumber = 3,
-  };
-  // map<string, .google.protobuf.Any> Args = 4;
-  int args_size() const;
-  private:
-  int _internal_args_size() const;
-  public:
-  void clear_args();
-  private:
-  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-      _internal_args() const;
-  ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-      _internal_mutable_args();
-  public:
-  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-      args() const;
-  ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-      mutable_args();
-
-  // optional string Param = 1;
-  bool has_param() const;
-  private:
-  bool _internal_has_param() const;
-  public:
-  void clear_param();
-  const std::string& param() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_param(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_param();
-  PROTOBUF_NODISCARD std::string* release_param();
-  void set_allocated_param(std::string* param);
-  private:
-  const std::string& _internal_param() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_param(const std::string& value);
-  std::string* _internal_mutable_param();
-  public:
-
-  // optional string ParamID = 2;
-  bool has_paramid() const;
-  private:
-  bool _internal_has_paramid() const;
-  public:
-  void clear_paramid();
-  const std::string& paramid() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_paramid(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_paramid();
-  PROTOBUF_NODISCARD std::string* release_paramid();
-  void set_allocated_paramid(std::string* paramid);
-  private:
-  const std::string& _internal_paramid() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_paramid(const std::string& value);
-  std::string* _internal_mutable_paramid();
-  public:
-
-  // optional string Method = 3;
-  bool has_method() const;
-  private:
-  bool _internal_has_method() const;
-  public:
-  void clear_method();
-  const std::string& method() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_method(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_method();
-  PROTOBUF_NODISCARD std::string* release_method();
-  void set_allocated_method(std::string* method);
-  private:
-  const std::string& _internal_method() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_method(const std::string& value);
-  std::string* _internal_mutable_method();
-  public:
-
-  // @@protoc_insertion_point(class_scope:InternalRequest)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    ::PROTOBUF_NAMESPACE_ID::Any* body_;
+    ::gufo::AuthContext* auth_;
+    ::gufo::RequestContext* context_;
+    ::gufo::FileUpload* file_;
+    int method_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::PROTOBUF_NAMESPACE_ID::internal::MapField<
-        InternalRequest_ArgsEntry_DoNotUse,
-        std::string, ::PROTOBUF_NAMESPACE_ID::Any,
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE> args_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr paramid_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr method_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_microservice_2eproto;
 };
 // -------------------------------------------------------------------
 
-class Error_MetaEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<Error_MetaEntry_DoNotUse, 
+class AuthContext_MetaEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<AuthContext_MetaEntry_DoNotUse, 
     std::string, std::string,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> {
 public:
-  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<Error_MetaEntry_DoNotUse, 
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<AuthContext_MetaEntry_DoNotUse, 
     std::string, std::string,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> SuperType;
-  Error_MetaEntry_DoNotUse();
-  explicit PROTOBUF_CONSTEXPR Error_MetaEntry_DoNotUse(
+  AuthContext_MetaEntry_DoNotUse();
+  explicit PROTOBUF_CONSTEXPR AuthContext_MetaEntry_DoNotUse(
       ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-  explicit Error_MetaEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  void MergeFrom(const Error_MetaEntry_DoNotUse& other);
-  static const Error_MetaEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const Error_MetaEntry_DoNotUse*>(&_Error_MetaEntry_DoNotUse_default_instance_); }
+  explicit AuthContext_MetaEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const AuthContext_MetaEntry_DoNotUse& other);
+  static const AuthContext_MetaEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const AuthContext_MetaEntry_DoNotUse*>(&_AuthContext_MetaEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(std::string* s) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "Error.MetaEntry.key");
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.AuthContext.MetaEntry.key");
  }
   static bool ValidateValue(std::string* s) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "Error.MetaEntry.value");
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.AuthContext.MetaEntry.value");
  }
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
   ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
@@ -1073,24 +599,24 @@ public:
 
 // -------------------------------------------------------------------
 
-class Error final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Error) */ {
+class AuthContext final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.AuthContext) */ {
  public:
-  inline Error() : Error(nullptr) {}
-  ~Error() override;
-  explicit PROTOBUF_CONSTEXPR Error(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline AuthContext() : AuthContext(nullptr) {}
+  ~AuthContext() override;
+  explicit PROTOBUF_CONSTEXPR AuthContext(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Error(const Error& from);
-  Error(Error&& from) noexcept
-    : Error() {
+  AuthContext(const AuthContext& from);
+  AuthContext(AuthContext&& from) noexcept
+    : AuthContext() {
     *this = ::std::move(from);
   }
 
-  inline Error& operator=(const Error& from) {
+  inline AuthContext& operator=(const AuthContext& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Error& operator=(Error&& from) noexcept {
+  inline AuthContext& operator=(AuthContext&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1113,20 +639,20 @@ class Error final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Error& default_instance() {
+  static const AuthContext& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Error* internal_default_instance() {
-    return reinterpret_cast<const Error*>(
-               &_Error_default_instance_);
+  static inline const AuthContext* internal_default_instance() {
+    return reinterpret_cast<const AuthContext*>(
+               &_AuthContext_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    3;
 
-  friend void swap(Error& a, Error& b) {
+  friend void swap(AuthContext& a, AuthContext& b) {
     a.Swap(&b);
   }
-  inline void Swap(Error* other) {
+  inline void Swap(AuthContext* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1139,7 +665,7 @@ class Error final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Error* other) {
+  void UnsafeArenaSwap(AuthContext* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1147,14 +673,14 @@ class Error final :
 
   // implements Message ----------------------------------------------
 
-  Error* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Error>(arena);
+  AuthContext* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<AuthContext>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Error& from);
+  void CopyFrom(const AuthContext& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Error& from) {
-    Error::MergeImpl(*this, from);
+  void MergeFrom( const AuthContext& from) {
+    AuthContext::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1172,15 +698,15 @@ class Error final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Error* other);
+  void InternalSwap(AuthContext* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Error";
+    return "gufo.AuthContext";
   }
   protected:
-  explicit Error(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit AuthContext(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   private:
   static void ArenaDtor(void* object);
@@ -1197,11 +723,17 @@ class Error final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMetaFieldNumber = 3,
-    kMessageFieldNumber = 2,
-    kCodeFieldNumber = 1,
+    kMetaFieldNumber = 9,
+    kTokenFieldNumber = 1,
+    kTokenTypeFieldNumber = 2,
+    kSidFieldNumber = 3,
+    kUidFieldNumber = 4,
+    kSignFieldNumber = 5,
+    kSessionEndFieldNumber = 8,
+    kIsAdminFieldNumber = 6,
+    kReadonlyFieldNumber = 7,
   };
-  // map<string, string> meta = 3;
+  // map<string, string> meta = 9;
   int meta_size() const;
   private:
   int _internal_meta_size() const;
@@ -1218,30 +750,104 @@ class Error final :
   ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
       mutable_meta();
 
-  // string message = 2;
-  void clear_message();
-  const std::string& message() const;
+  // string token = 1;
+  void clear_token();
+  const std::string& token() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_message(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_message();
-  PROTOBUF_NODISCARD std::string* release_message();
-  void set_allocated_message(std::string* message);
+  void set_token(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_token();
+  PROTOBUF_NODISCARD std::string* release_token();
+  void set_allocated_token(std::string* token);
   private:
-  const std::string& _internal_message() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
-  std::string* _internal_mutable_message();
+  const std::string& _internal_token() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_token(const std::string& value);
+  std::string* _internal_mutable_token();
   public:
 
-  // int32 code = 1;
-  void clear_code();
-  int32_t code() const;
-  void set_code(int32_t value);
+  // string token_type = 2;
+  void clear_token_type();
+  const std::string& token_type() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_token_type(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_token_type();
+  PROTOBUF_NODISCARD std::string* release_token_type();
+  void set_allocated_token_type(std::string* token_type);
   private:
-  int32_t _internal_code() const;
-  void _internal_set_code(int32_t value);
+  const std::string& _internal_token_type() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_token_type(const std::string& value);
+  std::string* _internal_mutable_token_type();
   public:
 
-  // @@protoc_insertion_point(class_scope:Error)
+  // string sid = 3;
+  void clear_sid();
+  const std::string& sid() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_sid(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_sid();
+  PROTOBUF_NODISCARD std::string* release_sid();
+  void set_allocated_sid(std::string* sid);
+  private:
+  const std::string& _internal_sid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_sid(const std::string& value);
+  std::string* _internal_mutable_sid();
+  public:
+
+  // string uid = 4;
+  void clear_uid();
+  const std::string& uid() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_uid(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_uid();
+  PROTOBUF_NODISCARD std::string* release_uid();
+  void set_allocated_uid(std::string* uid);
+  private:
+  const std::string& _internal_uid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_uid(const std::string& value);
+  std::string* _internal_mutable_uid();
+  public:
+
+  // string sign = 5;
+  void clear_sign();
+  const std::string& sign() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_sign(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_sign();
+  PROTOBUF_NODISCARD std::string* release_sign();
+  void set_allocated_sign(std::string* sign);
+  private:
+  const std::string& _internal_sign() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_sign(const std::string& value);
+  std::string* _internal_mutable_sign();
+  public:
+
+  // int64 session_end = 8;
+  void clear_session_end();
+  int64_t session_end() const;
+  void set_session_end(int64_t value);
+  private:
+  int64_t _internal_session_end() const;
+  void _internal_set_session_end(int64_t value);
+  public:
+
+  // bool is_admin = 6;
+  void clear_is_admin();
+  bool is_admin() const;
+  void set_is_admin(bool value);
+  private:
+  bool _internal_is_admin() const;
+  void _internal_set_is_admin(bool value);
+  public:
+
+  // bool readonly = 7;
+  void clear_readonly();
+  bool readonly() const;
+  void set_readonly(bool value);
+  private:
+  bool _internal_readonly() const;
+  void _internal_set_readonly(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:gufo.AuthContext)
  private:
   class _Internal;
 
@@ -1250,12 +856,697 @@ class Error final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::MapField<
-        Error_MetaEntry_DoNotUse,
+        AuthContext_MetaEntry_DoNotUse,
         std::string, std::string,
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> meta_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
-    int32_t code_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr token_type_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr sid_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr uid_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr sign_;
+    int64_t session_end_;
+    bool is_admin_;
+    bool readonly_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_microservice_2eproto;
+};
+// -------------------------------------------------------------------
+
+class RequestContext_MetaEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<RequestContext_MetaEntry_DoNotUse, 
+    std::string, std::string,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> {
+public:
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<RequestContext_MetaEntry_DoNotUse, 
+    std::string, std::string,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> SuperType;
+  RequestContext_MetaEntry_DoNotUse();
+  explicit PROTOBUF_CONSTEXPR RequestContext_MetaEntry_DoNotUse(
+      ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  explicit RequestContext_MetaEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const RequestContext_MetaEntry_DoNotUse& other);
+  static const RequestContext_MetaEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const RequestContext_MetaEntry_DoNotUse*>(&_RequestContext_MetaEntry_DoNotUse_default_instance_); }
+  static bool ValidateKey(std::string* s) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.RequestContext.MetaEntry.key");
+ }
+  static bool ValidateValue(std::string* s) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.RequestContext.MetaEntry.value");
+ }
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  friend struct ::TableStruct_microservice_2eproto;
+};
+
+// -------------------------------------------------------------------
+
+class RequestContext final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.RequestContext) */ {
+ public:
+  inline RequestContext() : RequestContext(nullptr) {}
+  ~RequestContext() override;
+  explicit PROTOBUF_CONSTEXPR RequestContext(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  RequestContext(const RequestContext& from);
+  RequestContext(RequestContext&& from) noexcept
+    : RequestContext() {
+    *this = ::std::move(from);
+  }
+
+  inline RequestContext& operator=(const RequestContext& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline RequestContext& operator=(RequestContext&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const RequestContext& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const RequestContext* internal_default_instance() {
+    return reinterpret_cast<const RequestContext*>(
+               &_RequestContext_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(RequestContext& a, RequestContext& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(RequestContext* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(RequestContext* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  RequestContext* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<RequestContext>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const RequestContext& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const RequestContext& from) {
+    RequestContext::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(RequestContext* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "gufo.RequestContext";
+  }
+  protected:
+  explicit RequestContext(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMetaFieldNumber = 9,
+    kIpFieldNumber = 1,
+    kUserAgentFieldNumber = 2,
+    kLanguageFieldNumber = 3,
+    kApiVersionFieldNumber = 4,
+    kTraceIdFieldNumber = 6,
+    kRequestIdFieldNumber = 7,
+    kCallerFieldNumber = 8,
+    kTimestampFieldNumber = 5,
+  };
+  // map<string, string> meta = 9;
+  int meta_size() const;
+  private:
+  int _internal_meta_size() const;
+  public:
+  void clear_meta();
+  private:
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+      _internal_meta() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+      _internal_mutable_meta();
+  public:
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+      meta() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+      mutable_meta();
+
+  // string ip = 1;
+  void clear_ip();
+  const std::string& ip() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_ip(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_ip();
+  PROTOBUF_NODISCARD std::string* release_ip();
+  void set_allocated_ip(std::string* ip);
+  private:
+  const std::string& _internal_ip() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_ip(const std::string& value);
+  std::string* _internal_mutable_ip();
+  public:
+
+  // string user_agent = 2;
+  void clear_user_agent();
+  const std::string& user_agent() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_user_agent(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_user_agent();
+  PROTOBUF_NODISCARD std::string* release_user_agent();
+  void set_allocated_user_agent(std::string* user_agent);
+  private:
+  const std::string& _internal_user_agent() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_user_agent(const std::string& value);
+  std::string* _internal_mutable_user_agent();
+  public:
+
+  // string language = 3;
+  void clear_language();
+  const std::string& language() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_language(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_language();
+  PROTOBUF_NODISCARD std::string* release_language();
+  void set_allocated_language(std::string* language);
+  private:
+  const std::string& _internal_language() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_language(const std::string& value);
+  std::string* _internal_mutable_language();
+  public:
+
+  // string api_version = 4;
+  void clear_api_version();
+  const std::string& api_version() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_api_version(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_api_version();
+  PROTOBUF_NODISCARD std::string* release_api_version();
+  void set_allocated_api_version(std::string* api_version);
+  private:
+  const std::string& _internal_api_version() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_api_version(const std::string& value);
+  std::string* _internal_mutable_api_version();
+  public:
+
+  // string trace_id = 6;
+  void clear_trace_id();
+  const std::string& trace_id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_trace_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_trace_id();
+  PROTOBUF_NODISCARD std::string* release_trace_id();
+  void set_allocated_trace_id(std::string* trace_id);
+  private:
+  const std::string& _internal_trace_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_trace_id(const std::string& value);
+  std::string* _internal_mutable_trace_id();
+  public:
+
+  // string request_id = 7;
+  void clear_request_id();
+  const std::string& request_id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_request_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_request_id();
+  PROTOBUF_NODISCARD std::string* release_request_id();
+  void set_allocated_request_id(std::string* request_id);
+  private:
+  const std::string& _internal_request_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_request_id(const std::string& value);
+  std::string* _internal_mutable_request_id();
+  public:
+
+  // string caller = 8;
+  void clear_caller();
+  const std::string& caller() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_caller(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_caller();
+  PROTOBUF_NODISCARD std::string* release_caller();
+  void set_allocated_caller(std::string* caller);
+  private:
+  const std::string& _internal_caller() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_caller(const std::string& value);
+  std::string* _internal_mutable_caller();
+  public:
+
+  // int64 timestamp = 5;
+  void clear_timestamp();
+  int64_t timestamp() const;
+  void set_timestamp(int64_t value);
+  private:
+  int64_t _internal_timestamp() const;
+  void _internal_set_timestamp(int64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:gufo.RequestContext)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::MapField<
+        RequestContext_MetaEntry_DoNotUse,
+        std::string, std::string,
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> meta_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr ip_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr user_agent_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr language_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr api_version_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr trace_id_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr request_id_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr caller_;
+    int64_t timestamp_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_microservice_2eproto;
+};
+// -------------------------------------------------------------------
+
+class FileUpload final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.FileUpload) */ {
+ public:
+  inline FileUpload() : FileUpload(nullptr) {}
+  ~FileUpload() override;
+  explicit PROTOBUF_CONSTEXPR FileUpload(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  FileUpload(const FileUpload& from);
+  FileUpload(FileUpload&& from) noexcept
+    : FileUpload() {
+    *this = ::std::move(from);
+  }
+
+  inline FileUpload& operator=(const FileUpload& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline FileUpload& operator=(FileUpload&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const FileUpload& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const FileUpload* internal_default_instance() {
+    return reinterpret_cast<const FileUpload*>(
+               &_FileUpload_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  friend void swap(FileUpload& a, FileUpload& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(FileUpload* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(FileUpload* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  FileUpload* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<FileUpload>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const FileUpload& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const FileUpload& from) {
+    FileUpload::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(FileUpload* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "gufo.FileUpload";
+  }
+  protected:
+  explicit FileUpload(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDataFieldNumber = 1,
+    kFilenameFieldNumber = 2,
+    kContentTypeFieldNumber = 3,
+    kSizeFieldNumber = 4,
+  };
+  // bytes data = 1;
+  void clear_data();
+  const std::string& data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_data();
+  PROTOBUF_NODISCARD std::string* release_data();
+  void set_allocated_data(std::string* data);
+  private:
+  const std::string& _internal_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
+  std::string* _internal_mutable_data();
+  public:
+
+  // string filename = 2;
+  void clear_filename();
+  const std::string& filename() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_filename(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_filename();
+  PROTOBUF_NODISCARD std::string* release_filename();
+  void set_allocated_filename(std::string* filename);
+  private:
+  const std::string& _internal_filename() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_filename(const std::string& value);
+  std::string* _internal_mutable_filename();
+  public:
+
+  // string content_type = 3;
+  void clear_content_type();
+  const std::string& content_type() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_content_type(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_content_type();
+  PROTOBUF_NODISCARD std::string* release_content_type();
+  void set_allocated_content_type(std::string* content_type);
+  private:
+  const std::string& _internal_content_type() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_content_type(const std::string& value);
+  std::string* _internal_mutable_content_type();
+  public:
+
+  // int64 size = 4;
+  void clear_size();
+  int64_t size() const;
+  void set_size(int64_t value);
+  private:
+  int64_t _internal_size() const;
+  void _internal_set_size(int64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:gufo.FileUpload)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr filename_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr content_type_;
+    int64_t size_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_microservice_2eproto;
+};
+// -------------------------------------------------------------------
+
+class FileRef final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.FileRef) */ {
+ public:
+  inline FileRef() : FileRef(nullptr) {}
+  ~FileRef() override;
+  explicit PROTOBUF_CONSTEXPR FileRef(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  FileRef(const FileRef& from);
+  FileRef(FileRef&& from) noexcept
+    : FileRef() {
+    *this = ::std::move(from);
+  }
+
+  inline FileRef& operator=(const FileRef& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline FileRef& operator=(FileRef&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const FileRef& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const FileRef* internal_default_instance() {
+    return reinterpret_cast<const FileRef*>(
+               &_FileRef_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(FileRef& a, FileRef& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(FileRef* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(FileRef* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  FileRef* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<FileRef>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const FileRef& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const FileRef& from) {
+    FileRef::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(FileRef* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "gufo.FileRef";
+  }
+  protected:
+  explicit FileRef(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 1,
+    kUriFieldNumber = 2,
+  };
+  // string name = 1;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // string uri = 2;
+  void clear_uri();
+  const std::string& uri() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_uri(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_uri();
+  PROTOBUF_NODISCARD std::string* release_uri();
+  void set_allocated_uri(std::string* uri);
+  private:
+  const std::string& _internal_uri() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_uri(const std::string& value);
+  std::string* _internal_mutable_uri();
+  public:
+
+  // @@protoc_insertion_point(class_scope:gufo.FileRef)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr uri_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1279,7 +1570,7 @@ public:
   void MergeFrom(const Response_DataEntry_DoNotUse& other);
   static const Response_DataEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const Response_DataEntry_DoNotUse*>(&_Response_DataEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(std::string* s) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "Response.DataEntry.key");
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.Response.DataEntry.key");
  }
   static bool ValidateValue(void*) { return true; }
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
@@ -1290,7 +1581,7 @@ public:
 // -------------------------------------------------------------------
 
 class Response final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Response) */ {
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.Response) */ {
  public:
   inline Response() : Response(nullptr) {}
   ~Response() override;
@@ -1337,7 +1628,7 @@ class Response final :
                &_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    9;
 
   friend void swap(Response& a, Response& b) {
     a.Swap(&b);
@@ -1393,7 +1684,7 @@ class Response final :
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Response";
+    return "gufo.Response";
   }
   protected:
   explicit Response(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -1414,11 +1705,12 @@ class Response final :
 
   enum : int {
     kDataFieldNumber = 1,
-    kRequestBackFieldNumber = 2,
-    kErrorFieldNumber = 4,
-    kCodeFieldNumber = 3,
+    kErrorFieldNumber = 2,
+    kMetaFieldNumber = 3,
+    kRequestBackFieldNumber = 5,
+    kCodeFieldNumber = 4,
   };
-  // map<string, .google.protobuf.Any> Data = 1;
+  // map<string, .google.protobuf.Any> data = 1;
   int data_size() const;
   private:
   int _internal_data_size() const;
@@ -1435,56 +1727,70 @@ class Response final :
   ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
       mutable_data();
 
-  // optional .Request RequestBack = 2;
-  bool has_requestback() const;
-  private:
-  bool _internal_has_requestback() const;
-  public:
-  void clear_requestback();
-  const ::Request& requestback() const;
-  PROTOBUF_NODISCARD ::Request* release_requestback();
-  ::Request* mutable_requestback();
-  void set_allocated_requestback(::Request* requestback);
-  private:
-  const ::Request& _internal_requestback() const;
-  ::Request* _internal_mutable_requestback();
-  public:
-  void unsafe_arena_set_allocated_requestback(
-      ::Request* requestback);
-  ::Request* unsafe_arena_release_requestback();
-
-  // optional .Error error = 4;
+  // .gufo.Error error = 2;
   bool has_error() const;
   private:
   bool _internal_has_error() const;
   public:
   void clear_error();
-  const ::Error& error() const;
-  PROTOBUF_NODISCARD ::Error* release_error();
-  ::Error* mutable_error();
-  void set_allocated_error(::Error* error);
+  const ::gufo::Error& error() const;
+  PROTOBUF_NODISCARD ::gufo::Error* release_error();
+  ::gufo::Error* mutable_error();
+  void set_allocated_error(::gufo::Error* error);
   private:
-  const ::Error& _internal_error() const;
-  ::Error* _internal_mutable_error();
+  const ::gufo::Error& _internal_error() const;
+  ::gufo::Error* _internal_mutable_error();
   public:
   void unsafe_arena_set_allocated_error(
-      ::Error* error);
-  ::Error* unsafe_arena_release_error();
+      ::gufo::Error* error);
+  ::gufo::Error* unsafe_arena_release_error();
 
-  // optional .UploadStatusCode Code = 3;
-  bool has_code() const;
+  // .gufo.ResponseMeta meta = 3;
+  bool has_meta() const;
   private:
-  bool _internal_has_code() const;
+  bool _internal_has_meta() const;
   public:
+  void clear_meta();
+  const ::gufo::ResponseMeta& meta() const;
+  PROTOBUF_NODISCARD ::gufo::ResponseMeta* release_meta();
+  ::gufo::ResponseMeta* mutable_meta();
+  void set_allocated_meta(::gufo::ResponseMeta* meta);
+  private:
+  const ::gufo::ResponseMeta& _internal_meta() const;
+  ::gufo::ResponseMeta* _internal_mutable_meta();
+  public:
+  void unsafe_arena_set_allocated_meta(
+      ::gufo::ResponseMeta* meta);
+  ::gufo::ResponseMeta* unsafe_arena_release_meta();
+
+  // .gufo.Request request_back = 5;
+  bool has_request_back() const;
+  private:
+  bool _internal_has_request_back() const;
+  public:
+  void clear_request_back();
+  const ::gufo::Request& request_back() const;
+  PROTOBUF_NODISCARD ::gufo::Request* release_request_back();
+  ::gufo::Request* mutable_request_back();
+  void set_allocated_request_back(::gufo::Request* request_back);
+  private:
+  const ::gufo::Request& _internal_request_back() const;
+  ::gufo::Request* _internal_mutable_request_back();
+  public:
+  void unsafe_arena_set_allocated_request_back(
+      ::gufo::Request* request_back);
+  ::gufo::Request* unsafe_arena_release_request_back();
+
+  // .gufo.UploadStatusCode code = 4;
   void clear_code();
-  ::UploadStatusCode code() const;
-  void set_code(::UploadStatusCode value);
+  ::gufo::UploadStatusCode code() const;
+  void set_code(::gufo::UploadStatusCode value);
   private:
-  ::UploadStatusCode _internal_code() const;
-  void _internal_set_code(::UploadStatusCode value);
+  ::gufo::UploadStatusCode _internal_code() const;
+  void _internal_set_code(::gufo::UploadStatusCode value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Response)
+  // @@protoc_insertion_point(class_scope:gufo.Response)
  private:
   class _Internal;
 
@@ -1492,16 +1798,531 @@ class Response final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::MapField<
         Response_DataEntry_DoNotUse,
         std::string, ::PROTOBUF_NAMESPACE_ID::Any,
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE> data_;
-    ::Request* requestback_;
-    ::Error* error_;
+    ::gufo::Error* error_;
+    ::gufo::ResponseMeta* meta_;
+    ::gufo::Request* request_back_;
     int code_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_microservice_2eproto;
+};
+// -------------------------------------------------------------------
+
+class Error_MetaEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<Error_MetaEntry_DoNotUse, 
+    std::string, std::string,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> {
+public:
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<Error_MetaEntry_DoNotUse, 
+    std::string, std::string,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> SuperType;
+  Error_MetaEntry_DoNotUse();
+  explicit PROTOBUF_CONSTEXPR Error_MetaEntry_DoNotUse(
+      ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  explicit Error_MetaEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const Error_MetaEntry_DoNotUse& other);
+  static const Error_MetaEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const Error_MetaEntry_DoNotUse*>(&_Error_MetaEntry_DoNotUse_default_instance_); }
+  static bool ValidateKey(std::string* s) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.Error.MetaEntry.key");
+ }
+  static bool ValidateValue(std::string* s) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.Error.MetaEntry.value");
+ }
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  friend struct ::TableStruct_microservice_2eproto;
+};
+
+// -------------------------------------------------------------------
+
+class Error final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.Error) */ {
+ public:
+  inline Error() : Error(nullptr) {}
+  ~Error() override;
+  explicit PROTOBUF_CONSTEXPR Error(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  Error(const Error& from);
+  Error(Error&& from) noexcept
+    : Error() {
+    *this = ::std::move(from);
+  }
+
+  inline Error& operator=(const Error& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Error& operator=(Error&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Error& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Error* internal_default_instance() {
+    return reinterpret_cast<const Error*>(
+               &_Error_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(Error& a, Error& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Error* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Error* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Error* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Error>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const Error& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const Error& from) {
+    Error::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Error* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "gufo.Error";
+  }
+  protected:
+  explicit Error(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMetaFieldNumber = 4,
+    kKeyFieldNumber = 2,
+    kMessageFieldNumber = 3,
+    kCodeFieldNumber = 1,
+    kRetryableFieldNumber = 5,
+  };
+  // map<string, string> meta = 4;
+  int meta_size() const;
+  private:
+  int _internal_meta_size() const;
+  public:
+  void clear_meta();
+  private:
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+      _internal_meta() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+      _internal_mutable_meta();
+  public:
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+      meta() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+      mutable_meta();
+
+  // string key = 2;
+  void clear_key();
+  const std::string& key() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_key(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_key();
+  PROTOBUF_NODISCARD std::string* release_key();
+  void set_allocated_key(std::string* key);
+  private:
+  const std::string& _internal_key() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_key(const std::string& value);
+  std::string* _internal_mutable_key();
+  public:
+
+  // string message = 3;
+  void clear_message();
+  const std::string& message() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_message(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_message();
+  PROTOBUF_NODISCARD std::string* release_message();
+  void set_allocated_message(std::string* message);
+  private:
+  const std::string& _internal_message() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_message(const std::string& value);
+  std::string* _internal_mutable_message();
+  public:
+
+  // int32 code = 1;
+  void clear_code();
+  int32_t code() const;
+  void set_code(int32_t value);
+  private:
+  int32_t _internal_code() const;
+  void _internal_set_code(int32_t value);
+  public:
+
+  // bool retryable = 5;
+  void clear_retryable();
+  bool retryable() const;
+  void set_retryable(bool value);
+  private:
+  bool _internal_retryable() const;
+  void _internal_set_retryable(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:gufo.Error)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::MapField<
+        Error_MetaEntry_DoNotUse,
+        std::string, std::string,
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> meta_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr key_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr message_;
+    int32_t code_;
+    bool retryable_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_microservice_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ResponseMeta_ExtraEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<ResponseMeta_ExtraEntry_DoNotUse, 
+    std::string, std::string,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> {
+public:
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<ResponseMeta_ExtraEntry_DoNotUse, 
+    std::string, std::string,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> SuperType;
+  ResponseMeta_ExtraEntry_DoNotUse();
+  explicit PROTOBUF_CONSTEXPR ResponseMeta_ExtraEntry_DoNotUse(
+      ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  explicit ResponseMeta_ExtraEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const ResponseMeta_ExtraEntry_DoNotUse& other);
+  static const ResponseMeta_ExtraEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const ResponseMeta_ExtraEntry_DoNotUse*>(&_ResponseMeta_ExtraEntry_DoNotUse_default_instance_); }
+  static bool ValidateKey(std::string* s) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.ResponseMeta.ExtraEntry.key");
+ }
+  static bool ValidateValue(std::string* s) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "gufo.ResponseMeta.ExtraEntry.value");
+ }
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  friend struct ::TableStruct_microservice_2eproto;
+};
+
+// -------------------------------------------------------------------
+
+class ResponseMeta final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.ResponseMeta) */ {
+ public:
+  inline ResponseMeta() : ResponseMeta(nullptr) {}
+  ~ResponseMeta() override;
+  explicit PROTOBUF_CONSTEXPR ResponseMeta(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ResponseMeta(const ResponseMeta& from);
+  ResponseMeta(ResponseMeta&& from) noexcept
+    : ResponseMeta() {
+    *this = ::std::move(from);
+  }
+
+  inline ResponseMeta& operator=(const ResponseMeta& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ResponseMeta& operator=(ResponseMeta&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ResponseMeta& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ResponseMeta* internal_default_instance() {
+    return reinterpret_cast<const ResponseMeta*>(
+               &_ResponseMeta_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(ResponseMeta& a, ResponseMeta& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ResponseMeta* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ResponseMeta* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ResponseMeta* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ResponseMeta>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const ResponseMeta& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const ResponseMeta& from) {
+    ResponseMeta::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ResponseMeta* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "gufo.ResponseMeta";
+  }
+  protected:
+  explicit ResponseMeta(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kExtraFieldNumber = 6,
+    kTraceIdFieldNumber = 2,
+    kRequestIdFieldNumber = 3,
+    kNodeFieldNumber = 4,
+    kTsFieldNumber = 5,
+    kStatusFieldNumber = 1,
+  };
+  // map<string, string> extra = 6;
+  int extra_size() const;
+  private:
+  int _internal_extra_size() const;
+  public:
+  void clear_extra();
+  private:
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+      _internal_extra() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+      _internal_mutable_extra();
+  public:
+  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+      extra() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+      mutable_extra();
+
+  // string trace_id = 2;
+  void clear_trace_id();
+  const std::string& trace_id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_trace_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_trace_id();
+  PROTOBUF_NODISCARD std::string* release_trace_id();
+  void set_allocated_trace_id(std::string* trace_id);
+  private:
+  const std::string& _internal_trace_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_trace_id(const std::string& value);
+  std::string* _internal_mutable_trace_id();
+  public:
+
+  // string request_id = 3;
+  void clear_request_id();
+  const std::string& request_id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_request_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_request_id();
+  PROTOBUF_NODISCARD std::string* release_request_id();
+  void set_allocated_request_id(std::string* request_id);
+  private:
+  const std::string& _internal_request_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_request_id(const std::string& value);
+  std::string* _internal_mutable_request_id();
+  public:
+
+  // string node = 4;
+  void clear_node();
+  const std::string& node() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_node(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_node();
+  PROTOBUF_NODISCARD std::string* release_node();
+  void set_allocated_node(std::string* node);
+  private:
+  const std::string& _internal_node() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_node(const std::string& value);
+  std::string* _internal_mutable_node();
+  public:
+
+  // .google.protobuf.Timestamp ts = 5;
+  bool has_ts() const;
+  private:
+  bool _internal_has_ts() const;
+  public:
+  void clear_ts();
+  const ::PROTOBUF_NAMESPACE_ID::Timestamp& ts() const;
+  PROTOBUF_NODISCARD ::PROTOBUF_NAMESPACE_ID::Timestamp* release_ts();
+  ::PROTOBUF_NAMESPACE_ID::Timestamp* mutable_ts();
+  void set_allocated_ts(::PROTOBUF_NAMESPACE_ID::Timestamp* ts);
+  private:
+  const ::PROTOBUF_NAMESPACE_ID::Timestamp& _internal_ts() const;
+  ::PROTOBUF_NAMESPACE_ID::Timestamp* _internal_mutable_ts();
+  public:
+  void unsafe_arena_set_allocated_ts(
+      ::PROTOBUF_NAMESPACE_ID::Timestamp* ts);
+  ::PROTOBUF_NAMESPACE_ID::Timestamp* unsafe_arena_release_ts();
+
+  // int32 status = 1;
+  void clear_status();
+  int32_t status() const;
+  void set_status(int32_t value);
+  private:
+  int32_t _internal_status() const;
+  void _internal_set_status(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:gufo.ResponseMeta)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::MapField<
+        ResponseMeta_ExtraEntry_DoNotUse,
+        std::string, std::string,
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> extra_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr trace_id_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr request_id_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr node_;
+    ::PROTOBUF_NAMESPACE_ID::Timestamp* ts_;
+    int32_t status_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_microservice_2eproto;
@@ -1509,7 +2330,7 @@ class Response final :
 // -------------------------------------------------------------------
 
 class FileChunk final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:FileChunk) */ {
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:gufo.FileChunk) */ {
  public:
   inline FileChunk() : FileChunk(nullptr) {}
   ~FileChunk() override;
@@ -1556,7 +2377,7 @@ class FileChunk final :
                &_FileChunk_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    14;
 
   friend void swap(FileChunk& a, FileChunk& b) {
     a.Swap(&b);
@@ -1612,7 +2433,7 @@ class FileChunk final :
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "FileChunk";
+    return "gufo.FileChunk";
   }
   protected:
   explicit FileChunk(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -1660,7 +2481,7 @@ class FileChunk final :
   std::string* _internal_mutable_data();
   public:
 
-  // @@protoc_insertion_point(class_scope:FileChunk)
+  // @@protoc_insertion_point(class_scope:gufo.FileChunk)
  private:
   class _Internal;
 
@@ -1670,197 +2491,6 @@ class FileChunk final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_microservice_2eproto;
-};
-// -------------------------------------------------------------------
-
-class StringMap_EntriesEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<StringMap_EntriesEntry_DoNotUse, 
-    std::string, std::string,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> {
-public:
-  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<StringMap_EntriesEntry_DoNotUse, 
-    std::string, std::string,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> SuperType;
-  StringMap_EntriesEntry_DoNotUse();
-  explicit PROTOBUF_CONSTEXPR StringMap_EntriesEntry_DoNotUse(
-      ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-  explicit StringMap_EntriesEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  void MergeFrom(const StringMap_EntriesEntry_DoNotUse& other);
-  static const StringMap_EntriesEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const StringMap_EntriesEntry_DoNotUse*>(&_StringMap_EntriesEntry_DoNotUse_default_instance_); }
-  static bool ValidateKey(std::string* s) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "StringMap.EntriesEntry.key");
- }
-  static bool ValidateValue(std::string* s) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "StringMap.EntriesEntry.value");
- }
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  friend struct ::TableStruct_microservice_2eproto;
-};
-
-// -------------------------------------------------------------------
-
-class StringMap final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:StringMap) */ {
- public:
-  inline StringMap() : StringMap(nullptr) {}
-  ~StringMap() override;
-  explicit PROTOBUF_CONSTEXPR StringMap(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  StringMap(const StringMap& from);
-  StringMap(StringMap&& from) noexcept
-    : StringMap() {
-    *this = ::std::move(from);
-  }
-
-  inline StringMap& operator=(const StringMap& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline StringMap& operator=(StringMap&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const StringMap& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const StringMap* internal_default_instance() {
-    return reinterpret_cast<const StringMap*>(
-               &_StringMap_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    10;
-
-  friend void swap(StringMap& a, StringMap& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(StringMap* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(StringMap* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  StringMap* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<StringMap>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const StringMap& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const StringMap& from) {
-    StringMap::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(StringMap* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "StringMap";
-  }
-  protected:
-  explicit StringMap(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  private:
-  static void ArenaDtor(void* object);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kEntriesFieldNumber = 1,
-  };
-  // map<string, string> entries = 1;
-  int entries_size() const;
-  private:
-  int _internal_entries_size() const;
-  public:
-  void clear_entries();
-  private:
-  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
-      _internal_entries() const;
-  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
-      _internal_mutable_entries();
-  public:
-  const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
-      entries() const;
-  ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
-      mutable_entries();
-
-  // @@protoc_insertion_point(class_scope:StringMap)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::MapField<
-        StringMap_EntriesEntry_DoNotUse,
-        std::string, std::string,
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING> entries_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1879,64 +2509,46 @@ class StringMap final :
 
 // Request
 
-// optional string Module = 1;
-inline bool Request::_internal_has_module() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool Request::has_module() const {
-  return _internal_has_module();
-}
+// string module = 1;
 inline void Request::clear_module() {
   _impl_.module_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000001u;
 }
 inline const std::string& Request::module() const {
-  // @@protoc_insertion_point(field_get:Request.Module)
+  // @@protoc_insertion_point(field_get:gufo.Request.module)
   return _internal_module();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Request::set_module(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000001u;
+ 
  _impl_.module_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Module)
+  // @@protoc_insertion_point(field_set:gufo.Request.module)
 }
 inline std::string* Request::mutable_module() {
   std::string* _s = _internal_mutable_module();
-  // @@protoc_insertion_point(field_mutable:Request.Module)
+  // @@protoc_insertion_point(field_mutable:gufo.Request.module)
   return _s;
 }
 inline const std::string& Request::_internal_module() const {
   return _impl_.module_.Get();
 }
 inline void Request::_internal_set_module(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
+  
   _impl_.module_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Request::_internal_mutable_module() {
-  _impl_._has_bits_[0] |= 0x00000001u;
+  
   return _impl_.module_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Request::release_module() {
-  // @@protoc_insertion_point(field_release:Request.Module)
-  if (!_internal_has_module()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  auto* p = _impl_.module_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.module_.IsDefault()) {
-    _impl_.module_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
+  // @@protoc_insertion_point(field_release:gufo.Request.module)
+  return _impl_.module_.Release();
 }
 inline void Request::set_allocated_module(std::string* module) {
   if (module != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000001u;
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
+    
   }
   _impl_.module_.SetAllocated(module, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1944,67 +2556,49 @@ inline void Request::set_allocated_module(std::string* module) {
     _impl_.module_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Module)
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.module)
 }
 
-// optional string Param = 2;
-inline bool Request::_internal_has_param() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool Request::has_param() const {
-  return _internal_has_param();
-}
+// string param = 2;
 inline void Request::clear_param() {
   _impl_.param_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000002u;
 }
 inline const std::string& Request::param() const {
-  // @@protoc_insertion_point(field_get:Request.Param)
+  // @@protoc_insertion_point(field_get:gufo.Request.param)
   return _internal_param();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Request::set_param(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000002u;
+ 
  _impl_.param_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Param)
+  // @@protoc_insertion_point(field_set:gufo.Request.param)
 }
 inline std::string* Request::mutable_param() {
   std::string* _s = _internal_mutable_param();
-  // @@protoc_insertion_point(field_mutable:Request.Param)
+  // @@protoc_insertion_point(field_mutable:gufo.Request.param)
   return _s;
 }
 inline const std::string& Request::_internal_param() const {
   return _impl_.param_.Get();
 }
 inline void Request::_internal_set_param(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
+  
   _impl_.param_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Request::_internal_mutable_param() {
-  _impl_._has_bits_[0] |= 0x00000002u;
+  
   return _impl_.param_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Request::release_param() {
-  // @@protoc_insertion_point(field_release:Request.Param)
-  if (!_internal_has_param()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000002u;
-  auto* p = _impl_.param_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.param_.IsDefault()) {
-    _impl_.param_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
+  // @@protoc_insertion_point(field_release:gufo.Request.param)
+  return _impl_.param_.Release();
 }
 inline void Request::set_allocated_param(std::string* param) {
   if (param != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000002u;
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000002u;
+    
   }
   _impl_.param_.SetAllocated(param, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2012,203 +2606,149 @@ inline void Request::set_allocated_param(std::string* param) {
     _impl_.param_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Param)
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.param)
 }
 
-// optional string ParamID = 3;
-inline bool Request::_internal_has_paramid() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
+// string param_id = 3;
+inline void Request::clear_param_id() {
+  _impl_.param_id_.ClearToEmpty();
 }
-inline bool Request::has_paramid() const {
-  return _internal_has_paramid();
-}
-inline void Request::clear_paramid() {
-  _impl_.paramid_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline const std::string& Request::paramid() const {
-  // @@protoc_insertion_point(field_get:Request.ParamID)
-  return _internal_paramid();
+inline const std::string& Request::param_id() const {
+  // @@protoc_insertion_point(field_get:gufo.Request.param_id)
+  return _internal_param_id();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void Request::set_paramid(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000004u;
- _impl_.paramid_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.ParamID)
+void Request::set_param_id(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.param_id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.Request.param_id)
 }
-inline std::string* Request::mutable_paramid() {
-  std::string* _s = _internal_mutable_paramid();
-  // @@protoc_insertion_point(field_mutable:Request.ParamID)
+inline std::string* Request::mutable_param_id() {
+  std::string* _s = _internal_mutable_param_id();
+  // @@protoc_insertion_point(field_mutable:gufo.Request.param_id)
   return _s;
 }
-inline const std::string& Request::_internal_paramid() const {
-  return _impl_.paramid_.Get();
+inline const std::string& Request::_internal_param_id() const {
+  return _impl_.param_id_.Get();
 }
-inline void Request::_internal_set_paramid(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.paramid_.Set(value, GetArenaForAllocation());
+inline void Request::_internal_set_param_id(const std::string& value) {
+  
+  _impl_.param_id_.Set(value, GetArenaForAllocation());
 }
-inline std::string* Request::_internal_mutable_paramid() {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  return _impl_.paramid_.Mutable(GetArenaForAllocation());
+inline std::string* Request::_internal_mutable_param_id() {
+  
+  return _impl_.param_id_.Mutable(GetArenaForAllocation());
 }
-inline std::string* Request::release_paramid() {
-  // @@protoc_insertion_point(field_release:Request.ParamID)
-  if (!_internal_has_paramid()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000004u;
-  auto* p = _impl_.paramid_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.paramid_.IsDefault()) {
-    _impl_.paramid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
+inline std::string* Request::release_param_id() {
+  // @@protoc_insertion_point(field_release:gufo.Request.param_id)
+  return _impl_.param_id_.Release();
 }
-inline void Request::set_allocated_paramid(std::string* paramid) {
-  if (paramid != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000004u;
+inline void Request::set_allocated_param_id(std::string* param_id) {
+  if (param_id != nullptr) {
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000004u;
+    
   }
-  _impl_.paramid_.SetAllocated(paramid, GetArenaForAllocation());
+  _impl_.param_id_.SetAllocated(param_id, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.paramid_.IsDefault()) {
-    _impl_.paramid_.Set("", GetArenaForAllocation());
+  if (_impl_.param_id_.IsDefault()) {
+    _impl_.param_id_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.ParamID)
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.param_id)
 }
 
-// optional string ParamIDD = 4;
-inline bool Request::_internal_has_paramidd() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
-  return value;
+// string param_idd = 4;
+inline void Request::clear_param_idd() {
+  _impl_.param_idd_.ClearToEmpty();
 }
-inline bool Request::has_paramidd() const {
-  return _internal_has_paramidd();
-}
-inline void Request::clear_paramidd() {
-  _impl_.paramidd_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000008u;
-}
-inline const std::string& Request::paramidd() const {
-  // @@protoc_insertion_point(field_get:Request.ParamIDD)
-  return _internal_paramidd();
+inline const std::string& Request::param_idd() const {
+  // @@protoc_insertion_point(field_get:gufo.Request.param_idd)
+  return _internal_param_idd();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void Request::set_paramidd(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000008u;
- _impl_.paramidd_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.ParamIDD)
+void Request::set_param_idd(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.param_idd_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.Request.param_idd)
 }
-inline std::string* Request::mutable_paramidd() {
-  std::string* _s = _internal_mutable_paramidd();
-  // @@protoc_insertion_point(field_mutable:Request.ParamIDD)
+inline std::string* Request::mutable_param_idd() {
+  std::string* _s = _internal_mutable_param_idd();
+  // @@protoc_insertion_point(field_mutable:gufo.Request.param_idd)
   return _s;
 }
-inline const std::string& Request::_internal_paramidd() const {
-  return _impl_.paramidd_.Get();
+inline const std::string& Request::_internal_param_idd() const {
+  return _impl_.param_idd_.Get();
 }
-inline void Request::_internal_set_paramidd(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.paramidd_.Set(value, GetArenaForAllocation());
+inline void Request::_internal_set_param_idd(const std::string& value) {
+  
+  _impl_.param_idd_.Set(value, GetArenaForAllocation());
 }
-inline std::string* Request::_internal_mutable_paramidd() {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  return _impl_.paramidd_.Mutable(GetArenaForAllocation());
+inline std::string* Request::_internal_mutable_param_idd() {
+  
+  return _impl_.param_idd_.Mutable(GetArenaForAllocation());
 }
-inline std::string* Request::release_paramidd() {
-  // @@protoc_insertion_point(field_release:Request.ParamIDD)
-  if (!_internal_has_paramidd()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000008u;
-  auto* p = _impl_.paramidd_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.paramidd_.IsDefault()) {
-    _impl_.paramidd_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
+inline std::string* Request::release_param_idd() {
+  // @@protoc_insertion_point(field_release:gufo.Request.param_idd)
+  return _impl_.param_idd_.Release();
 }
-inline void Request::set_allocated_paramidd(std::string* paramidd) {
-  if (paramidd != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000008u;
+inline void Request::set_allocated_param_idd(std::string* param_idd) {
+  if (param_idd != nullptr) {
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000008u;
+    
   }
-  _impl_.paramidd_.SetAllocated(paramidd, GetArenaForAllocation());
+  _impl_.param_idd_.SetAllocated(param_idd, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.paramidd_.IsDefault()) {
-    _impl_.paramidd_.Set("", GetArenaForAllocation());
+  if (_impl_.param_idd_.IsDefault()) {
+    _impl_.param_idd_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.ParamIDD)
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.param_idd)
 }
 
-// optional string Action = 5;
-inline bool Request::_internal_has_action() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
-  return value;
-}
-inline bool Request::has_action() const {
-  return _internal_has_action();
-}
+// string action = 5;
 inline void Request::clear_action() {
   _impl_.action_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline const std::string& Request::action() const {
-  // @@protoc_insertion_point(field_get:Request.Action)
+  // @@protoc_insertion_point(field_get:gufo.Request.action)
   return _internal_action();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Request::set_action(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000010u;
+ 
  _impl_.action_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Action)
+  // @@protoc_insertion_point(field_set:gufo.Request.action)
 }
 inline std::string* Request::mutable_action() {
   std::string* _s = _internal_mutable_action();
-  // @@protoc_insertion_point(field_mutable:Request.Action)
+  // @@protoc_insertion_point(field_mutable:gufo.Request.action)
   return _s;
 }
 inline const std::string& Request::_internal_action() const {
   return _impl_.action_.Get();
 }
 inline void Request::_internal_set_action(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  
   _impl_.action_.Set(value, GetArenaForAllocation());
 }
 inline std::string* Request::_internal_mutable_action() {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  
   return _impl_.action_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Request::release_action() {
-  // @@protoc_insertion_point(field_release:Request.Action)
-  if (!_internal_has_action()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000010u;
-  auto* p = _impl_.action_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.action_.IsDefault()) {
-    _impl_.action_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
+  // @@protoc_insertion_point(field_release:gufo.Request.action)
+  return _impl_.action_.Release();
 }
 inline void Request::set_allocated_action(std::string* action) {
   if (action != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000010u;
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000010u;
+    
   }
   _impl_.action_.SetAllocated(action, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2216,1173 +2756,71 @@ inline void Request::set_allocated_action(std::string* action) {
     _impl_.action_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Action)
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.action)
 }
 
-// map<string, .google.protobuf.Any> Args = 6;
-inline int Request::_internal_args_size() const {
-  return _impl_.args_.size();
+// map<string, string> query = 6;
+inline int Request::_internal_query_size() const {
+  return _impl_.query_.size();
 }
-inline int Request::args_size() const {
-  return _internal_args_size();
+inline int Request::query_size() const {
+  return _internal_query_size();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-Request::_internal_args() const {
-  return _impl_.args_.GetMap();
+inline void Request::clear_query() {
+  _impl_.query_.Clear();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-Request::args() const {
-  // @@protoc_insertion_point(field_map:Request.Args)
-  return _internal_args();
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+Request::_internal_query() const {
+  return _impl_.query_.GetMap();
 }
-inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-Request::_internal_mutable_args() {
-  return _impl_.args_.MutableMap();
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+Request::query() const {
+  // @@protoc_insertion_point(field_map:gufo.Request.query)
+  return _internal_query();
 }
-inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-Request::mutable_args() {
-  // @@protoc_insertion_point(field_mutable_map:Request.Args)
-  return _internal_mutable_args();
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+Request::_internal_mutable_query() {
+  return _impl_.query_.MutableMap();
 }
-
-// optional string Path = 7;
-inline bool Request::_internal_has_path() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
-  return value;
-}
-inline bool Request::has_path() const {
-  return _internal_has_path();
-}
-inline void Request::clear_path() {
-  _impl_.path_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000020u;
-}
-inline const std::string& Request::path() const {
-  // @@protoc_insertion_point(field_get:Request.Path)
-  return _internal_path();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_path(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000020u;
- _impl_.path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Path)
-}
-inline std::string* Request::mutable_path() {
-  std::string* _s = _internal_mutable_path();
-  // @@protoc_insertion_point(field_mutable:Request.Path)
-  return _s;
-}
-inline const std::string& Request::_internal_path() const {
-  return _impl_.path_.Get();
-}
-inline void Request::_internal_set_path(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
-  _impl_.path_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_path() {
-  _impl_._has_bits_[0] |= 0x00000020u;
-  return _impl_.path_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_path() {
-  // @@protoc_insertion_point(field_release:Request.Path)
-  if (!_internal_has_path()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000020u;
-  auto* p = _impl_.path_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.path_.IsDefault()) {
-    _impl_.path_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_path(std::string* path) {
-  if (path != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000020u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000020u;
-  }
-  _impl_.path_.SetAllocated(path, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.path_.IsDefault()) {
-    _impl_.path_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Path)
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+Request::mutable_query() {
+  // @@protoc_insertion_point(field_mutable_map:gufo.Request.query)
+  return _internal_mutable_query();
 }
 
-// optional string Token = 8;
-inline bool Request::_internal_has_token() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
-  return value;
-}
-inline bool Request::has_token() const {
-  return _internal_has_token();
-}
-inline void Request::clear_token() {
-  _impl_.token_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000040u;
-}
-inline const std::string& Request::token() const {
-  // @@protoc_insertion_point(field_get:Request.Token)
-  return _internal_token();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_token(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000040u;
- _impl_.token_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Token)
-}
-inline std::string* Request::mutable_token() {
-  std::string* _s = _internal_mutable_token();
-  // @@protoc_insertion_point(field_mutable:Request.Token)
-  return _s;
-}
-inline const std::string& Request::_internal_token() const {
-  return _impl_.token_.Get();
-}
-inline void Request::_internal_set_token(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  _impl_.token_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_token() {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  return _impl_.token_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_token() {
-  // @@protoc_insertion_point(field_release:Request.Token)
-  if (!_internal_has_token()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000040u;
-  auto* p = _impl_.token_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.token_.IsDefault()) {
-    _impl_.token_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_token(std::string* token) {
-  if (token != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000040u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000040u;
-  }
-  _impl_.token_.SetAllocated(token, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.token_.IsDefault()) {
-    _impl_.token_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Token)
-}
-
-// optional string Sign = 9;
-inline bool Request::_internal_has_sign() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
-  return value;
-}
-inline bool Request::has_sign() const {
-  return _internal_has_sign();
-}
-inline void Request::clear_sign() {
-  _impl_.sign_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000080u;
-}
-inline const std::string& Request::sign() const {
-  // @@protoc_insertion_point(field_get:Request.Sign)
-  return _internal_sign();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_sign(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000080u;
- _impl_.sign_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Sign)
-}
-inline std::string* Request::mutable_sign() {
-  std::string* _s = _internal_mutable_sign();
-  // @@protoc_insertion_point(field_mutable:Request.Sign)
-  return _s;
-}
-inline const std::string& Request::_internal_sign() const {
-  return _impl_.sign_.Get();
-}
-inline void Request::_internal_set_sign(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
-  _impl_.sign_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_sign() {
-  _impl_._has_bits_[0] |= 0x00000080u;
-  return _impl_.sign_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_sign() {
-  // @@protoc_insertion_point(field_release:Request.Sign)
-  if (!_internal_has_sign()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000080u;
-  auto* p = _impl_.sign_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.sign_.IsDefault()) {
-    _impl_.sign_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_sign(std::string* sign) {
-  if (sign != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000080u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000080u;
-  }
-  _impl_.sign_.SetAllocated(sign, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.sign_.IsDefault()) {
-    _impl_.sign_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Sign)
-}
-
-// optional string SID = 10;
-inline bool Request::_internal_has_sid() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
-  return value;
-}
-inline bool Request::has_sid() const {
-  return _internal_has_sid();
-}
-inline void Request::clear_sid() {
-  _impl_.sid_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000100u;
-}
-inline const std::string& Request::sid() const {
-  // @@protoc_insertion_point(field_get:Request.SID)
-  return _internal_sid();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_sid(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000100u;
- _impl_.sid_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.SID)
-}
-inline std::string* Request::mutable_sid() {
-  std::string* _s = _internal_mutable_sid();
-  // @@protoc_insertion_point(field_mutable:Request.SID)
-  return _s;
-}
-inline const std::string& Request::_internal_sid() const {
-  return _impl_.sid_.Get();
-}
-inline void Request::_internal_set_sid(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
-  _impl_.sid_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_sid() {
-  _impl_._has_bits_[0] |= 0x00000100u;
-  return _impl_.sid_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_sid() {
-  // @@protoc_insertion_point(field_release:Request.SID)
-  if (!_internal_has_sid()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000100u;
-  auto* p = _impl_.sid_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.sid_.IsDefault()) {
-    _impl_.sid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_sid(std::string* sid) {
-  if (sid != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000100u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000100u;
-  }
-  _impl_.sid_.SetAllocated(sid, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.sid_.IsDefault()) {
-    _impl_.sid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.SID)
-}
-
-// optional string IP = 11;
-inline bool Request::_internal_has_ip() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
-  return value;
-}
-inline bool Request::has_ip() const {
-  return _internal_has_ip();
-}
-inline void Request::clear_ip() {
-  _impl_.ip_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000200u;
-}
-inline const std::string& Request::ip() const {
-  // @@protoc_insertion_point(field_get:Request.IP)
-  return _internal_ip();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_ip(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000200u;
- _impl_.ip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.IP)
-}
-inline std::string* Request::mutable_ip() {
-  std::string* _s = _internal_mutable_ip();
-  // @@protoc_insertion_point(field_mutable:Request.IP)
-  return _s;
-}
-inline const std::string& Request::_internal_ip() const {
-  return _impl_.ip_.Get();
-}
-inline void Request::_internal_set_ip(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
-  _impl_.ip_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_ip() {
-  _impl_._has_bits_[0] |= 0x00000200u;
-  return _impl_.ip_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_ip() {
-  // @@protoc_insertion_point(field_release:Request.IP)
-  if (!_internal_has_ip()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000200u;
-  auto* p = _impl_.ip_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.ip_.IsDefault()) {
-    _impl_.ip_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_ip(std::string* ip) {
-  if (ip != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000200u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000200u;
-  }
-  _impl_.ip_.SetAllocated(ip, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.ip_.IsDefault()) {
-    _impl_.ip_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.IP)
-}
-
-// optional string UserAgent = 12;
-inline bool Request::_internal_has_useragent() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
-  return value;
-}
-inline bool Request::has_useragent() const {
-  return _internal_has_useragent();
-}
-inline void Request::clear_useragent() {
-  _impl_.useragent_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000400u;
-}
-inline const std::string& Request::useragent() const {
-  // @@protoc_insertion_point(field_get:Request.UserAgent)
-  return _internal_useragent();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_useragent(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000400u;
- _impl_.useragent_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.UserAgent)
-}
-inline std::string* Request::mutable_useragent() {
-  std::string* _s = _internal_mutable_useragent();
-  // @@protoc_insertion_point(field_mutable:Request.UserAgent)
-  return _s;
-}
-inline const std::string& Request::_internal_useragent() const {
-  return _impl_.useragent_.Get();
-}
-inline void Request::_internal_set_useragent(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
-  _impl_.useragent_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_useragent() {
-  _impl_._has_bits_[0] |= 0x00000400u;
-  return _impl_.useragent_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_useragent() {
-  // @@protoc_insertion_point(field_release:Request.UserAgent)
-  if (!_internal_has_useragent()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000400u;
-  auto* p = _impl_.useragent_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.useragent_.IsDefault()) {
-    _impl_.useragent_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_useragent(std::string* useragent) {
-  if (useragent != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000400u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000400u;
-  }
-  _impl_.useragent_.SetAllocated(useragent, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.useragent_.IsDefault()) {
-    _impl_.useragent_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.UserAgent)
-}
-
-// optional string TokenType = 13;
-inline bool Request::_internal_has_tokentype() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
-  return value;
-}
-inline bool Request::has_tokentype() const {
-  return _internal_has_tokentype();
-}
-inline void Request::clear_tokentype() {
-  _impl_.tokentype_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000800u;
-}
-inline const std::string& Request::tokentype() const {
-  // @@protoc_insertion_point(field_get:Request.TokenType)
-  return _internal_tokentype();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_tokentype(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000800u;
- _impl_.tokentype_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.TokenType)
-}
-inline std::string* Request::mutable_tokentype() {
-  std::string* _s = _internal_mutable_tokentype();
-  // @@protoc_insertion_point(field_mutable:Request.TokenType)
-  return _s;
-}
-inline const std::string& Request::_internal_tokentype() const {
-  return _impl_.tokentype_.Get();
-}
-inline void Request::_internal_set_tokentype(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
-  _impl_.tokentype_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_tokentype() {
-  _impl_._has_bits_[0] |= 0x00000800u;
-  return _impl_.tokentype_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_tokentype() {
-  // @@protoc_insertion_point(field_release:Request.TokenType)
-  if (!_internal_has_tokentype()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000800u;
-  auto* p = _impl_.tokentype_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.tokentype_.IsDefault()) {
-    _impl_.tokentype_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_tokentype(std::string* tokentype) {
-  if (tokentype != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000800u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000800u;
-  }
-  _impl_.tokentype_.SetAllocated(tokentype, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.tokentype_.IsDefault()) {
-    _impl_.tokentype_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.TokenType)
-}
-
-// optional int32 TimeStamp = 14;
-inline bool Request::_internal_has_timestamp() const {
-  bool value = (_impl_._has_bits_[0] & 0x00080000u) != 0;
-  return value;
-}
-inline bool Request::has_timestamp() const {
-  return _internal_has_timestamp();
-}
-inline void Request::clear_timestamp() {
-  _impl_.timestamp_ = 0;
-  _impl_._has_bits_[0] &= ~0x00080000u;
-}
-inline int32_t Request::_internal_timestamp() const {
-  return _impl_.timestamp_;
-}
-inline int32_t Request::timestamp() const {
-  // @@protoc_insertion_point(field_get:Request.TimeStamp)
-  return _internal_timestamp();
-}
-inline void Request::_internal_set_timestamp(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00080000u;
-  _impl_.timestamp_ = value;
-}
-inline void Request::set_timestamp(int32_t value) {
-  _internal_set_timestamp(value);
-  // @@protoc_insertion_point(field_set:Request.TimeStamp)
-}
-
-// optional string Language = 15;
-inline bool Request::_internal_has_language() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
-  return value;
-}
-inline bool Request::has_language() const {
-  return _internal_has_language();
-}
-inline void Request::clear_language() {
-  _impl_.language_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00001000u;
-}
-inline const std::string& Request::language() const {
-  // @@protoc_insertion_point(field_get:Request.Language)
-  return _internal_language();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_language(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00001000u;
- _impl_.language_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Language)
-}
-inline std::string* Request::mutable_language() {
-  std::string* _s = _internal_mutable_language();
-  // @@protoc_insertion_point(field_mutable:Request.Language)
-  return _s;
-}
-inline const std::string& Request::_internal_language() const {
-  return _impl_.language_.Get();
-}
-inline void Request::_internal_set_language(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
-  _impl_.language_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_language() {
-  _impl_._has_bits_[0] |= 0x00001000u;
-  return _impl_.language_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_language() {
-  // @@protoc_insertion_point(field_release:Request.Language)
-  if (!_internal_has_language()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00001000u;
-  auto* p = _impl_.language_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.language_.IsDefault()) {
-    _impl_.language_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_language(std::string* language) {
-  if (language != nullptr) {
-    _impl_._has_bits_[0] |= 0x00001000u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00001000u;
-  }
-  _impl_.language_.SetAllocated(language, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.language_.IsDefault()) {
-    _impl_.language_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Language)
-}
-
-// optional string APIVersion = 16;
-inline bool Request::_internal_has_apiversion() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
-  return value;
-}
-inline bool Request::has_apiversion() const {
-  return _internal_has_apiversion();
-}
-inline void Request::clear_apiversion() {
-  _impl_.apiversion_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00002000u;
-}
-inline const std::string& Request::apiversion() const {
-  // @@protoc_insertion_point(field_get:Request.APIVersion)
-  return _internal_apiversion();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_apiversion(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00002000u;
- _impl_.apiversion_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.APIVersion)
-}
-inline std::string* Request::mutable_apiversion() {
-  std::string* _s = _internal_mutable_apiversion();
-  // @@protoc_insertion_point(field_mutable:Request.APIVersion)
-  return _s;
-}
-inline const std::string& Request::_internal_apiversion() const {
-  return _impl_.apiversion_.Get();
-}
-inline void Request::_internal_set_apiversion(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
-  _impl_.apiversion_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_apiversion() {
-  _impl_._has_bits_[0] |= 0x00002000u;
-  return _impl_.apiversion_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_apiversion() {
-  // @@protoc_insertion_point(field_release:Request.APIVersion)
-  if (!_internal_has_apiversion()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00002000u;
-  auto* p = _impl_.apiversion_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.apiversion_.IsDefault()) {
-    _impl_.apiversion_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_apiversion(std::string* apiversion) {
-  if (apiversion != nullptr) {
-    _impl_._has_bits_[0] |= 0x00002000u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00002000u;
-  }
-  _impl_.apiversion_.SetAllocated(apiversion, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.apiversion_.IsDefault()) {
-    _impl_.apiversion_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.APIVersion)
-}
-
-// optional string Method = 17;
-inline bool Request::_internal_has_method() const {
-  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
-  return value;
-}
-inline bool Request::has_method() const {
-  return _internal_has_method();
-}
-inline void Request::clear_method() {
-  _impl_.method_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00004000u;
-}
-inline const std::string& Request::method() const {
-  // @@protoc_insertion_point(field_get:Request.Method)
-  return _internal_method();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_method(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00004000u;
- _impl_.method_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Method)
-}
-inline std::string* Request::mutable_method() {
-  std::string* _s = _internal_mutable_method();
-  // @@protoc_insertion_point(field_mutable:Request.Method)
-  return _s;
-}
-inline const std::string& Request::_internal_method() const {
-  return _impl_.method_.Get();
-}
-inline void Request::_internal_set_method(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00004000u;
-  _impl_.method_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_method() {
-  _impl_._has_bits_[0] |= 0x00004000u;
-  return _impl_.method_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_method() {
-  // @@protoc_insertion_point(field_release:Request.Method)
-  if (!_internal_has_method()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00004000u;
-  auto* p = _impl_.method_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.method_.IsDefault()) {
-    _impl_.method_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_method(std::string* method) {
-  if (method != nullptr) {
-    _impl_._has_bits_[0] |= 0x00004000u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00004000u;
-  }
-  _impl_.method_.SetAllocated(method, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.method_.IsDefault()) {
-    _impl_.method_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Method)
-}
-
-// optional string UID = 18;
-inline bool Request::_internal_has_uid() const {
-  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
-  return value;
-}
-inline bool Request::has_uid() const {
-  return _internal_has_uid();
-}
-inline void Request::clear_uid() {
-  _impl_.uid_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00008000u;
-}
-inline const std::string& Request::uid() const {
-  // @@protoc_insertion_point(field_get:Request.UID)
-  return _internal_uid();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_uid(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00008000u;
- _impl_.uid_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.UID)
-}
-inline std::string* Request::mutable_uid() {
-  std::string* _s = _internal_mutable_uid();
-  // @@protoc_insertion_point(field_mutable:Request.UID)
-  return _s;
-}
-inline const std::string& Request::_internal_uid() const {
-  return _impl_.uid_.Get();
-}
-inline void Request::_internal_set_uid(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00008000u;
-  _impl_.uid_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_uid() {
-  _impl_._has_bits_[0] |= 0x00008000u;
-  return _impl_.uid_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_uid() {
-  // @@protoc_insertion_point(field_release:Request.UID)
-  if (!_internal_has_uid()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00008000u;
-  auto* p = _impl_.uid_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.uid_.IsDefault()) {
-    _impl_.uid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_uid(std::string* uid) {
-  if (uid != nullptr) {
-    _impl_._has_bits_[0] |= 0x00008000u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00008000u;
-  }
-  _impl_.uid_.SetAllocated(uid, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.uid_.IsDefault()) {
-    _impl_.uid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.UID)
-}
-
-// optional int32 IsAdmin = 19;
-inline bool Request::_internal_has_isadmin() const {
-  bool value = (_impl_._has_bits_[0] & 0x00100000u) != 0;
-  return value;
-}
-inline bool Request::has_isadmin() const {
-  return _internal_has_isadmin();
-}
-inline void Request::clear_isadmin() {
-  _impl_.isadmin_ = 0;
-  _impl_._has_bits_[0] &= ~0x00100000u;
-}
-inline int32_t Request::_internal_isadmin() const {
-  return _impl_.isadmin_;
-}
-inline int32_t Request::isadmin() const {
-  // @@protoc_insertion_point(field_get:Request.IsAdmin)
-  return _internal_isadmin();
-}
-inline void Request::_internal_set_isadmin(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00100000u;
-  _impl_.isadmin_ = value;
-}
-inline void Request::set_isadmin(int32_t value) {
-  _internal_set_isadmin(value);
-  // @@protoc_insertion_point(field_set:Request.IsAdmin)
-}
-
-// optional int32 SessionEnd = 20;
-inline bool Request::_internal_has_sessionend() const {
-  bool value = (_impl_._has_bits_[0] & 0x00200000u) != 0;
-  return value;
-}
-inline bool Request::has_sessionend() const {
-  return _internal_has_sessionend();
-}
-inline void Request::clear_sessionend() {
-  _impl_.sessionend_ = 0;
-  _impl_._has_bits_[0] &= ~0x00200000u;
-}
-inline int32_t Request::_internal_sessionend() const {
-  return _impl_.sessionend_;
-}
-inline int32_t Request::sessionend() const {
-  // @@protoc_insertion_point(field_get:Request.SessionEnd)
-  return _internal_sessionend();
-}
-inline void Request::_internal_set_sessionend(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00200000u;
-  _impl_.sessionend_ = value;
-}
-inline void Request::set_sessionend(int32_t value) {
-  _internal_set_sessionend(value);
-  // @@protoc_insertion_point(field_set:Request.SessionEnd)
-}
-
-// optional int32 Completed = 21;
-inline bool Request::_internal_has_completed() const {
-  bool value = (_impl_._has_bits_[0] & 0x00400000u) != 0;
-  return value;
-}
-inline bool Request::has_completed() const {
-  return _internal_has_completed();
-}
-inline void Request::clear_completed() {
-  _impl_.completed_ = 0;
-  _impl_._has_bits_[0] &= ~0x00400000u;
-}
-inline int32_t Request::_internal_completed() const {
-  return _impl_.completed_;
-}
-inline int32_t Request::completed() const {
-  // @@protoc_insertion_point(field_get:Request.Completed)
-  return _internal_completed();
-}
-inline void Request::_internal_set_completed(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00400000u;
-  _impl_.completed_ = value;
-}
-inline void Request::set_completed(int32_t value) {
-  _internal_set_completed(value);
-  // @@protoc_insertion_point(field_set:Request.Completed)
-}
-
-// optional int32 Readonly = 22;
-inline bool Request::_internal_has_readonly() const {
-  bool value = (_impl_._has_bits_[0] & 0x00800000u) != 0;
-  return value;
-}
-inline bool Request::has_readonly() const {
-  return _internal_has_readonly();
-}
-inline void Request::clear_readonly() {
-  _impl_.readonly_ = 0;
-  _impl_._has_bits_[0] &= ~0x00800000u;
-}
-inline int32_t Request::_internal_readonly() const {
-  return _impl_.readonly_;
-}
-inline int32_t Request::readonly() const {
-  // @@protoc_insertion_point(field_get:Request.Readonly)
-  return _internal_readonly();
-}
-inline void Request::_internal_set_readonly(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00800000u;
-  _impl_.readonly_ = value;
-}
-inline void Request::set_readonly(int32_t value) {
-  _internal_set_readonly(value);
-  // @@protoc_insertion_point(field_set:Request.Readonly)
-}
-
-// optional bytes File = 23;
-inline bool Request::_internal_has_file() const {
-  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
-  return value;
-}
-inline bool Request::has_file() const {
-  return _internal_has_file();
-}
-inline void Request::clear_file() {
-  _impl_.file_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00010000u;
-}
-inline const std::string& Request::file() const {
-  // @@protoc_insertion_point(field_get:Request.File)
-  return _internal_file();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_file(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00010000u;
- _impl_.file_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.File)
-}
-inline std::string* Request::mutable_file() {
-  std::string* _s = _internal_mutable_file();
-  // @@protoc_insertion_point(field_mutable:Request.File)
-  return _s;
-}
-inline const std::string& Request::_internal_file() const {
-  return _impl_.file_.Get();
-}
-inline void Request::_internal_set_file(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00010000u;
-  _impl_.file_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_file() {
-  _impl_._has_bits_[0] |= 0x00010000u;
-  return _impl_.file_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_file() {
-  // @@protoc_insertion_point(field_release:Request.File)
-  if (!_internal_has_file()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00010000u;
-  auto* p = _impl_.file_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.file_.IsDefault()) {
-    _impl_.file_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_file(std::string* file) {
-  if (file != nullptr) {
-    _impl_._has_bits_[0] |= 0x00010000u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00010000u;
-  }
-  _impl_.file_.SetAllocated(file, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.file_.IsDefault()) {
-    _impl_.file_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.File)
-}
-
-// optional string Filename = 24;
-inline bool Request::_internal_has_filename() const {
-  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
-  return value;
-}
-inline bool Request::has_filename() const {
-  return _internal_has_filename();
-}
-inline void Request::clear_filename() {
-  _impl_.filename_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00020000u;
-}
-inline const std::string& Request::filename() const {
-  // @@protoc_insertion_point(field_get:Request.Filename)
-  return _internal_filename();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Request::set_filename(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00020000u;
- _impl_.filename_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.Filename)
-}
-inline std::string* Request::mutable_filename() {
-  std::string* _s = _internal_mutable_filename();
-  // @@protoc_insertion_point(field_mutable:Request.Filename)
-  return _s;
-}
-inline const std::string& Request::_internal_filename() const {
-  return _impl_.filename_.Get();
-}
-inline void Request::_internal_set_filename(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00020000u;
-  _impl_.filename_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Request::_internal_mutable_filename() {
-  _impl_._has_bits_[0] |= 0x00020000u;
-  return _impl_.filename_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Request::release_filename() {
-  // @@protoc_insertion_point(field_release:Request.Filename)
-  if (!_internal_has_filename()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00020000u;
-  auto* p = _impl_.filename_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.filename_.IsDefault()) {
-    _impl_.filename_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void Request::set_allocated_filename(std::string* filename) {
-  if (filename != nullptr) {
-    _impl_._has_bits_[0] |= 0x00020000u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00020000u;
-  }
-  _impl_.filename_.SetAllocated(filename, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.filename_.IsDefault()) {
-    _impl_.filename_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Request.Filename)
-}
-
-// repeated string Files = 25;
-inline int Request::_internal_files_size() const {
-  return _impl_.files_.size();
-}
-inline int Request::files_size() const {
-  return _internal_files_size();
-}
-inline void Request::clear_files() {
-  _impl_.files_.Clear();
-}
-inline std::string* Request::add_files() {
-  std::string* _s = _internal_add_files();
-  // @@protoc_insertion_point(field_add_mutable:Request.Files)
-  return _s;
-}
-inline const std::string& Request::_internal_files(int index) const {
-  return _impl_.files_.Get(index);
-}
-inline const std::string& Request::files(int index) const {
-  // @@protoc_insertion_point(field_get:Request.Files)
-  return _internal_files(index);
-}
-inline std::string* Request::mutable_files(int index) {
-  // @@protoc_insertion_point(field_mutable:Request.Files)
-  return _impl_.files_.Mutable(index);
-}
-inline void Request::set_files(int index, const std::string& value) {
-  _impl_.files_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:Request.Files)
-}
-inline void Request::set_files(int index, std::string&& value) {
-  _impl_.files_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:Request.Files)
-}
-inline void Request::set_files(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.files_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:Request.Files)
-}
-inline void Request::set_files(int index, const char* value, size_t size) {
-  _impl_.files_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:Request.Files)
-}
-inline std::string* Request::_internal_add_files() {
-  return _impl_.files_.Add();
-}
-inline void Request::add_files(const std::string& value) {
-  _impl_.files_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:Request.Files)
-}
-inline void Request::add_files(std::string&& value) {
-  _impl_.files_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:Request.Files)
-}
-inline void Request::add_files(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.files_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:Request.Files)
-}
-inline void Request::add_files(const char* value, size_t size) {
-  _impl_.files_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:Request.Files)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-Request::files() const {
-  // @@protoc_insertion_point(field_list:Request.Files)
-  return _impl_.files_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-Request::mutable_files() {
-  // @@protoc_insertion_point(field_mutable_list:Request.Files)
-  return &_impl_.files_;
-}
-
-// optional .InternalRequest IR = 26;
-inline bool Request::_internal_has_ir() const {
-  bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.ir_ != nullptr);
-  return value;
-}
-inline bool Request::has_ir() const {
-  return _internal_has_ir();
-}
-inline void Request::clear_ir() {
-  if (_impl_.ir_ != nullptr) _impl_.ir_->Clear();
-  _impl_._has_bits_[0] &= ~0x00040000u;
-}
-inline const ::InternalRequest& Request::_internal_ir() const {
-  const ::InternalRequest* p = _impl_.ir_;
-  return p != nullptr ? *p : reinterpret_cast<const ::InternalRequest&>(
-      ::_InternalRequest_default_instance_);
-}
-inline const ::InternalRequest& Request::ir() const {
-  // @@protoc_insertion_point(field_get:Request.IR)
-  return _internal_ir();
-}
-inline void Request::unsafe_arena_set_allocated_ir(
-    ::InternalRequest* ir) {
+// .google.protobuf.Any body = 7;
+inline bool Request::_internal_has_body() const {
+  return this != internal_default_instance() && _impl_.body_ != nullptr;
+}
+inline bool Request::has_body() const {
+  return _internal_has_body();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Any& Request::_internal_body() const {
+  const ::PROTOBUF_NAMESPACE_ID::Any* p = _impl_.body_;
+  return p != nullptr ? *p : reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Any&>(
+      ::PROTOBUF_NAMESPACE_ID::_Any_default_instance_);
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Any& Request::body() const {
+  // @@protoc_insertion_point(field_get:gufo.Request.body)
+  return _internal_body();
+}
+inline void Request::unsafe_arena_set_allocated_body(
+    ::PROTOBUF_NAMESPACE_ID::Any* body) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.ir_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.body_);
   }
-  _impl_.ir_ = ir;
-  if (ir) {
-    _impl_._has_bits_[0] |= 0x00040000u;
+  _impl_.body_ = body;
+  if (body) {
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00040000u;
+    
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Request.IR)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:gufo.Request.body)
 }
-inline ::InternalRequest* Request::release_ir() {
-  _impl_._has_bits_[0] &= ~0x00040000u;
-  ::InternalRequest* temp = _impl_.ir_;
-  _impl_.ir_ = nullptr;
+inline ::PROTOBUF_NAMESPACE_ID::Any* Request::release_body() {
+  
+  ::PROTOBUF_NAMESPACE_ID::Any* temp = _impl_.body_;
+  _impl_.body_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -3394,280 +2832,1775 @@ inline ::InternalRequest* Request::release_ir() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::InternalRequest* Request::unsafe_arena_release_ir() {
-  // @@protoc_insertion_point(field_release:Request.IR)
-  _impl_._has_bits_[0] &= ~0x00040000u;
-  ::InternalRequest* temp = _impl_.ir_;
-  _impl_.ir_ = nullptr;
+inline ::PROTOBUF_NAMESPACE_ID::Any* Request::unsafe_arena_release_body() {
+  // @@protoc_insertion_point(field_release:gufo.Request.body)
+  
+  ::PROTOBUF_NAMESPACE_ID::Any* temp = _impl_.body_;
+  _impl_.body_ = nullptr;
   return temp;
 }
-inline ::InternalRequest* Request::_internal_mutable_ir() {
-  _impl_._has_bits_[0] |= 0x00040000u;
-  if (_impl_.ir_ == nullptr) {
-    auto* p = CreateMaybeMessage<::InternalRequest>(GetArenaForAllocation());
-    _impl_.ir_ = p;
+inline ::PROTOBUF_NAMESPACE_ID::Any* Request::_internal_mutable_body() {
+  
+  if (_impl_.body_ == nullptr) {
+    auto* p = CreateMaybeMessage<::PROTOBUF_NAMESPACE_ID::Any>(GetArenaForAllocation());
+    _impl_.body_ = p;
   }
-  return _impl_.ir_;
+  return _impl_.body_;
 }
-inline ::InternalRequest* Request::mutable_ir() {
-  ::InternalRequest* _msg = _internal_mutable_ir();
-  // @@protoc_insertion_point(field_mutable:Request.IR)
+inline ::PROTOBUF_NAMESPACE_ID::Any* Request::mutable_body() {
+  ::PROTOBUF_NAMESPACE_ID::Any* _msg = _internal_mutable_body();
+  // @@protoc_insertion_point(field_mutable:gufo.Request.body)
   return _msg;
 }
-inline void Request::set_allocated_ir(::InternalRequest* ir) {
+inline void Request::set_allocated_body(::PROTOBUF_NAMESPACE_ID::Any* body) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete _impl_.ir_;
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.body_);
   }
-  if (ir) {
+  if (body) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(ir);
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(body));
     if (message_arena != submessage_arena) {
-      ir = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, ir, submessage_arena);
+      body = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, body, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00040000u;
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00040000u;
+    
   }
-  _impl_.ir_ = ir;
-  // @@protoc_insertion_point(field_set_allocated:Request.IR)
+  _impl_.body_ = body;
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.body)
 }
 
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
-// InternalRequest
-
-// optional string Param = 1;
-inline bool InternalRequest::_internal_has_param() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
+// string path = 8;
+inline void Request::clear_path() {
+  _impl_.path_.ClearToEmpty();
 }
-inline bool InternalRequest::has_param() const {
-  return _internal_has_param();
-}
-inline void InternalRequest::clear_param() {
-  _impl_.param_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline const std::string& InternalRequest::param() const {
-  // @@protoc_insertion_point(field_get:InternalRequest.Param)
-  return _internal_param();
+inline const std::string& Request::path() const {
+  // @@protoc_insertion_point(field_get:gufo.Request.path)
+  return _internal_path();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void InternalRequest::set_param(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000001u;
- _impl_.param_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:InternalRequest.Param)
+void Request::set_path(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.path_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.Request.path)
 }
-inline std::string* InternalRequest::mutable_param() {
-  std::string* _s = _internal_mutable_param();
-  // @@protoc_insertion_point(field_mutable:InternalRequest.Param)
+inline std::string* Request::mutable_path() {
+  std::string* _s = _internal_mutable_path();
+  // @@protoc_insertion_point(field_mutable:gufo.Request.path)
   return _s;
 }
-inline const std::string& InternalRequest::_internal_param() const {
-  return _impl_.param_.Get();
+inline const std::string& Request::_internal_path() const {
+  return _impl_.path_.Get();
 }
-inline void InternalRequest::_internal_set_param(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.param_.Set(value, GetArenaForAllocation());
+inline void Request::_internal_set_path(const std::string& value) {
+  
+  _impl_.path_.Set(value, GetArenaForAllocation());
 }
-inline std::string* InternalRequest::_internal_mutable_param() {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  return _impl_.param_.Mutable(GetArenaForAllocation());
+inline std::string* Request::_internal_mutable_path() {
+  
+  return _impl_.path_.Mutable(GetArenaForAllocation());
 }
-inline std::string* InternalRequest::release_param() {
-  // @@protoc_insertion_point(field_release:InternalRequest.Param)
-  if (!_internal_has_param()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  auto* p = _impl_.param_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.param_.IsDefault()) {
-    _impl_.param_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
+inline std::string* Request::release_path() {
+  // @@protoc_insertion_point(field_release:gufo.Request.path)
+  return _impl_.path_.Release();
 }
-inline void InternalRequest::set_allocated_param(std::string* param) {
-  if (param != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000001u;
+inline void Request::set_allocated_path(std::string* path) {
+  if (path != nullptr) {
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
+    
   }
-  _impl_.param_.SetAllocated(param, GetArenaForAllocation());
+  _impl_.path_.SetAllocated(path, GetArenaForAllocation());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.param_.IsDefault()) {
-    _impl_.param_.Set("", GetArenaForAllocation());
+  if (_impl_.path_.IsDefault()) {
+    _impl_.path_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:InternalRequest.Param)
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.path)
 }
 
-// optional string ParamID = 2;
-inline bool InternalRequest::_internal_has_paramid() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
+// .gufo.Method method = 9;
+inline void Request::clear_method() {
+  _impl_.method_ = 0;
 }
-inline bool InternalRequest::has_paramid() const {
-  return _internal_has_paramid();
+inline ::gufo::Method Request::_internal_method() const {
+  return static_cast< ::gufo::Method >(_impl_.method_);
 }
-inline void InternalRequest::clear_paramid() {
-  _impl_.paramid_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline const std::string& InternalRequest::paramid() const {
-  // @@protoc_insertion_point(field_get:InternalRequest.ParamID)
-  return _internal_paramid();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void InternalRequest::set_paramid(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000002u;
- _impl_.paramid_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:InternalRequest.ParamID)
-}
-inline std::string* InternalRequest::mutable_paramid() {
-  std::string* _s = _internal_mutable_paramid();
-  // @@protoc_insertion_point(field_mutable:InternalRequest.ParamID)
-  return _s;
-}
-inline const std::string& InternalRequest::_internal_paramid() const {
-  return _impl_.paramid_.Get();
-}
-inline void InternalRequest::_internal_set_paramid(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.paramid_.Set(value, GetArenaForAllocation());
-}
-inline std::string* InternalRequest::_internal_mutable_paramid() {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  return _impl_.paramid_.Mutable(GetArenaForAllocation());
-}
-inline std::string* InternalRequest::release_paramid() {
-  // @@protoc_insertion_point(field_release:InternalRequest.ParamID)
-  if (!_internal_has_paramid()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000002u;
-  auto* p = _impl_.paramid_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.paramid_.IsDefault()) {
-    _impl_.paramid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void InternalRequest::set_allocated_paramid(std::string* paramid) {
-  if (paramid != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000002u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000002u;
-  }
-  _impl_.paramid_.SetAllocated(paramid, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.paramid_.IsDefault()) {
-    _impl_.paramid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:InternalRequest.ParamID)
-}
-
-// optional string Method = 3;
-inline bool InternalRequest::_internal_has_method() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool InternalRequest::has_method() const {
-  return _internal_has_method();
-}
-inline void InternalRequest::clear_method() {
-  _impl_.method_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline const std::string& InternalRequest::method() const {
-  // @@protoc_insertion_point(field_get:InternalRequest.Method)
+inline ::gufo::Method Request::method() const {
+  // @@protoc_insertion_point(field_get:gufo.Request.method)
   return _internal_method();
 }
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void InternalRequest::set_method(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000004u;
- _impl_.method_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:InternalRequest.Method)
+inline void Request::_internal_set_method(::gufo::Method value) {
+  
+  _impl_.method_ = value;
 }
-inline std::string* InternalRequest::mutable_method() {
-  std::string* _s = _internal_mutable_method();
-  // @@protoc_insertion_point(field_mutable:InternalRequest.Method)
-  return _s;
-}
-inline const std::string& InternalRequest::_internal_method() const {
-  return _impl_.method_.Get();
-}
-inline void InternalRequest::_internal_set_method(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.method_.Set(value, GetArenaForAllocation());
-}
-inline std::string* InternalRequest::_internal_mutable_method() {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  return _impl_.method_.Mutable(GetArenaForAllocation());
-}
-inline std::string* InternalRequest::release_method() {
-  // @@protoc_insertion_point(field_release:InternalRequest.Method)
-  if (!_internal_has_method()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000004u;
-  auto* p = _impl_.method_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.method_.IsDefault()) {
-    _impl_.method_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
-}
-inline void InternalRequest::set_allocated_method(std::string* method) {
-  if (method != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000004u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000004u;
-  }
-  _impl_.method_.SetAllocated(method, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.method_.IsDefault()) {
-    _impl_.method_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:InternalRequest.Method)
+inline void Request::set_method(::gufo::Method value) {
+  _internal_set_method(value);
+  // @@protoc_insertion_point(field_set:gufo.Request.method)
 }
 
-// map<string, .google.protobuf.Any> Args = 4;
-inline int InternalRequest::_internal_args_size() const {
-  return _impl_.args_.size();
+// .gufo.AuthContext auth = 10;
+inline bool Request::_internal_has_auth() const {
+  return this != internal_default_instance() && _impl_.auth_ != nullptr;
 }
-inline int InternalRequest::args_size() const {
-  return _internal_args_size();
+inline bool Request::has_auth() const {
+  return _internal_has_auth();
+}
+inline void Request::clear_auth() {
+  if (GetArenaForAllocation() == nullptr && _impl_.auth_ != nullptr) {
+    delete _impl_.auth_;
+  }
+  _impl_.auth_ = nullptr;
+}
+inline const ::gufo::AuthContext& Request::_internal_auth() const {
+  const ::gufo::AuthContext* p = _impl_.auth_;
+  return p != nullptr ? *p : reinterpret_cast<const ::gufo::AuthContext&>(
+      ::gufo::_AuthContext_default_instance_);
+}
+inline const ::gufo::AuthContext& Request::auth() const {
+  // @@protoc_insertion_point(field_get:gufo.Request.auth)
+  return _internal_auth();
+}
+inline void Request::unsafe_arena_set_allocated_auth(
+    ::gufo::AuthContext* auth) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.auth_);
+  }
+  _impl_.auth_ = auth;
+  if (auth) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:gufo.Request.auth)
+}
+inline ::gufo::AuthContext* Request::release_auth() {
+  
+  ::gufo::AuthContext* temp = _impl_.auth_;
+  _impl_.auth_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::gufo::AuthContext* Request::unsafe_arena_release_auth() {
+  // @@protoc_insertion_point(field_release:gufo.Request.auth)
+  
+  ::gufo::AuthContext* temp = _impl_.auth_;
+  _impl_.auth_ = nullptr;
+  return temp;
+}
+inline ::gufo::AuthContext* Request::_internal_mutable_auth() {
+  
+  if (_impl_.auth_ == nullptr) {
+    auto* p = CreateMaybeMessage<::gufo::AuthContext>(GetArenaForAllocation());
+    _impl_.auth_ = p;
+  }
+  return _impl_.auth_;
+}
+inline ::gufo::AuthContext* Request::mutable_auth() {
+  ::gufo::AuthContext* _msg = _internal_mutable_auth();
+  // @@protoc_insertion_point(field_mutable:gufo.Request.auth)
+  return _msg;
+}
+inline void Request::set_allocated_auth(::gufo::AuthContext* auth) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.auth_;
+  }
+  if (auth) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(auth);
+    if (message_arena != submessage_arena) {
+      auth = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, auth, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.auth_ = auth;
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.auth)
+}
+
+// .gufo.RequestContext context = 11;
+inline bool Request::_internal_has_context() const {
+  return this != internal_default_instance() && _impl_.context_ != nullptr;
+}
+inline bool Request::has_context() const {
+  return _internal_has_context();
+}
+inline void Request::clear_context() {
+  if (GetArenaForAllocation() == nullptr && _impl_.context_ != nullptr) {
+    delete _impl_.context_;
+  }
+  _impl_.context_ = nullptr;
+}
+inline const ::gufo::RequestContext& Request::_internal_context() const {
+  const ::gufo::RequestContext* p = _impl_.context_;
+  return p != nullptr ? *p : reinterpret_cast<const ::gufo::RequestContext&>(
+      ::gufo::_RequestContext_default_instance_);
+}
+inline const ::gufo::RequestContext& Request::context() const {
+  // @@protoc_insertion_point(field_get:gufo.Request.context)
+  return _internal_context();
+}
+inline void Request::unsafe_arena_set_allocated_context(
+    ::gufo::RequestContext* context) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.context_);
+  }
+  _impl_.context_ = context;
+  if (context) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:gufo.Request.context)
+}
+inline ::gufo::RequestContext* Request::release_context() {
+  
+  ::gufo::RequestContext* temp = _impl_.context_;
+  _impl_.context_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::gufo::RequestContext* Request::unsafe_arena_release_context() {
+  // @@protoc_insertion_point(field_release:gufo.Request.context)
+  
+  ::gufo::RequestContext* temp = _impl_.context_;
+  _impl_.context_ = nullptr;
+  return temp;
+}
+inline ::gufo::RequestContext* Request::_internal_mutable_context() {
+  
+  if (_impl_.context_ == nullptr) {
+    auto* p = CreateMaybeMessage<::gufo::RequestContext>(GetArenaForAllocation());
+    _impl_.context_ = p;
+  }
+  return _impl_.context_;
+}
+inline ::gufo::RequestContext* Request::mutable_context() {
+  ::gufo::RequestContext* _msg = _internal_mutable_context();
+  // @@protoc_insertion_point(field_mutable:gufo.Request.context)
+  return _msg;
+}
+inline void Request::set_allocated_context(::gufo::RequestContext* context) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.context_;
+  }
+  if (context) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(context);
+    if (message_arena != submessage_arena) {
+      context = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, context, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.context_ = context;
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.context)
+}
+
+// .gufo.FileUpload file = 12;
+inline bool Request::_internal_has_file() const {
+  return this != internal_default_instance() && _impl_.file_ != nullptr;
+}
+inline bool Request::has_file() const {
+  return _internal_has_file();
+}
+inline void Request::clear_file() {
+  if (GetArenaForAllocation() == nullptr && _impl_.file_ != nullptr) {
+    delete _impl_.file_;
+  }
+  _impl_.file_ = nullptr;
+}
+inline const ::gufo::FileUpload& Request::_internal_file() const {
+  const ::gufo::FileUpload* p = _impl_.file_;
+  return p != nullptr ? *p : reinterpret_cast<const ::gufo::FileUpload&>(
+      ::gufo::_FileUpload_default_instance_);
+}
+inline const ::gufo::FileUpload& Request::file() const {
+  // @@protoc_insertion_point(field_get:gufo.Request.file)
+  return _internal_file();
+}
+inline void Request::unsafe_arena_set_allocated_file(
+    ::gufo::FileUpload* file) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.file_);
+  }
+  _impl_.file_ = file;
+  if (file) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:gufo.Request.file)
+}
+inline ::gufo::FileUpload* Request::release_file() {
+  
+  ::gufo::FileUpload* temp = _impl_.file_;
+  _impl_.file_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::gufo::FileUpload* Request::unsafe_arena_release_file() {
+  // @@protoc_insertion_point(field_release:gufo.Request.file)
+  
+  ::gufo::FileUpload* temp = _impl_.file_;
+  _impl_.file_ = nullptr;
+  return temp;
+}
+inline ::gufo::FileUpload* Request::_internal_mutable_file() {
+  
+  if (_impl_.file_ == nullptr) {
+    auto* p = CreateMaybeMessage<::gufo::FileUpload>(GetArenaForAllocation());
+    _impl_.file_ = p;
+  }
+  return _impl_.file_;
+}
+inline ::gufo::FileUpload* Request::mutable_file() {
+  ::gufo::FileUpload* _msg = _internal_mutable_file();
+  // @@protoc_insertion_point(field_mutable:gufo.Request.file)
+  return _msg;
+}
+inline void Request::set_allocated_file(::gufo::FileUpload* file) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.file_;
+  }
+  if (file) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(file);
+    if (message_arena != submessage_arena) {
+      file = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, file, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.file_ = file;
+  // @@protoc_insertion_point(field_set_allocated:gufo.Request.file)
+}
+
+// repeated .gufo.FileRef files = 13;
+inline int Request::_internal_files_size() const {
+  return _impl_.files_.size();
+}
+inline int Request::files_size() const {
+  return _internal_files_size();
+}
+inline void Request::clear_files() {
+  _impl_.files_.Clear();
+}
+inline ::gufo::FileRef* Request::mutable_files(int index) {
+  // @@protoc_insertion_point(field_mutable:gufo.Request.files)
+  return _impl_.files_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::gufo::FileRef >*
+Request::mutable_files() {
+  // @@protoc_insertion_point(field_mutable_list:gufo.Request.files)
+  return &_impl_.files_;
+}
+inline const ::gufo::FileRef& Request::_internal_files(int index) const {
+  return _impl_.files_.Get(index);
+}
+inline const ::gufo::FileRef& Request::files(int index) const {
+  // @@protoc_insertion_point(field_get:gufo.Request.files)
+  return _internal_files(index);
+}
+inline ::gufo::FileRef* Request::_internal_add_files() {
+  return _impl_.files_.Add();
+}
+inline ::gufo::FileRef* Request::add_files() {
+  ::gufo::FileRef* _add = _internal_add_files();
+  // @@protoc_insertion_point(field_add:gufo.Request.files)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::gufo::FileRef >&
+Request::files() const {
+  // @@protoc_insertion_point(field_list:gufo.Request.files)
+  return _impl_.files_;
+}
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// AuthContext
+
+// string token = 1;
+inline void AuthContext::clear_token() {
+  _impl_.token_.ClearToEmpty();
+}
+inline const std::string& AuthContext::token() const {
+  // @@protoc_insertion_point(field_get:gufo.AuthContext.token)
+  return _internal_token();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AuthContext::set_token(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.token_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.AuthContext.token)
+}
+inline std::string* AuthContext::mutable_token() {
+  std::string* _s = _internal_mutable_token();
+  // @@protoc_insertion_point(field_mutable:gufo.AuthContext.token)
+  return _s;
+}
+inline const std::string& AuthContext::_internal_token() const {
+  return _impl_.token_.Get();
+}
+inline void AuthContext::_internal_set_token(const std::string& value) {
+  
+  _impl_.token_.Set(value, GetArenaForAllocation());
+}
+inline std::string* AuthContext::_internal_mutable_token() {
+  
+  return _impl_.token_.Mutable(GetArenaForAllocation());
+}
+inline std::string* AuthContext::release_token() {
+  // @@protoc_insertion_point(field_release:gufo.AuthContext.token)
+  return _impl_.token_.Release();
+}
+inline void AuthContext::set_allocated_token(std::string* token) {
+  if (token != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.token_.SetAllocated(token, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.token_.IsDefault()) {
+    _impl_.token_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.AuthContext.token)
+}
+
+// string token_type = 2;
+inline void AuthContext::clear_token_type() {
+  _impl_.token_type_.ClearToEmpty();
+}
+inline const std::string& AuthContext::token_type() const {
+  // @@protoc_insertion_point(field_get:gufo.AuthContext.token_type)
+  return _internal_token_type();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AuthContext::set_token_type(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.token_type_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.AuthContext.token_type)
+}
+inline std::string* AuthContext::mutable_token_type() {
+  std::string* _s = _internal_mutable_token_type();
+  // @@protoc_insertion_point(field_mutable:gufo.AuthContext.token_type)
+  return _s;
+}
+inline const std::string& AuthContext::_internal_token_type() const {
+  return _impl_.token_type_.Get();
+}
+inline void AuthContext::_internal_set_token_type(const std::string& value) {
+  
+  _impl_.token_type_.Set(value, GetArenaForAllocation());
+}
+inline std::string* AuthContext::_internal_mutable_token_type() {
+  
+  return _impl_.token_type_.Mutable(GetArenaForAllocation());
+}
+inline std::string* AuthContext::release_token_type() {
+  // @@protoc_insertion_point(field_release:gufo.AuthContext.token_type)
+  return _impl_.token_type_.Release();
+}
+inline void AuthContext::set_allocated_token_type(std::string* token_type) {
+  if (token_type != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.token_type_.SetAllocated(token_type, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.token_type_.IsDefault()) {
+    _impl_.token_type_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.AuthContext.token_type)
+}
+
+// string sid = 3;
+inline void AuthContext::clear_sid() {
+  _impl_.sid_.ClearToEmpty();
+}
+inline const std::string& AuthContext::sid() const {
+  // @@protoc_insertion_point(field_get:gufo.AuthContext.sid)
+  return _internal_sid();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AuthContext::set_sid(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.sid_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.AuthContext.sid)
+}
+inline std::string* AuthContext::mutable_sid() {
+  std::string* _s = _internal_mutable_sid();
+  // @@protoc_insertion_point(field_mutable:gufo.AuthContext.sid)
+  return _s;
+}
+inline const std::string& AuthContext::_internal_sid() const {
+  return _impl_.sid_.Get();
+}
+inline void AuthContext::_internal_set_sid(const std::string& value) {
+  
+  _impl_.sid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* AuthContext::_internal_mutable_sid() {
+  
+  return _impl_.sid_.Mutable(GetArenaForAllocation());
+}
+inline std::string* AuthContext::release_sid() {
+  // @@protoc_insertion_point(field_release:gufo.AuthContext.sid)
+  return _impl_.sid_.Release();
+}
+inline void AuthContext::set_allocated_sid(std::string* sid) {
+  if (sid != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.sid_.SetAllocated(sid, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.sid_.IsDefault()) {
+    _impl_.sid_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.AuthContext.sid)
+}
+
+// string uid = 4;
+inline void AuthContext::clear_uid() {
+  _impl_.uid_.ClearToEmpty();
+}
+inline const std::string& AuthContext::uid() const {
+  // @@protoc_insertion_point(field_get:gufo.AuthContext.uid)
+  return _internal_uid();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AuthContext::set_uid(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.uid_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.AuthContext.uid)
+}
+inline std::string* AuthContext::mutable_uid() {
+  std::string* _s = _internal_mutable_uid();
+  // @@protoc_insertion_point(field_mutable:gufo.AuthContext.uid)
+  return _s;
+}
+inline const std::string& AuthContext::_internal_uid() const {
+  return _impl_.uid_.Get();
+}
+inline void AuthContext::_internal_set_uid(const std::string& value) {
+  
+  _impl_.uid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* AuthContext::_internal_mutable_uid() {
+  
+  return _impl_.uid_.Mutable(GetArenaForAllocation());
+}
+inline std::string* AuthContext::release_uid() {
+  // @@protoc_insertion_point(field_release:gufo.AuthContext.uid)
+  return _impl_.uid_.Release();
+}
+inline void AuthContext::set_allocated_uid(std::string* uid) {
+  if (uid != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.uid_.SetAllocated(uid, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.uid_.IsDefault()) {
+    _impl_.uid_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.AuthContext.uid)
+}
+
+// string sign = 5;
+inline void AuthContext::clear_sign() {
+  _impl_.sign_.ClearToEmpty();
+}
+inline const std::string& AuthContext::sign() const {
+  // @@protoc_insertion_point(field_get:gufo.AuthContext.sign)
+  return _internal_sign();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void AuthContext::set_sign(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.sign_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.AuthContext.sign)
+}
+inline std::string* AuthContext::mutable_sign() {
+  std::string* _s = _internal_mutable_sign();
+  // @@protoc_insertion_point(field_mutable:gufo.AuthContext.sign)
+  return _s;
+}
+inline const std::string& AuthContext::_internal_sign() const {
+  return _impl_.sign_.Get();
+}
+inline void AuthContext::_internal_set_sign(const std::string& value) {
+  
+  _impl_.sign_.Set(value, GetArenaForAllocation());
+}
+inline std::string* AuthContext::_internal_mutable_sign() {
+  
+  return _impl_.sign_.Mutable(GetArenaForAllocation());
+}
+inline std::string* AuthContext::release_sign() {
+  // @@protoc_insertion_point(field_release:gufo.AuthContext.sign)
+  return _impl_.sign_.Release();
+}
+inline void AuthContext::set_allocated_sign(std::string* sign) {
+  if (sign != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.sign_.SetAllocated(sign, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.sign_.IsDefault()) {
+    _impl_.sign_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.AuthContext.sign)
+}
+
+// bool is_admin = 6;
+inline void AuthContext::clear_is_admin() {
+  _impl_.is_admin_ = false;
+}
+inline bool AuthContext::_internal_is_admin() const {
+  return _impl_.is_admin_;
+}
+inline bool AuthContext::is_admin() const {
+  // @@protoc_insertion_point(field_get:gufo.AuthContext.is_admin)
+  return _internal_is_admin();
+}
+inline void AuthContext::_internal_set_is_admin(bool value) {
+  
+  _impl_.is_admin_ = value;
+}
+inline void AuthContext::set_is_admin(bool value) {
+  _internal_set_is_admin(value);
+  // @@protoc_insertion_point(field_set:gufo.AuthContext.is_admin)
+}
+
+// bool readonly = 7;
+inline void AuthContext::clear_readonly() {
+  _impl_.readonly_ = false;
+}
+inline bool AuthContext::_internal_readonly() const {
+  return _impl_.readonly_;
+}
+inline bool AuthContext::readonly() const {
+  // @@protoc_insertion_point(field_get:gufo.AuthContext.readonly)
+  return _internal_readonly();
+}
+inline void AuthContext::_internal_set_readonly(bool value) {
+  
+  _impl_.readonly_ = value;
+}
+inline void AuthContext::set_readonly(bool value) {
+  _internal_set_readonly(value);
+  // @@protoc_insertion_point(field_set:gufo.AuthContext.readonly)
+}
+
+// int64 session_end = 8;
+inline void AuthContext::clear_session_end() {
+  _impl_.session_end_ = int64_t{0};
+}
+inline int64_t AuthContext::_internal_session_end() const {
+  return _impl_.session_end_;
+}
+inline int64_t AuthContext::session_end() const {
+  // @@protoc_insertion_point(field_get:gufo.AuthContext.session_end)
+  return _internal_session_end();
+}
+inline void AuthContext::_internal_set_session_end(int64_t value) {
+  
+  _impl_.session_end_ = value;
+}
+inline void AuthContext::set_session_end(int64_t value) {
+  _internal_set_session_end(value);
+  // @@protoc_insertion_point(field_set:gufo.AuthContext.session_end)
+}
+
+// map<string, string> meta = 9;
+inline int AuthContext::_internal_meta_size() const {
+  return _impl_.meta_.size();
+}
+inline int AuthContext::meta_size() const {
+  return _internal_meta_size();
+}
+inline void AuthContext::clear_meta() {
+  _impl_.meta_.Clear();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+AuthContext::_internal_meta() const {
+  return _impl_.meta_.GetMap();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+AuthContext::meta() const {
+  // @@protoc_insertion_point(field_map:gufo.AuthContext.meta)
+  return _internal_meta();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+AuthContext::_internal_mutable_meta() {
+  return _impl_.meta_.MutableMap();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+AuthContext::mutable_meta() {
+  // @@protoc_insertion_point(field_mutable_map:gufo.AuthContext.meta)
+  return _internal_mutable_meta();
+}
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// RequestContext
+
+// string ip = 1;
+inline void RequestContext::clear_ip() {
+  _impl_.ip_.ClearToEmpty();
+}
+inline const std::string& RequestContext::ip() const {
+  // @@protoc_insertion_point(field_get:gufo.RequestContext.ip)
+  return _internal_ip();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RequestContext::set_ip(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.ip_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.RequestContext.ip)
+}
+inline std::string* RequestContext::mutable_ip() {
+  std::string* _s = _internal_mutable_ip();
+  // @@protoc_insertion_point(field_mutable:gufo.RequestContext.ip)
+  return _s;
+}
+inline const std::string& RequestContext::_internal_ip() const {
+  return _impl_.ip_.Get();
+}
+inline void RequestContext::_internal_set_ip(const std::string& value) {
+  
+  _impl_.ip_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RequestContext::_internal_mutable_ip() {
+  
+  return _impl_.ip_.Mutable(GetArenaForAllocation());
+}
+inline std::string* RequestContext::release_ip() {
+  // @@protoc_insertion_point(field_release:gufo.RequestContext.ip)
+  return _impl_.ip_.Release();
+}
+inline void RequestContext::set_allocated_ip(std::string* ip) {
+  if (ip != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.ip_.SetAllocated(ip, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.ip_.IsDefault()) {
+    _impl_.ip_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.RequestContext.ip)
+}
+
+// string user_agent = 2;
+inline void RequestContext::clear_user_agent() {
+  _impl_.user_agent_.ClearToEmpty();
+}
+inline const std::string& RequestContext::user_agent() const {
+  // @@protoc_insertion_point(field_get:gufo.RequestContext.user_agent)
+  return _internal_user_agent();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RequestContext::set_user_agent(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.user_agent_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.RequestContext.user_agent)
+}
+inline std::string* RequestContext::mutable_user_agent() {
+  std::string* _s = _internal_mutable_user_agent();
+  // @@protoc_insertion_point(field_mutable:gufo.RequestContext.user_agent)
+  return _s;
+}
+inline const std::string& RequestContext::_internal_user_agent() const {
+  return _impl_.user_agent_.Get();
+}
+inline void RequestContext::_internal_set_user_agent(const std::string& value) {
+  
+  _impl_.user_agent_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RequestContext::_internal_mutable_user_agent() {
+  
+  return _impl_.user_agent_.Mutable(GetArenaForAllocation());
+}
+inline std::string* RequestContext::release_user_agent() {
+  // @@protoc_insertion_point(field_release:gufo.RequestContext.user_agent)
+  return _impl_.user_agent_.Release();
+}
+inline void RequestContext::set_allocated_user_agent(std::string* user_agent) {
+  if (user_agent != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.user_agent_.SetAllocated(user_agent, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.user_agent_.IsDefault()) {
+    _impl_.user_agent_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.RequestContext.user_agent)
+}
+
+// string language = 3;
+inline void RequestContext::clear_language() {
+  _impl_.language_.ClearToEmpty();
+}
+inline const std::string& RequestContext::language() const {
+  // @@protoc_insertion_point(field_get:gufo.RequestContext.language)
+  return _internal_language();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RequestContext::set_language(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.language_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.RequestContext.language)
+}
+inline std::string* RequestContext::mutable_language() {
+  std::string* _s = _internal_mutable_language();
+  // @@protoc_insertion_point(field_mutable:gufo.RequestContext.language)
+  return _s;
+}
+inline const std::string& RequestContext::_internal_language() const {
+  return _impl_.language_.Get();
+}
+inline void RequestContext::_internal_set_language(const std::string& value) {
+  
+  _impl_.language_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RequestContext::_internal_mutable_language() {
+  
+  return _impl_.language_.Mutable(GetArenaForAllocation());
+}
+inline std::string* RequestContext::release_language() {
+  // @@protoc_insertion_point(field_release:gufo.RequestContext.language)
+  return _impl_.language_.Release();
+}
+inline void RequestContext::set_allocated_language(std::string* language) {
+  if (language != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.language_.SetAllocated(language, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.language_.IsDefault()) {
+    _impl_.language_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.RequestContext.language)
+}
+
+// string api_version = 4;
+inline void RequestContext::clear_api_version() {
+  _impl_.api_version_.ClearToEmpty();
+}
+inline const std::string& RequestContext::api_version() const {
+  // @@protoc_insertion_point(field_get:gufo.RequestContext.api_version)
+  return _internal_api_version();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RequestContext::set_api_version(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.api_version_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.RequestContext.api_version)
+}
+inline std::string* RequestContext::mutable_api_version() {
+  std::string* _s = _internal_mutable_api_version();
+  // @@protoc_insertion_point(field_mutable:gufo.RequestContext.api_version)
+  return _s;
+}
+inline const std::string& RequestContext::_internal_api_version() const {
+  return _impl_.api_version_.Get();
+}
+inline void RequestContext::_internal_set_api_version(const std::string& value) {
+  
+  _impl_.api_version_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RequestContext::_internal_mutable_api_version() {
+  
+  return _impl_.api_version_.Mutable(GetArenaForAllocation());
+}
+inline std::string* RequestContext::release_api_version() {
+  // @@protoc_insertion_point(field_release:gufo.RequestContext.api_version)
+  return _impl_.api_version_.Release();
+}
+inline void RequestContext::set_allocated_api_version(std::string* api_version) {
+  if (api_version != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.api_version_.SetAllocated(api_version, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.api_version_.IsDefault()) {
+    _impl_.api_version_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.RequestContext.api_version)
+}
+
+// int64 timestamp = 5;
+inline void RequestContext::clear_timestamp() {
+  _impl_.timestamp_ = int64_t{0};
+}
+inline int64_t RequestContext::_internal_timestamp() const {
+  return _impl_.timestamp_;
+}
+inline int64_t RequestContext::timestamp() const {
+  // @@protoc_insertion_point(field_get:gufo.RequestContext.timestamp)
+  return _internal_timestamp();
+}
+inline void RequestContext::_internal_set_timestamp(int64_t value) {
+  
+  _impl_.timestamp_ = value;
+}
+inline void RequestContext::set_timestamp(int64_t value) {
+  _internal_set_timestamp(value);
+  // @@protoc_insertion_point(field_set:gufo.RequestContext.timestamp)
+}
+
+// string trace_id = 6;
+inline void RequestContext::clear_trace_id() {
+  _impl_.trace_id_.ClearToEmpty();
+}
+inline const std::string& RequestContext::trace_id() const {
+  // @@protoc_insertion_point(field_get:gufo.RequestContext.trace_id)
+  return _internal_trace_id();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RequestContext::set_trace_id(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.trace_id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.RequestContext.trace_id)
+}
+inline std::string* RequestContext::mutable_trace_id() {
+  std::string* _s = _internal_mutable_trace_id();
+  // @@protoc_insertion_point(field_mutable:gufo.RequestContext.trace_id)
+  return _s;
+}
+inline const std::string& RequestContext::_internal_trace_id() const {
+  return _impl_.trace_id_.Get();
+}
+inline void RequestContext::_internal_set_trace_id(const std::string& value) {
+  
+  _impl_.trace_id_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RequestContext::_internal_mutable_trace_id() {
+  
+  return _impl_.trace_id_.Mutable(GetArenaForAllocation());
+}
+inline std::string* RequestContext::release_trace_id() {
+  // @@protoc_insertion_point(field_release:gufo.RequestContext.trace_id)
+  return _impl_.trace_id_.Release();
+}
+inline void RequestContext::set_allocated_trace_id(std::string* trace_id) {
+  if (trace_id != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.trace_id_.SetAllocated(trace_id, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.trace_id_.IsDefault()) {
+    _impl_.trace_id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.RequestContext.trace_id)
+}
+
+// string request_id = 7;
+inline void RequestContext::clear_request_id() {
+  _impl_.request_id_.ClearToEmpty();
+}
+inline const std::string& RequestContext::request_id() const {
+  // @@protoc_insertion_point(field_get:gufo.RequestContext.request_id)
+  return _internal_request_id();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RequestContext::set_request_id(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.request_id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.RequestContext.request_id)
+}
+inline std::string* RequestContext::mutable_request_id() {
+  std::string* _s = _internal_mutable_request_id();
+  // @@protoc_insertion_point(field_mutable:gufo.RequestContext.request_id)
+  return _s;
+}
+inline const std::string& RequestContext::_internal_request_id() const {
+  return _impl_.request_id_.Get();
+}
+inline void RequestContext::_internal_set_request_id(const std::string& value) {
+  
+  _impl_.request_id_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RequestContext::_internal_mutable_request_id() {
+  
+  return _impl_.request_id_.Mutable(GetArenaForAllocation());
+}
+inline std::string* RequestContext::release_request_id() {
+  // @@protoc_insertion_point(field_release:gufo.RequestContext.request_id)
+  return _impl_.request_id_.Release();
+}
+inline void RequestContext::set_allocated_request_id(std::string* request_id) {
+  if (request_id != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.request_id_.SetAllocated(request_id, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.request_id_.IsDefault()) {
+    _impl_.request_id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.RequestContext.request_id)
+}
+
+// string caller = 8;
+inline void RequestContext::clear_caller() {
+  _impl_.caller_.ClearToEmpty();
+}
+inline const std::string& RequestContext::caller() const {
+  // @@protoc_insertion_point(field_get:gufo.RequestContext.caller)
+  return _internal_caller();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void RequestContext::set_caller(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.caller_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.RequestContext.caller)
+}
+inline std::string* RequestContext::mutable_caller() {
+  std::string* _s = _internal_mutable_caller();
+  // @@protoc_insertion_point(field_mutable:gufo.RequestContext.caller)
+  return _s;
+}
+inline const std::string& RequestContext::_internal_caller() const {
+  return _impl_.caller_.Get();
+}
+inline void RequestContext::_internal_set_caller(const std::string& value) {
+  
+  _impl_.caller_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RequestContext::_internal_mutable_caller() {
+  
+  return _impl_.caller_.Mutable(GetArenaForAllocation());
+}
+inline std::string* RequestContext::release_caller() {
+  // @@protoc_insertion_point(field_release:gufo.RequestContext.caller)
+  return _impl_.caller_.Release();
+}
+inline void RequestContext::set_allocated_caller(std::string* caller) {
+  if (caller != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.caller_.SetAllocated(caller, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.caller_.IsDefault()) {
+    _impl_.caller_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.RequestContext.caller)
+}
+
+// map<string, string> meta = 9;
+inline int RequestContext::_internal_meta_size() const {
+  return _impl_.meta_.size();
+}
+inline int RequestContext::meta_size() const {
+  return _internal_meta_size();
+}
+inline void RequestContext::clear_meta() {
+  _impl_.meta_.Clear();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+RequestContext::_internal_meta() const {
+  return _impl_.meta_.GetMap();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+RequestContext::meta() const {
+  // @@protoc_insertion_point(field_map:gufo.RequestContext.meta)
+  return _internal_meta();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+RequestContext::_internal_mutable_meta() {
+  return _impl_.meta_.MutableMap();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+RequestContext::mutable_meta() {
+  // @@protoc_insertion_point(field_mutable_map:gufo.RequestContext.meta)
+  return _internal_mutable_meta();
+}
+
+// -------------------------------------------------------------------
+
+// FileUpload
+
+// bytes data = 1;
+inline void FileUpload::clear_data() {
+  _impl_.data_.ClearToEmpty();
+}
+inline const std::string& FileUpload::data() const {
+  // @@protoc_insertion_point(field_get:gufo.FileUpload.data)
+  return _internal_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void FileUpload::set_data(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.FileUpload.data)
+}
+inline std::string* FileUpload::mutable_data() {
+  std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:gufo.FileUpload.data)
+  return _s;
+}
+inline const std::string& FileUpload::_internal_data() const {
+  return _impl_.data_.Get();
+}
+inline void FileUpload::_internal_set_data(const std::string& value) {
+  
+  _impl_.data_.Set(value, GetArenaForAllocation());
+}
+inline std::string* FileUpload::_internal_mutable_data() {
+  
+  return _impl_.data_.Mutable(GetArenaForAllocation());
+}
+inline std::string* FileUpload::release_data() {
+  // @@protoc_insertion_point(field_release:gufo.FileUpload.data)
+  return _impl_.data_.Release();
+}
+inline void FileUpload::set_allocated_data(std::string* data) {
+  if (data != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.FileUpload.data)
+}
+
+// string filename = 2;
+inline void FileUpload::clear_filename() {
+  _impl_.filename_.ClearToEmpty();
+}
+inline const std::string& FileUpload::filename() const {
+  // @@protoc_insertion_point(field_get:gufo.FileUpload.filename)
+  return _internal_filename();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void FileUpload::set_filename(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.filename_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.FileUpload.filename)
+}
+inline std::string* FileUpload::mutable_filename() {
+  std::string* _s = _internal_mutable_filename();
+  // @@protoc_insertion_point(field_mutable:gufo.FileUpload.filename)
+  return _s;
+}
+inline const std::string& FileUpload::_internal_filename() const {
+  return _impl_.filename_.Get();
+}
+inline void FileUpload::_internal_set_filename(const std::string& value) {
+  
+  _impl_.filename_.Set(value, GetArenaForAllocation());
+}
+inline std::string* FileUpload::_internal_mutable_filename() {
+  
+  return _impl_.filename_.Mutable(GetArenaForAllocation());
+}
+inline std::string* FileUpload::release_filename() {
+  // @@protoc_insertion_point(field_release:gufo.FileUpload.filename)
+  return _impl_.filename_.Release();
+}
+inline void FileUpload::set_allocated_filename(std::string* filename) {
+  if (filename != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.filename_.SetAllocated(filename, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.filename_.IsDefault()) {
+    _impl_.filename_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.FileUpload.filename)
+}
+
+// string content_type = 3;
+inline void FileUpload::clear_content_type() {
+  _impl_.content_type_.ClearToEmpty();
+}
+inline const std::string& FileUpload::content_type() const {
+  // @@protoc_insertion_point(field_get:gufo.FileUpload.content_type)
+  return _internal_content_type();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void FileUpload::set_content_type(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.content_type_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.FileUpload.content_type)
+}
+inline std::string* FileUpload::mutable_content_type() {
+  std::string* _s = _internal_mutable_content_type();
+  // @@protoc_insertion_point(field_mutable:gufo.FileUpload.content_type)
+  return _s;
+}
+inline const std::string& FileUpload::_internal_content_type() const {
+  return _impl_.content_type_.Get();
+}
+inline void FileUpload::_internal_set_content_type(const std::string& value) {
+  
+  _impl_.content_type_.Set(value, GetArenaForAllocation());
+}
+inline std::string* FileUpload::_internal_mutable_content_type() {
+  
+  return _impl_.content_type_.Mutable(GetArenaForAllocation());
+}
+inline std::string* FileUpload::release_content_type() {
+  // @@protoc_insertion_point(field_release:gufo.FileUpload.content_type)
+  return _impl_.content_type_.Release();
+}
+inline void FileUpload::set_allocated_content_type(std::string* content_type) {
+  if (content_type != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.content_type_.SetAllocated(content_type, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.content_type_.IsDefault()) {
+    _impl_.content_type_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.FileUpload.content_type)
+}
+
+// int64 size = 4;
+inline void FileUpload::clear_size() {
+  _impl_.size_ = int64_t{0};
+}
+inline int64_t FileUpload::_internal_size() const {
+  return _impl_.size_;
+}
+inline int64_t FileUpload::size() const {
+  // @@protoc_insertion_point(field_get:gufo.FileUpload.size)
+  return _internal_size();
+}
+inline void FileUpload::_internal_set_size(int64_t value) {
+  
+  _impl_.size_ = value;
+}
+inline void FileUpload::set_size(int64_t value) {
+  _internal_set_size(value);
+  // @@protoc_insertion_point(field_set:gufo.FileUpload.size)
+}
+
+// -------------------------------------------------------------------
+
+// FileRef
+
+// string name = 1;
+inline void FileRef::clear_name() {
+  _impl_.name_.ClearToEmpty();
+}
+inline const std::string& FileRef::name() const {
+  // @@protoc_insertion_point(field_get:gufo.FileRef.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void FileRef::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.FileRef.name)
+}
+inline std::string* FileRef::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:gufo.FileRef.name)
+  return _s;
+}
+inline const std::string& FileRef::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void FileRef::_internal_set_name(const std::string& value) {
+  
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* FileRef::_internal_mutable_name() {
+  
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* FileRef::release_name() {
+  // @@protoc_insertion_point(field_release:gufo.FileRef.name)
+  return _impl_.name_.Release();
+}
+inline void FileRef::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.FileRef.name)
+}
+
+// string uri = 2;
+inline void FileRef::clear_uri() {
+  _impl_.uri_.ClearToEmpty();
+}
+inline const std::string& FileRef::uri() const {
+  // @@protoc_insertion_point(field_get:gufo.FileRef.uri)
+  return _internal_uri();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void FileRef::set_uri(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.uri_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.FileRef.uri)
+}
+inline std::string* FileRef::mutable_uri() {
+  std::string* _s = _internal_mutable_uri();
+  // @@protoc_insertion_point(field_mutable:gufo.FileRef.uri)
+  return _s;
+}
+inline const std::string& FileRef::_internal_uri() const {
+  return _impl_.uri_.Get();
+}
+inline void FileRef::_internal_set_uri(const std::string& value) {
+  
+  _impl_.uri_.Set(value, GetArenaForAllocation());
+}
+inline std::string* FileRef::_internal_mutable_uri() {
+  
+  return _impl_.uri_.Mutable(GetArenaForAllocation());
+}
+inline std::string* FileRef::release_uri() {
+  // @@protoc_insertion_point(field_release:gufo.FileRef.uri)
+  return _impl_.uri_.Release();
+}
+inline void FileRef::set_allocated_uri(std::string* uri) {
+  if (uri != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.uri_.SetAllocated(uri, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.uri_.IsDefault()) {
+    _impl_.uri_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.FileRef.uri)
+}
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// Response
+
+// map<string, .google.protobuf.Any> data = 1;
+inline int Response::_internal_data_size() const {
+  return _impl_.data_.size();
+}
+inline int Response::data_size() const {
+  return _internal_data_size();
 }
 inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-InternalRequest::_internal_args() const {
-  return _impl_.args_.GetMap();
+Response::_internal_data() const {
+  return _impl_.data_.GetMap();
 }
 inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-InternalRequest::args() const {
-  // @@protoc_insertion_point(field_map:InternalRequest.Args)
-  return _internal_args();
+Response::data() const {
+  // @@protoc_insertion_point(field_map:gufo.Response.data)
+  return _internal_data();
 }
 inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-InternalRequest::_internal_mutable_args() {
-  return _impl_.args_.MutableMap();
+Response::_internal_mutable_data() {
+  return _impl_.data_.MutableMap();
 }
 inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-InternalRequest::mutable_args() {
-  // @@protoc_insertion_point(field_mutable_map:InternalRequest.Args)
-  return _internal_mutable_args();
+Response::mutable_data() {
+  // @@protoc_insertion_point(field_mutable_map:gufo.Response.data)
+  return _internal_mutable_data();
+}
+
+// .gufo.Error error = 2;
+inline bool Response::_internal_has_error() const {
+  return this != internal_default_instance() && _impl_.error_ != nullptr;
+}
+inline bool Response::has_error() const {
+  return _internal_has_error();
+}
+inline void Response::clear_error() {
+  if (GetArenaForAllocation() == nullptr && _impl_.error_ != nullptr) {
+    delete _impl_.error_;
+  }
+  _impl_.error_ = nullptr;
+}
+inline const ::gufo::Error& Response::_internal_error() const {
+  const ::gufo::Error* p = _impl_.error_;
+  return p != nullptr ? *p : reinterpret_cast<const ::gufo::Error&>(
+      ::gufo::_Error_default_instance_);
+}
+inline const ::gufo::Error& Response::error() const {
+  // @@protoc_insertion_point(field_get:gufo.Response.error)
+  return _internal_error();
+}
+inline void Response::unsafe_arena_set_allocated_error(
+    ::gufo::Error* error) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.error_);
+  }
+  _impl_.error_ = error;
+  if (error) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:gufo.Response.error)
+}
+inline ::gufo::Error* Response::release_error() {
+  
+  ::gufo::Error* temp = _impl_.error_;
+  _impl_.error_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::gufo::Error* Response::unsafe_arena_release_error() {
+  // @@protoc_insertion_point(field_release:gufo.Response.error)
+  
+  ::gufo::Error* temp = _impl_.error_;
+  _impl_.error_ = nullptr;
+  return temp;
+}
+inline ::gufo::Error* Response::_internal_mutable_error() {
+  
+  if (_impl_.error_ == nullptr) {
+    auto* p = CreateMaybeMessage<::gufo::Error>(GetArenaForAllocation());
+    _impl_.error_ = p;
+  }
+  return _impl_.error_;
+}
+inline ::gufo::Error* Response::mutable_error() {
+  ::gufo::Error* _msg = _internal_mutable_error();
+  // @@protoc_insertion_point(field_mutable:gufo.Response.error)
+  return _msg;
+}
+inline void Response::set_allocated_error(::gufo::Error* error) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.error_;
+  }
+  if (error) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(error);
+    if (message_arena != submessage_arena) {
+      error = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, error, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.error_ = error;
+  // @@protoc_insertion_point(field_set_allocated:gufo.Response.error)
+}
+
+// .gufo.ResponseMeta meta = 3;
+inline bool Response::_internal_has_meta() const {
+  return this != internal_default_instance() && _impl_.meta_ != nullptr;
+}
+inline bool Response::has_meta() const {
+  return _internal_has_meta();
+}
+inline void Response::clear_meta() {
+  if (GetArenaForAllocation() == nullptr && _impl_.meta_ != nullptr) {
+    delete _impl_.meta_;
+  }
+  _impl_.meta_ = nullptr;
+}
+inline const ::gufo::ResponseMeta& Response::_internal_meta() const {
+  const ::gufo::ResponseMeta* p = _impl_.meta_;
+  return p != nullptr ? *p : reinterpret_cast<const ::gufo::ResponseMeta&>(
+      ::gufo::_ResponseMeta_default_instance_);
+}
+inline const ::gufo::ResponseMeta& Response::meta() const {
+  // @@protoc_insertion_point(field_get:gufo.Response.meta)
+  return _internal_meta();
+}
+inline void Response::unsafe_arena_set_allocated_meta(
+    ::gufo::ResponseMeta* meta) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.meta_);
+  }
+  _impl_.meta_ = meta;
+  if (meta) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:gufo.Response.meta)
+}
+inline ::gufo::ResponseMeta* Response::release_meta() {
+  
+  ::gufo::ResponseMeta* temp = _impl_.meta_;
+  _impl_.meta_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::gufo::ResponseMeta* Response::unsafe_arena_release_meta() {
+  // @@protoc_insertion_point(field_release:gufo.Response.meta)
+  
+  ::gufo::ResponseMeta* temp = _impl_.meta_;
+  _impl_.meta_ = nullptr;
+  return temp;
+}
+inline ::gufo::ResponseMeta* Response::_internal_mutable_meta() {
+  
+  if (_impl_.meta_ == nullptr) {
+    auto* p = CreateMaybeMessage<::gufo::ResponseMeta>(GetArenaForAllocation());
+    _impl_.meta_ = p;
+  }
+  return _impl_.meta_;
+}
+inline ::gufo::ResponseMeta* Response::mutable_meta() {
+  ::gufo::ResponseMeta* _msg = _internal_mutable_meta();
+  // @@protoc_insertion_point(field_mutable:gufo.Response.meta)
+  return _msg;
+}
+inline void Response::set_allocated_meta(::gufo::ResponseMeta* meta) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.meta_;
+  }
+  if (meta) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(meta);
+    if (message_arena != submessage_arena) {
+      meta = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, meta, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.meta_ = meta;
+  // @@protoc_insertion_point(field_set_allocated:gufo.Response.meta)
+}
+
+// .gufo.UploadStatusCode code = 4;
+inline void Response::clear_code() {
+  _impl_.code_ = 0;
+}
+inline ::gufo::UploadStatusCode Response::_internal_code() const {
+  return static_cast< ::gufo::UploadStatusCode >(_impl_.code_);
+}
+inline ::gufo::UploadStatusCode Response::code() const {
+  // @@protoc_insertion_point(field_get:gufo.Response.code)
+  return _internal_code();
+}
+inline void Response::_internal_set_code(::gufo::UploadStatusCode value) {
+  
+  _impl_.code_ = value;
+}
+inline void Response::set_code(::gufo::UploadStatusCode value) {
+  _internal_set_code(value);
+  // @@protoc_insertion_point(field_set:gufo.Response.code)
+}
+
+// .gufo.Request request_back = 5;
+inline bool Response::_internal_has_request_back() const {
+  return this != internal_default_instance() && _impl_.request_back_ != nullptr;
+}
+inline bool Response::has_request_back() const {
+  return _internal_has_request_back();
+}
+inline void Response::clear_request_back() {
+  if (GetArenaForAllocation() == nullptr && _impl_.request_back_ != nullptr) {
+    delete _impl_.request_back_;
+  }
+  _impl_.request_back_ = nullptr;
+}
+inline const ::gufo::Request& Response::_internal_request_back() const {
+  const ::gufo::Request* p = _impl_.request_back_;
+  return p != nullptr ? *p : reinterpret_cast<const ::gufo::Request&>(
+      ::gufo::_Request_default_instance_);
+}
+inline const ::gufo::Request& Response::request_back() const {
+  // @@protoc_insertion_point(field_get:gufo.Response.request_back)
+  return _internal_request_back();
+}
+inline void Response::unsafe_arena_set_allocated_request_back(
+    ::gufo::Request* request_back) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.request_back_);
+  }
+  _impl_.request_back_ = request_back;
+  if (request_back) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:gufo.Response.request_back)
+}
+inline ::gufo::Request* Response::release_request_back() {
+  
+  ::gufo::Request* temp = _impl_.request_back_;
+  _impl_.request_back_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::gufo::Request* Response::unsafe_arena_release_request_back() {
+  // @@protoc_insertion_point(field_release:gufo.Response.request_back)
+  
+  ::gufo::Request* temp = _impl_.request_back_;
+  _impl_.request_back_ = nullptr;
+  return temp;
+}
+inline ::gufo::Request* Response::_internal_mutable_request_back() {
+  
+  if (_impl_.request_back_ == nullptr) {
+    auto* p = CreateMaybeMessage<::gufo::Request>(GetArenaForAllocation());
+    _impl_.request_back_ = p;
+  }
+  return _impl_.request_back_;
+}
+inline ::gufo::Request* Response::mutable_request_back() {
+  ::gufo::Request* _msg = _internal_mutable_request_back();
+  // @@protoc_insertion_point(field_mutable:gufo.Response.request_back)
+  return _msg;
+}
+inline void Response::set_allocated_request_back(::gufo::Request* request_back) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.request_back_;
+  }
+  if (request_back) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(request_back);
+    if (message_arena != submessage_arena) {
+      request_back = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, request_back, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.request_back_ = request_back;
+  // @@protoc_insertion_point(field_set_allocated:gufo.Response.request_back)
 }
 
 // -------------------------------------------------------------------
@@ -3684,7 +4617,7 @@ inline int32_t Error::_internal_code() const {
   return _impl_.code_;
 }
 inline int32_t Error::code() const {
-  // @@protoc_insertion_point(field_get:Error.code)
+  // @@protoc_insertion_point(field_get:gufo.Error.code)
   return _internal_code();
 }
 inline void Error::_internal_set_code(int32_t value) {
@@ -3693,15 +4626,65 @@ inline void Error::_internal_set_code(int32_t value) {
 }
 inline void Error::set_code(int32_t value) {
   _internal_set_code(value);
-  // @@protoc_insertion_point(field_set:Error.code)
+  // @@protoc_insertion_point(field_set:gufo.Error.code)
 }
 
-// string message = 2;
+// string key = 2;
+inline void Error::clear_key() {
+  _impl_.key_.ClearToEmpty();
+}
+inline const std::string& Error::key() const {
+  // @@protoc_insertion_point(field_get:gufo.Error.key)
+  return _internal_key();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void Error::set_key(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.key_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.Error.key)
+}
+inline std::string* Error::mutable_key() {
+  std::string* _s = _internal_mutable_key();
+  // @@protoc_insertion_point(field_mutable:gufo.Error.key)
+  return _s;
+}
+inline const std::string& Error::_internal_key() const {
+  return _impl_.key_.Get();
+}
+inline void Error::_internal_set_key(const std::string& value) {
+  
+  _impl_.key_.Set(value, GetArenaForAllocation());
+}
+inline std::string* Error::_internal_mutable_key() {
+  
+  return _impl_.key_.Mutable(GetArenaForAllocation());
+}
+inline std::string* Error::release_key() {
+  // @@protoc_insertion_point(field_release:gufo.Error.key)
+  return _impl_.key_.Release();
+}
+inline void Error::set_allocated_key(std::string* key) {
+  if (key != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.key_.SetAllocated(key, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.key_.IsDefault()) {
+    _impl_.key_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.Error.key)
+}
+
+// string message = 3;
 inline void Error::clear_message() {
   _impl_.message_.ClearToEmpty();
 }
 inline const std::string& Error::message() const {
-  // @@protoc_insertion_point(field_get:Error.message)
+  // @@protoc_insertion_point(field_get:gufo.Error.message)
   return _internal_message();
 }
 template <typename ArgT0, typename... ArgT>
@@ -3709,11 +4692,11 @@ inline PROTOBUF_ALWAYS_INLINE
 void Error::set_message(ArgT0&& arg0, ArgT... args) {
  
  _impl_.message_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Error.message)
+  // @@protoc_insertion_point(field_set:gufo.Error.message)
 }
 inline std::string* Error::mutable_message() {
   std::string* _s = _internal_mutable_message();
-  // @@protoc_insertion_point(field_mutable:Error.message)
+  // @@protoc_insertion_point(field_mutable:gufo.Error.message)
   return _s;
 }
 inline const std::string& Error::_internal_message() const {
@@ -3728,7 +4711,7 @@ inline std::string* Error::_internal_mutable_message() {
   return _impl_.message_.Mutable(GetArenaForAllocation());
 }
 inline std::string* Error::release_message() {
-  // @@protoc_insertion_point(field_release:Error.message)
+  // @@protoc_insertion_point(field_release:gufo.Error.message)
   return _impl_.message_.Release();
 }
 inline void Error::set_allocated_message(std::string* message) {
@@ -3743,10 +4726,10 @@ inline void Error::set_allocated_message(std::string* message) {
     _impl_.message_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Error.message)
+  // @@protoc_insertion_point(field_set_allocated:gufo.Error.message)
 }
 
-// map<string, string> meta = 3;
+// map<string, string> meta = 4;
 inline int Error::_internal_meta_size() const {
   return _impl_.meta_.size();
 }
@@ -3762,7 +4745,7 @@ Error::_internal_meta() const {
 }
 inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
 Error::meta() const {
-  // @@protoc_insertion_point(field_map:Error.meta)
+  // @@protoc_insertion_point(field_map:gufo.Error.meta)
   return _internal_meta();
 }
 inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
@@ -3771,81 +4754,239 @@ Error::_internal_mutable_meta() {
 }
 inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
 Error::mutable_meta() {
-  // @@protoc_insertion_point(field_mutable_map:Error.meta)
+  // @@protoc_insertion_point(field_mutable_map:gufo.Error.meta)
   return _internal_mutable_meta();
 }
 
+// bool retryable = 5;
+inline void Error::clear_retryable() {
+  _impl_.retryable_ = false;
+}
+inline bool Error::_internal_retryable() const {
+  return _impl_.retryable_;
+}
+inline bool Error::retryable() const {
+  // @@protoc_insertion_point(field_get:gufo.Error.retryable)
+  return _internal_retryable();
+}
+inline void Error::_internal_set_retryable(bool value) {
+  
+  _impl_.retryable_ = value;
+}
+inline void Error::set_retryable(bool value) {
+  _internal_set_retryable(value);
+  // @@protoc_insertion_point(field_set:gufo.Error.retryable)
+}
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
 
-// Response
+// ResponseMeta
 
-// map<string, .google.protobuf.Any> Data = 1;
-inline int Response::_internal_data_size() const {
-  return _impl_.data_.size();
+// int32 status = 1;
+inline void ResponseMeta::clear_status() {
+  _impl_.status_ = 0;
 }
-inline int Response::data_size() const {
-  return _internal_data_size();
+inline int32_t ResponseMeta::_internal_status() const {
+  return _impl_.status_;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-Response::_internal_data() const {
-  return _impl_.data_.GetMap();
+inline int32_t ResponseMeta::status() const {
+  // @@protoc_insertion_point(field_get:gufo.ResponseMeta.status)
+  return _internal_status();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >&
-Response::data() const {
-  // @@protoc_insertion_point(field_map:Response.Data)
-  return _internal_data();
+inline void ResponseMeta::_internal_set_status(int32_t value) {
+  
+  _impl_.status_ = value;
 }
-inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-Response::_internal_mutable_data() {
-  return _impl_.data_.MutableMap();
-}
-inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, ::PROTOBUF_NAMESPACE_ID::Any >*
-Response::mutable_data() {
-  // @@protoc_insertion_point(field_mutable_map:Response.Data)
-  return _internal_mutable_data();
+inline void ResponseMeta::set_status(int32_t value) {
+  _internal_set_status(value);
+  // @@protoc_insertion_point(field_set:gufo.ResponseMeta.status)
 }
 
-// optional .Request RequestBack = 2;
-inline bool Response::_internal_has_requestback() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.requestback_ != nullptr);
-  return value;
+// string trace_id = 2;
+inline void ResponseMeta::clear_trace_id() {
+  _impl_.trace_id_.ClearToEmpty();
 }
-inline bool Response::has_requestback() const {
-  return _internal_has_requestback();
+inline const std::string& ResponseMeta::trace_id() const {
+  // @@protoc_insertion_point(field_get:gufo.ResponseMeta.trace_id)
+  return _internal_trace_id();
 }
-inline void Response::clear_requestback() {
-  if (_impl_.requestback_ != nullptr) _impl_.requestback_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000001u;
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ResponseMeta::set_trace_id(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.trace_id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.ResponseMeta.trace_id)
 }
-inline const ::Request& Response::_internal_requestback() const {
-  const ::Request* p = _impl_.requestback_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Request&>(
-      ::_Request_default_instance_);
+inline std::string* ResponseMeta::mutable_trace_id() {
+  std::string* _s = _internal_mutable_trace_id();
+  // @@protoc_insertion_point(field_mutable:gufo.ResponseMeta.trace_id)
+  return _s;
 }
-inline const ::Request& Response::requestback() const {
-  // @@protoc_insertion_point(field_get:Response.RequestBack)
-  return _internal_requestback();
+inline const std::string& ResponseMeta::_internal_trace_id() const {
+  return _impl_.trace_id_.Get();
 }
-inline void Response::unsafe_arena_set_allocated_requestback(
-    ::Request* requestback) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.requestback_);
-  }
-  _impl_.requestback_ = requestback;
-  if (requestback) {
-    _impl_._has_bits_[0] |= 0x00000001u;
+inline void ResponseMeta::_internal_set_trace_id(const std::string& value) {
+  
+  _impl_.trace_id_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ResponseMeta::_internal_mutable_trace_id() {
+  
+  return _impl_.trace_id_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ResponseMeta::release_trace_id() {
+  // @@protoc_insertion_point(field_release:gufo.ResponseMeta.trace_id)
+  return _impl_.trace_id_.Release();
+}
+inline void ResponseMeta::set_allocated_trace_id(std::string* trace_id) {
+  if (trace_id != nullptr) {
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
+    
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Response.RequestBack)
+  _impl_.trace_id_.SetAllocated(trace_id, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.trace_id_.IsDefault()) {
+    _impl_.trace_id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.ResponseMeta.trace_id)
 }
-inline ::Request* Response::release_requestback() {
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  ::Request* temp = _impl_.requestback_;
-  _impl_.requestback_ = nullptr;
+
+// string request_id = 3;
+inline void ResponseMeta::clear_request_id() {
+  _impl_.request_id_.ClearToEmpty();
+}
+inline const std::string& ResponseMeta::request_id() const {
+  // @@protoc_insertion_point(field_get:gufo.ResponseMeta.request_id)
+  return _internal_request_id();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ResponseMeta::set_request_id(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.request_id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.ResponseMeta.request_id)
+}
+inline std::string* ResponseMeta::mutable_request_id() {
+  std::string* _s = _internal_mutable_request_id();
+  // @@protoc_insertion_point(field_mutable:gufo.ResponseMeta.request_id)
+  return _s;
+}
+inline const std::string& ResponseMeta::_internal_request_id() const {
+  return _impl_.request_id_.Get();
+}
+inline void ResponseMeta::_internal_set_request_id(const std::string& value) {
+  
+  _impl_.request_id_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ResponseMeta::_internal_mutable_request_id() {
+  
+  return _impl_.request_id_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ResponseMeta::release_request_id() {
+  // @@protoc_insertion_point(field_release:gufo.ResponseMeta.request_id)
+  return _impl_.request_id_.Release();
+}
+inline void ResponseMeta::set_allocated_request_id(std::string* request_id) {
+  if (request_id != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.request_id_.SetAllocated(request_id, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.request_id_.IsDefault()) {
+    _impl_.request_id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.ResponseMeta.request_id)
+}
+
+// string node = 4;
+inline void ResponseMeta::clear_node() {
+  _impl_.node_.ClearToEmpty();
+}
+inline const std::string& ResponseMeta::node() const {
+  // @@protoc_insertion_point(field_get:gufo.ResponseMeta.node)
+  return _internal_node();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ResponseMeta::set_node(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.node_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:gufo.ResponseMeta.node)
+}
+inline std::string* ResponseMeta::mutable_node() {
+  std::string* _s = _internal_mutable_node();
+  // @@protoc_insertion_point(field_mutable:gufo.ResponseMeta.node)
+  return _s;
+}
+inline const std::string& ResponseMeta::_internal_node() const {
+  return _impl_.node_.Get();
+}
+inline void ResponseMeta::_internal_set_node(const std::string& value) {
+  
+  _impl_.node_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ResponseMeta::_internal_mutable_node() {
+  
+  return _impl_.node_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ResponseMeta::release_node() {
+  // @@protoc_insertion_point(field_release:gufo.ResponseMeta.node)
+  return _impl_.node_.Release();
+}
+inline void ResponseMeta::set_allocated_node(std::string* node) {
+  if (node != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.node_.SetAllocated(node, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.node_.IsDefault()) {
+    _impl_.node_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:gufo.ResponseMeta.node)
+}
+
+// .google.protobuf.Timestamp ts = 5;
+inline bool ResponseMeta::_internal_has_ts() const {
+  return this != internal_default_instance() && _impl_.ts_ != nullptr;
+}
+inline bool ResponseMeta::has_ts() const {
+  return _internal_has_ts();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Timestamp& ResponseMeta::_internal_ts() const {
+  const ::PROTOBUF_NAMESPACE_ID::Timestamp* p = _impl_.ts_;
+  return p != nullptr ? *p : reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Timestamp&>(
+      ::PROTOBUF_NAMESPACE_ID::_Timestamp_default_instance_);
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Timestamp& ResponseMeta::ts() const {
+  // @@protoc_insertion_point(field_get:gufo.ResponseMeta.ts)
+  return _internal_ts();
+}
+inline void ResponseMeta::unsafe_arena_set_allocated_ts(
+    ::PROTOBUF_NAMESPACE_ID::Timestamp* ts) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.ts_);
+  }
+  _impl_.ts_ = ts;
+  if (ts) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:gufo.ResponseMeta.ts)
+}
+inline ::PROTOBUF_NAMESPACE_ID::Timestamp* ResponseMeta::release_ts() {
+  
+  ::PROTOBUF_NAMESPACE_ID::Timestamp* temp = _impl_.ts_;
+  _impl_.ts_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -3857,162 +4998,74 @@ inline ::Request* Response::release_requestback() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Request* Response::unsafe_arena_release_requestback() {
-  // @@protoc_insertion_point(field_release:Response.RequestBack)
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  ::Request* temp = _impl_.requestback_;
-  _impl_.requestback_ = nullptr;
+inline ::PROTOBUF_NAMESPACE_ID::Timestamp* ResponseMeta::unsafe_arena_release_ts() {
+  // @@protoc_insertion_point(field_release:gufo.ResponseMeta.ts)
+  
+  ::PROTOBUF_NAMESPACE_ID::Timestamp* temp = _impl_.ts_;
+  _impl_.ts_ = nullptr;
   return temp;
 }
-inline ::Request* Response::_internal_mutable_requestback() {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  if (_impl_.requestback_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Request>(GetArenaForAllocation());
-    _impl_.requestback_ = p;
+inline ::PROTOBUF_NAMESPACE_ID::Timestamp* ResponseMeta::_internal_mutable_ts() {
+  
+  if (_impl_.ts_ == nullptr) {
+    auto* p = CreateMaybeMessage<::PROTOBUF_NAMESPACE_ID::Timestamp>(GetArenaForAllocation());
+    _impl_.ts_ = p;
   }
-  return _impl_.requestback_;
+  return _impl_.ts_;
 }
-inline ::Request* Response::mutable_requestback() {
-  ::Request* _msg = _internal_mutable_requestback();
-  // @@protoc_insertion_point(field_mutable:Response.RequestBack)
+inline ::PROTOBUF_NAMESPACE_ID::Timestamp* ResponseMeta::mutable_ts() {
+  ::PROTOBUF_NAMESPACE_ID::Timestamp* _msg = _internal_mutable_ts();
+  // @@protoc_insertion_point(field_mutable:gufo.ResponseMeta.ts)
   return _msg;
 }
-inline void Response::set_allocated_requestback(::Request* requestback) {
+inline void ResponseMeta::set_allocated_ts(::PROTOBUF_NAMESPACE_ID::Timestamp* ts) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete _impl_.requestback_;
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.ts_);
   }
-  if (requestback) {
+  if (ts) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(requestback);
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(ts));
     if (message_arena != submessage_arena) {
-      requestback = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, requestback, submessage_arena);
+      ts = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, ts, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000001u;
+    
   } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
+    
   }
-  _impl_.requestback_ = requestback;
-  // @@protoc_insertion_point(field_set_allocated:Response.RequestBack)
+  _impl_.ts_ = ts;
+  // @@protoc_insertion_point(field_set_allocated:gufo.ResponseMeta.ts)
 }
 
-// optional .UploadStatusCode Code = 3;
-inline bool Response::_internal_has_code() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
+// map<string, string> extra = 6;
+inline int ResponseMeta::_internal_extra_size() const {
+  return _impl_.extra_.size();
 }
-inline bool Response::has_code() const {
-  return _internal_has_code();
+inline int ResponseMeta::extra_size() const {
+  return _internal_extra_size();
 }
-inline void Response::clear_code() {
-  _impl_.code_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000004u;
+inline void ResponseMeta::clear_extra() {
+  _impl_.extra_.Clear();
 }
-inline ::UploadStatusCode Response::_internal_code() const {
-  return static_cast< ::UploadStatusCode >(_impl_.code_);
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+ResponseMeta::_internal_extra() const {
+  return _impl_.extra_.GetMap();
 }
-inline ::UploadStatusCode Response::code() const {
-  // @@protoc_insertion_point(field_get:Response.Code)
-  return _internal_code();
+inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
+ResponseMeta::extra() const {
+  // @@protoc_insertion_point(field_map:gufo.ResponseMeta.extra)
+  return _internal_extra();
 }
-inline void Response::_internal_set_code(::UploadStatusCode value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.code_ = value;
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+ResponseMeta::_internal_mutable_extra() {
+  return _impl_.extra_.MutableMap();
 }
-inline void Response::set_code(::UploadStatusCode value) {
-  _internal_set_code(value);
-  // @@protoc_insertion_point(field_set:Response.Code)
-}
-
-// optional .Error error = 4;
-inline bool Response::_internal_has_error() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.error_ != nullptr);
-  return value;
-}
-inline bool Response::has_error() const {
-  return _internal_has_error();
-}
-inline void Response::clear_error() {
-  if (_impl_.error_ != nullptr) _impl_.error_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline const ::Error& Response::_internal_error() const {
-  const ::Error* p = _impl_.error_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Error&>(
-      ::_Error_default_instance_);
-}
-inline const ::Error& Response::error() const {
-  // @@protoc_insertion_point(field_get:Response.error)
-  return _internal_error();
-}
-inline void Response::unsafe_arena_set_allocated_error(
-    ::Error* error) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.error_);
-  }
-  _impl_.error_ = error;
-  if (error) {
-    _impl_._has_bits_[0] |= 0x00000002u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000002u;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Response.error)
-}
-inline ::Error* Response::release_error() {
-  _impl_._has_bits_[0] &= ~0x00000002u;
-  ::Error* temp = _impl_.error_;
-  _impl_.error_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::Error* Response::unsafe_arena_release_error() {
-  // @@protoc_insertion_point(field_release:Response.error)
-  _impl_._has_bits_[0] &= ~0x00000002u;
-  ::Error* temp = _impl_.error_;
-  _impl_.error_ = nullptr;
-  return temp;
-}
-inline ::Error* Response::_internal_mutable_error() {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  if (_impl_.error_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Error>(GetArenaForAllocation());
-    _impl_.error_ = p;
-  }
-  return _impl_.error_;
-}
-inline ::Error* Response::mutable_error() {
-  ::Error* _msg = _internal_mutable_error();
-  // @@protoc_insertion_point(field_mutable:Response.error)
-  return _msg;
-}
-inline void Response::set_allocated_error(::Error* error) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.error_;
-  }
-  if (error) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(error);
-    if (message_arena != submessage_arena) {
-      error = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, error, submessage_arena);
-    }
-    _impl_._has_bits_[0] |= 0x00000002u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000002u;
-  }
-  _impl_.error_ = error;
-  // @@protoc_insertion_point(field_set_allocated:Response.error)
+inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
+ResponseMeta::mutable_extra() {
+  // @@protoc_insertion_point(field_mutable_map:gufo.ResponseMeta.extra)
+  return _internal_mutable_extra();
 }
 
 // -------------------------------------------------------------------
@@ -4024,7 +5077,7 @@ inline void FileChunk::clear_name() {
   _impl_.name_.ClearToEmpty();
 }
 inline const std::string& FileChunk::name() const {
-  // @@protoc_insertion_point(field_get:FileChunk.name)
+  // @@protoc_insertion_point(field_get:gufo.FileChunk.name)
   return _internal_name();
 }
 template <typename ArgT0, typename... ArgT>
@@ -4032,11 +5085,11 @@ inline PROTOBUF_ALWAYS_INLINE
 void FileChunk::set_name(ArgT0&& arg0, ArgT... args) {
  
  _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:FileChunk.name)
+  // @@protoc_insertion_point(field_set:gufo.FileChunk.name)
 }
 inline std::string* FileChunk::mutable_name() {
   std::string* _s = _internal_mutable_name();
-  // @@protoc_insertion_point(field_mutable:FileChunk.name)
+  // @@protoc_insertion_point(field_mutable:gufo.FileChunk.name)
   return _s;
 }
 inline const std::string& FileChunk::_internal_name() const {
@@ -4051,7 +5104,7 @@ inline std::string* FileChunk::_internal_mutable_name() {
   return _impl_.name_.Mutable(GetArenaForAllocation());
 }
 inline std::string* FileChunk::release_name() {
-  // @@protoc_insertion_point(field_release:FileChunk.name)
+  // @@protoc_insertion_point(field_release:gufo.FileChunk.name)
   return _impl_.name_.Release();
 }
 inline void FileChunk::set_allocated_name(std::string* name) {
@@ -4066,7 +5119,7 @@ inline void FileChunk::set_allocated_name(std::string* name) {
     _impl_.name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:FileChunk.name)
+  // @@protoc_insertion_point(field_set_allocated:gufo.FileChunk.name)
 }
 
 // bytes data = 2;
@@ -4074,7 +5127,7 @@ inline void FileChunk::clear_data() {
   _impl_.data_.ClearToEmpty();
 }
 inline const std::string& FileChunk::data() const {
-  // @@protoc_insertion_point(field_get:FileChunk.data)
+  // @@protoc_insertion_point(field_get:gufo.FileChunk.data)
   return _internal_data();
 }
 template <typename ArgT0, typename... ArgT>
@@ -4082,11 +5135,11 @@ inline PROTOBUF_ALWAYS_INLINE
 void FileChunk::set_data(ArgT0&& arg0, ArgT... args) {
  
  _impl_.data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:FileChunk.data)
+  // @@protoc_insertion_point(field_set:gufo.FileChunk.data)
 }
 inline std::string* FileChunk::mutable_data() {
   std::string* _s = _internal_mutable_data();
-  // @@protoc_insertion_point(field_mutable:FileChunk.data)
+  // @@protoc_insertion_point(field_mutable:gufo.FileChunk.data)
   return _s;
 }
 inline const std::string& FileChunk::_internal_data() const {
@@ -4101,7 +5154,7 @@ inline std::string* FileChunk::_internal_mutable_data() {
   return _impl_.data_.Mutable(GetArenaForAllocation());
 }
 inline std::string* FileChunk::release_data() {
-  // @@protoc_insertion_point(field_release:FileChunk.data)
+  // @@protoc_insertion_point(field_release:gufo.FileChunk.data)
   return _impl_.data_.Release();
 }
 inline void FileChunk::set_allocated_data(std::string* data) {
@@ -4116,42 +5169,7 @@ inline void FileChunk::set_allocated_data(std::string* data) {
     _impl_.data_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:FileChunk.data)
-}
-
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
-// StringMap
-
-// map<string, string> entries = 1;
-inline int StringMap::_internal_entries_size() const {
-  return _impl_.entries_.size();
-}
-inline int StringMap::entries_size() const {
-  return _internal_entries_size();
-}
-inline void StringMap::clear_entries() {
-  _impl_.entries_.Clear();
-}
-inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
-StringMap::_internal_entries() const {
-  return _impl_.entries_.GetMap();
-}
-inline const ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >&
-StringMap::entries() const {
-  // @@protoc_insertion_point(field_map:StringMap.entries)
-  return _internal_entries();
-}
-inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
-StringMap::_internal_mutable_entries() {
-  return _impl_.entries_.MutableMap();
-}
-inline ::PROTOBUF_NAMESPACE_ID::Map< std::string, std::string >*
-StringMap::mutable_entries() {
-  // @@protoc_insertion_point(field_mutable_map:StringMap.entries)
-  return _internal_mutable_entries();
+  // @@protoc_insertion_point(field_set_allocated:gufo.FileChunk.data)
 }
 
 #ifdef __GNUC__
@@ -4177,16 +5195,30 @@ StringMap::mutable_entries() {
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
+}  // namespace gufo
 
 PROTOBUF_NAMESPACE_OPEN
 
-template <> struct is_proto_enum< ::UploadStatusCode> : ::std::true_type {};
+template <> struct is_proto_enum< ::gufo::UploadStatusCode> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::UploadStatusCode>() {
-  return ::UploadStatusCode_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::gufo::UploadStatusCode>() {
+  return ::gufo::UploadStatusCode_descriptor();
+}
+template <> struct is_proto_enum< ::gufo::Method> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::gufo::Method>() {
+  return ::gufo::Method_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

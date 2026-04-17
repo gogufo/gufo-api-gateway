@@ -12,6 +12,11 @@
 #else
 #import "GPBAny.pbobjc.h"
 #endif
+#if defined(GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS) && GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS
+#import <Protobuf/GPBTimestamp.pbobjc.h>
+#else
+#import "GPBTimestamp.pbobjc.h"
+#endif
 
 @implementation Reverse
 
@@ -21,14 +26,14 @@
 // Designated initializer
 - (instancetype)initWithHost:(NSString *)host callOptions:(GRPCCallOptions *_Nullable)callOptions {
   return [super initWithHost:host
-                 packageName:@""
+                 packageName:@"gufo"
                  serviceName:@"Reverse"
                  callOptions:callOptions];
 }
 
 - (instancetype)initWithHost:(NSString *)host {
   return [super initWithHost:host
-                 packageName:@""
+                 packageName:@"gufo"
                  serviceName:@"Reverse"];
 }
 

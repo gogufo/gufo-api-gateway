@@ -6,9 +6,15 @@ import microservice_pb2 as microservice__pb2
 
 
 class ReverseStub(object):
-    """=============================
-    Gufo gRPC Service Definition
-    =============================
+    """============================================================
+    Gufo Core Transport (Dynamic Execution Bus)
+    ============================================================
+    - Keeps URL structure compatibility:
+    /api/v1/{module}/{param}/{param_id}/{param_idd}
+    - Supports HTTP + gRPC
+    - Separates routing, query, and body
+    ============================================================
+
     """
 
     def __init__(self, channel):
@@ -18,21 +24,27 @@ class ReverseStub(object):
             channel: A grpc.Channel.
         """
         self.Do = channel.unary_unary(
-                '/Reverse/Do',
+                '/gufo.Reverse/Do',
                 request_serializer=microservice__pb2.Request.SerializeToString,
                 response_deserializer=microservice__pb2.Response.FromString,
                 )
         self.Stream = channel.stream_stream(
-                '/Reverse/Stream',
+                '/gufo.Reverse/Stream',
                 request_serializer=microservice__pb2.Request.SerializeToString,
                 response_deserializer=microservice__pb2.Response.FromString,
                 )
 
 
 class ReverseServicer(object):
-    """=============================
-    Gufo gRPC Service Definition
-    =============================
+    """============================================================
+    Gufo Core Transport (Dynamic Execution Bus)
+    ============================================================
+    - Keeps URL structure compatibility:
+    /api/v1/{module}/{param}/{param_id}/{param_idd}
+    - Supports HTTP + gRPC
+    - Separates routing, query, and body
+    ============================================================
+
     """
 
     def Do(self, request, context):
@@ -62,15 +74,21 @@ def add_ReverseServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'Reverse', rpc_method_handlers)
+            'gufo.Reverse', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
 class Reverse(object):
-    """=============================
-    Gufo gRPC Service Definition
-    =============================
+    """============================================================
+    Gufo Core Transport (Dynamic Execution Bus)
+    ============================================================
+    - Keeps URL structure compatibility:
+    /api/v1/{module}/{param}/{param_id}/{param_idd}
+    - Supports HTTP + gRPC
+    - Separates routing, query, and body
+    ============================================================
+
     """
 
     @staticmethod
@@ -84,7 +102,7 @@ class Reverse(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Reverse/Do',
+        return grpc.experimental.unary_unary(request, target, '/gufo.Reverse/Do',
             microservice__pb2.Request.SerializeToString,
             microservice__pb2.Response.FromString,
             options, channel_credentials,
@@ -101,7 +119,7 @@ class Reverse(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_stream(request_iterator, target, '/Reverse/Stream',
+        return grpc.experimental.stream_stream(request_iterator, target, '/gufo.Reverse/Stream',
             microservice__pb2.Request.SerializeToString,
             microservice__pb2.Response.FromString,
             options, channel_credentials,

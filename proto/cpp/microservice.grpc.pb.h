@@ -25,75 +25,83 @@
 #include <grpcpp/support/stub_options.h>
 #include <grpcpp/support/sync_stream.h>
 
-// =============================
-// Gufo gRPC Service Definition
-// =============================
+namespace gufo {
+
+// ============================================================
+// Gufo Core Transport (Dynamic Execution Bus)
+// ============================================================
+// - Keeps URL structure compatibility:
+//   /api/v1/{module}/{param}/{param_id}/{param_idd}
+// - Supports HTTP + gRPC
+// - Separates routing, query, and body
+// ============================================================
+//
 class Reverse final {
  public:
   static constexpr char const* service_full_name() {
-    return "Reverse";
+    return "gufo.Reverse";
   }
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    virtual ::grpc::Status Do(::grpc::ClientContext* context, const ::Request& request, ::Response* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Response>> AsyncDo(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Response>>(AsyncDoRaw(context, request, cq));
+    virtual ::grpc::Status Do(::grpc::ClientContext* context, const ::gufo::Request& request, ::gufo::Response* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::gufo::Response>> AsyncDo(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::gufo::Response>>(AsyncDoRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Response>> PrepareAsyncDo(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Response>>(PrepareAsyncDoRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::gufo::Response>> PrepareAsyncDo(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::gufo::Response>>(PrepareAsyncDoRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientReaderWriterInterface< ::Request, ::Response>> Stream(::grpc::ClientContext* context) {
-      return std::unique_ptr< ::grpc::ClientReaderWriterInterface< ::Request, ::Response>>(StreamRaw(context));
+    std::unique_ptr< ::grpc::ClientReaderWriterInterface< ::gufo::Request, ::gufo::Response>> Stream(::grpc::ClientContext* context) {
+      return std::unique_ptr< ::grpc::ClientReaderWriterInterface< ::gufo::Request, ::gufo::Response>>(StreamRaw(context));
     }
-    std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::Request, ::Response>> AsyncStream(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
-      return std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::Request, ::Response>>(AsyncStreamRaw(context, cq, tag));
+    std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::gufo::Request, ::gufo::Response>> AsyncStream(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::gufo::Request, ::gufo::Response>>(AsyncStreamRaw(context, cq, tag));
     }
-    std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::Request, ::Response>> PrepareAsyncStream(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::Request, ::Response>>(PrepareAsyncStreamRaw(context, cq));
+    std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::gufo::Request, ::gufo::Response>> PrepareAsyncStream(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderWriterInterface< ::gufo::Request, ::gufo::Response>>(PrepareAsyncStreamRaw(context, cq));
     }
     class async_interface {
      public:
       virtual ~async_interface() {}
-      virtual void Do(::grpc::ClientContext* context, const ::Request* request, ::Response* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void Do(::grpc::ClientContext* context, const ::Request* request, ::Response* response, ::grpc::ClientUnaryReactor* reactor) = 0;
-      virtual void Stream(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::Request,::Response>* reactor) = 0;
+      virtual void Do(::grpc::ClientContext* context, const ::gufo::Request* request, ::gufo::Response* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void Do(::grpc::ClientContext* context, const ::gufo::Request* request, ::gufo::Response* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void Stream(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::gufo::Request,::gufo::Response>* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
     class async_interface* experimental_async() { return async(); }
    private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::Response>* AsyncDoRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::Response>* PrepareAsyncDoRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientReaderWriterInterface< ::Request, ::Response>* StreamRaw(::grpc::ClientContext* context) = 0;
-    virtual ::grpc::ClientAsyncReaderWriterInterface< ::Request, ::Response>* AsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) = 0;
-    virtual ::grpc::ClientAsyncReaderWriterInterface< ::Request, ::Response>* PrepareAsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::gufo::Response>* AsyncDoRaw(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::gufo::Response>* PrepareAsyncDoRaw(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientReaderWriterInterface< ::gufo::Request, ::gufo::Response>* StreamRaw(::grpc::ClientContext* context) = 0;
+    virtual ::grpc::ClientAsyncReaderWriterInterface< ::gufo::Request, ::gufo::Response>* AsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncReaderWriterInterface< ::gufo::Request, ::gufo::Response>* PrepareAsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
-    ::grpc::Status Do(::grpc::ClientContext* context, const ::Request& request, ::Response* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Response>> AsyncDo(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Response>>(AsyncDoRaw(context, request, cq));
+    ::grpc::Status Do(::grpc::ClientContext* context, const ::gufo::Request& request, ::gufo::Response* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::gufo::Response>> AsyncDo(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::gufo::Response>>(AsyncDoRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Response>> PrepareAsyncDo(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Response>>(PrepareAsyncDoRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::gufo::Response>> PrepareAsyncDo(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::gufo::Response>>(PrepareAsyncDoRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientReaderWriter< ::Request, ::Response>> Stream(::grpc::ClientContext* context) {
-      return std::unique_ptr< ::grpc::ClientReaderWriter< ::Request, ::Response>>(StreamRaw(context));
+    std::unique_ptr< ::grpc::ClientReaderWriter< ::gufo::Request, ::gufo::Response>> Stream(::grpc::ClientContext* context) {
+      return std::unique_ptr< ::grpc::ClientReaderWriter< ::gufo::Request, ::gufo::Response>>(StreamRaw(context));
     }
-    std::unique_ptr<  ::grpc::ClientAsyncReaderWriter< ::Request, ::Response>> AsyncStream(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
-      return std::unique_ptr< ::grpc::ClientAsyncReaderWriter< ::Request, ::Response>>(AsyncStreamRaw(context, cq, tag));
+    std::unique_ptr<  ::grpc::ClientAsyncReaderWriter< ::gufo::Request, ::gufo::Response>> AsyncStream(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderWriter< ::gufo::Request, ::gufo::Response>>(AsyncStreamRaw(context, cq, tag));
     }
-    std::unique_ptr<  ::grpc::ClientAsyncReaderWriter< ::Request, ::Response>> PrepareAsyncStream(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncReaderWriter< ::Request, ::Response>>(PrepareAsyncStreamRaw(context, cq));
+    std::unique_ptr<  ::grpc::ClientAsyncReaderWriter< ::gufo::Request, ::gufo::Response>> PrepareAsyncStream(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderWriter< ::gufo::Request, ::gufo::Response>>(PrepareAsyncStreamRaw(context, cq));
     }
     class async final :
       public StubInterface::async_interface {
      public:
-      void Do(::grpc::ClientContext* context, const ::Request* request, ::Response* response, std::function<void(::grpc::Status)>) override;
-      void Do(::grpc::ClientContext* context, const ::Request* request, ::Response* response, ::grpc::ClientUnaryReactor* reactor) override;
-      void Stream(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::Request,::Response>* reactor) override;
+      void Do(::grpc::ClientContext* context, const ::gufo::Request* request, ::gufo::Response* response, std::function<void(::grpc::Status)>) override;
+      void Do(::grpc::ClientContext* context, const ::gufo::Request* request, ::gufo::Response* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void Stream(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::gufo::Request,::gufo::Response>* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -105,11 +113,11 @@ class Reverse final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class async async_stub_{this};
-    ::grpc::ClientAsyncResponseReader< ::Response>* AsyncDoRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::Response>* PrepareAsyncDoRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientReaderWriter< ::Request, ::Response>* StreamRaw(::grpc::ClientContext* context) override;
-    ::grpc::ClientAsyncReaderWriter< ::Request, ::Response>* AsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) override;
-    ::grpc::ClientAsyncReaderWriter< ::Request, ::Response>* PrepareAsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::gufo::Response>* AsyncDoRaw(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::gufo::Response>* PrepareAsyncDoRaw(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientReaderWriter< ::gufo::Request, ::gufo::Response>* StreamRaw(::grpc::ClientContext* context) override;
+    ::grpc::ClientAsyncReaderWriter< ::gufo::Request, ::gufo::Response>* AsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncReaderWriter< ::gufo::Request, ::gufo::Response>* PrepareAsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_Do_;
     const ::grpc::internal::RpcMethod rpcmethod_Stream_;
   };
@@ -119,8 +127,8 @@ class Reverse final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status Do(::grpc::ServerContext* context, const ::Request* request, ::Response* response);
-    virtual ::grpc::Status Stream(::grpc::ServerContext* context, ::grpc::ServerReaderWriter< ::Response, ::Request>* stream);
+    virtual ::grpc::Status Do(::grpc::ServerContext* context, const ::gufo::Request* request, ::gufo::Response* response);
+    virtual ::grpc::Status Stream(::grpc::ServerContext* context, ::grpc::ServerReaderWriter< ::gufo::Response, ::gufo::Request>* stream);
   };
   template <class BaseClass>
   class WithAsyncMethod_Do : public BaseClass {
@@ -134,11 +142,11 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::gufo::Request* /*request*/, ::gufo::Response* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestDo(::grpc::ServerContext* context, ::Request* request, ::grpc::ServerAsyncResponseWriter< ::Response>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestDo(::grpc::ServerContext* context, ::gufo::Request* request, ::grpc::ServerAsyncResponseWriter< ::gufo::Response>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -154,11 +162,11 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::Response, ::Request>* /*stream*/)  override {
+    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::gufo::Response, ::gufo::Request>* /*stream*/)  override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestStream(::grpc::ServerContext* context, ::grpc::ServerAsyncReaderWriter< ::Response, ::Request>* stream, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestStream(::grpc::ServerContext* context, ::grpc::ServerAsyncReaderWriter< ::gufo::Response, ::gufo::Request>* stream, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncBidiStreaming(1, context, stream, new_call_cq, notification_cq, tag);
     }
   };
@@ -170,25 +178,25 @@ class Reverse final {
    public:
     WithCallbackMethod_Do() {
       ::grpc::Service::MarkMethodCallback(0,
-          new ::grpc::internal::CallbackUnaryHandler< ::Request, ::Response>(
+          new ::grpc::internal::CallbackUnaryHandler< ::gufo::Request, ::gufo::Response>(
             [this](
-                   ::grpc::CallbackServerContext* context, const ::Request* request, ::Response* response) { return this->Do(context, request, response); }));}
+                   ::grpc::CallbackServerContext* context, const ::gufo::Request* request, ::gufo::Response* response) { return this->Do(context, request, response); }));}
     void SetMessageAllocatorFor_Do(
-        ::grpc::MessageAllocator< ::Request, ::Response>* allocator) {
+        ::grpc::MessageAllocator< ::gufo::Request, ::gufo::Response>* allocator) {
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
-      static_cast<::grpc::internal::CallbackUnaryHandler< ::Request, ::Response>*>(handler)
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::gufo::Request, ::gufo::Response>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~WithCallbackMethod_Do() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::gufo::Request* /*request*/, ::gufo::Response* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* Do(
-      ::grpc::CallbackServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/)  { return nullptr; }
+      ::grpc::CallbackServerContext* /*context*/, const ::gufo::Request* /*request*/, ::gufo::Response* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
   class WithCallbackMethod_Stream : public BaseClass {
@@ -197,7 +205,7 @@ class Reverse final {
    public:
     WithCallbackMethod_Stream() {
       ::grpc::Service::MarkMethodCallback(1,
-          new ::grpc::internal::CallbackBidiHandler< ::Request, ::Response>(
+          new ::grpc::internal::CallbackBidiHandler< ::gufo::Request, ::gufo::Response>(
             [this](
                    ::grpc::CallbackServerContext* context) { return this->Stream(context); }));
     }
@@ -205,11 +213,11 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::Response, ::Request>* /*stream*/)  override {
+    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::gufo::Response, ::gufo::Request>* /*stream*/)  override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual ::grpc::ServerBidiReactor< ::Request, ::Response>* Stream(
+    virtual ::grpc::ServerBidiReactor< ::gufo::Request, ::gufo::Response>* Stream(
       ::grpc::CallbackServerContext* /*context*/)
       { return nullptr; }
   };
@@ -227,7 +235,7 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::gufo::Request* /*request*/, ::gufo::Response* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -244,7 +252,7 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::Response, ::Request>* /*stream*/)  override {
+    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::gufo::Response, ::gufo::Request>* /*stream*/)  override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -261,7 +269,7 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::gufo::Request* /*request*/, ::gufo::Response* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -281,7 +289,7 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::Response, ::Request>* /*stream*/)  override {
+    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::gufo::Response, ::gufo::Request>* /*stream*/)  override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -304,7 +312,7 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::gufo::Request* /*request*/, ::gufo::Response* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -326,7 +334,7 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::Response, ::Request>* /*stream*/)  override {
+    ::grpc::Status Stream(::grpc::ServerContext* /*context*/, ::grpc::ServerReaderWriter< ::gufo::Response, ::gufo::Request>* /*stream*/)  override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -342,10 +350,10 @@ class Reverse final {
     WithStreamedUnaryMethod_Do() {
       ::grpc::Service::MarkMethodStreamed(0,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::Request, ::Response>(
+          ::gufo::Request, ::gufo::Response>(
             [this](::grpc::ServerContext* context,
                    ::grpc::ServerUnaryStreamer<
-                     ::Request, ::Response>* streamer) {
+                     ::gufo::Request, ::gufo::Response>* streamer) {
                        return this->StreamedDo(context,
                          streamer);
                   }));
@@ -354,17 +362,19 @@ class Reverse final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status Do(::grpc::ServerContext* /*context*/, const ::gufo::Request* /*request*/, ::gufo::Response* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedDo(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::Request,::Response>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedDo(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::gufo::Request,::gufo::Response>* server_unary_streamer) = 0;
   };
   typedef WithStreamedUnaryMethod_Do<Service > StreamedUnaryService;
   typedef Service SplitStreamedService;
   typedef WithStreamedUnaryMethod_Do<Service > StreamedService;
 };
+
+}  // namespace gufo
 
 
 #endif  // GRPC_microservice_2eproto__INCLUDED

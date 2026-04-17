@@ -21,7 +21,6 @@ link for all POST API requests
 ### Response
 ```
 {
-    "success": 1,
     "data": {
         "response": "100200"
     },

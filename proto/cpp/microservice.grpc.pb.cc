@@ -19,10 +19,11 @@
 #include <grpcpp/server_context.h>
 #include <grpcpp/impl/service_type.h>
 #include <grpcpp/support/sync_stream.h>
+namespace gufo {
 
 static const char* Reverse_method_names[] = {
-  "/Reverse/Do",
-  "/Reverse/Stream",
+  "/gufo.Reverse/Do",
+  "/gufo.Reverse/Stream",
 };
 
 std::unique_ptr< Reverse::Stub> Reverse::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -36,64 +37,64 @@ Reverse::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, c
   , rpcmethod_Stream_(Reverse_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::BIDI_STREAMING, channel)
   {}
 
-::grpc::Status Reverse::Stub::Do(::grpc::ClientContext* context, const ::Request& request, ::Response* response) {
-  return ::grpc::internal::BlockingUnaryCall< ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Do_, context, request, response);
+::grpc::Status Reverse::Stub::Do(::grpc::ClientContext* context, const ::gufo::Request& request, ::gufo::Response* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::gufo::Request, ::gufo::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Do_, context, request, response);
 }
 
-void Reverse::Stub::async::Do(::grpc::ClientContext* context, const ::Request* request, ::Response* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall< ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Do_, context, request, response, std::move(f));
+void Reverse::Stub::async::Do(::grpc::ClientContext* context, const ::gufo::Request* request, ::gufo::Response* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::gufo::Request, ::gufo::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Do_, context, request, response, std::move(f));
 }
 
-void Reverse::Stub::async::Do(::grpc::ClientContext* context, const ::Request* request, ::Response* response, ::grpc::ClientUnaryReactor* reactor) {
+void Reverse::Stub::async::Do(::grpc::ClientContext* context, const ::gufo::Request* request, ::gufo::Response* response, ::grpc::ClientUnaryReactor* reactor) {
   ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Do_, context, request, response, reactor);
 }
 
-::grpc::ClientAsyncResponseReader< ::Response>* Reverse::Stub::PrepareAsyncDoRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::Response, ::Request, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_Do_, context, request);
+::grpc::ClientAsyncResponseReader< ::gufo::Response>* Reverse::Stub::PrepareAsyncDoRaw(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::gufo::Response, ::gufo::Request, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_Do_, context, request);
 }
 
-::grpc::ClientAsyncResponseReader< ::Response>* Reverse::Stub::AsyncDoRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::gufo::Response>* Reverse::Stub::AsyncDoRaw(::grpc::ClientContext* context, const ::gufo::Request& request, ::grpc::CompletionQueue* cq) {
   auto* result =
     this->PrepareAsyncDoRaw(context, request, cq);
   result->StartCall();
   return result;
 }
 
-::grpc::ClientReaderWriter< ::Request, ::Response>* Reverse::Stub::StreamRaw(::grpc::ClientContext* context) {
-  return ::grpc::internal::ClientReaderWriterFactory< ::Request, ::Response>::Create(channel_.get(), rpcmethod_Stream_, context);
+::grpc::ClientReaderWriter< ::gufo::Request, ::gufo::Response>* Reverse::Stub::StreamRaw(::grpc::ClientContext* context) {
+  return ::grpc::internal::ClientReaderWriterFactory< ::gufo::Request, ::gufo::Response>::Create(channel_.get(), rpcmethod_Stream_, context);
 }
 
-void Reverse::Stub::async::Stream(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::Request,::Response>* reactor) {
-  ::grpc::internal::ClientCallbackReaderWriterFactory< ::Request,::Response>::Create(stub_->channel_.get(), stub_->rpcmethod_Stream_, context, reactor);
+void Reverse::Stub::async::Stream(::grpc::ClientContext* context, ::grpc::ClientBidiReactor< ::gufo::Request,::gufo::Response>* reactor) {
+  ::grpc::internal::ClientCallbackReaderWriterFactory< ::gufo::Request,::gufo::Response>::Create(stub_->channel_.get(), stub_->rpcmethod_Stream_, context, reactor);
 }
 
-::grpc::ClientAsyncReaderWriter< ::Request, ::Response>* Reverse::Stub::AsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
-  return ::grpc::internal::ClientAsyncReaderWriterFactory< ::Request, ::Response>::Create(channel_.get(), cq, rpcmethod_Stream_, context, true, tag);
+::grpc::ClientAsyncReaderWriter< ::gufo::Request, ::gufo::Response>* Reverse::Stub::AsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncReaderWriterFactory< ::gufo::Request, ::gufo::Response>::Create(channel_.get(), cq, rpcmethod_Stream_, context, true, tag);
 }
 
-::grpc::ClientAsyncReaderWriter< ::Request, ::Response>* Reverse::Stub::PrepareAsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncReaderWriterFactory< ::Request, ::Response>::Create(channel_.get(), cq, rpcmethod_Stream_, context, false, nullptr);
+::grpc::ClientAsyncReaderWriter< ::gufo::Request, ::gufo::Response>* Reverse::Stub::PrepareAsyncStreamRaw(::grpc::ClientContext* context, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncReaderWriterFactory< ::gufo::Request, ::gufo::Response>::Create(channel_.get(), cq, rpcmethod_Stream_, context, false, nullptr);
 }
 
 Reverse::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       Reverse_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< Reverse::Service, ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+      new ::grpc::internal::RpcMethodHandler< Reverse::Service, ::gufo::Request, ::gufo::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](Reverse::Service* service,
              ::grpc::ServerContext* ctx,
-             const ::Request* req,
-             ::Response* resp) {
+             const ::gufo::Request* req,
+             ::gufo::Response* resp) {
                return service->Do(ctx, req, resp);
              }, this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       Reverse_method_names[1],
       ::grpc::internal::RpcMethod::BIDI_STREAMING,
-      new ::grpc::internal::BidiStreamingHandler< Reverse::Service, ::Request, ::Response>(
+      new ::grpc::internal::BidiStreamingHandler< Reverse::Service, ::gufo::Request, ::gufo::Response>(
           [](Reverse::Service* service,
              ::grpc::ServerContext* ctx,
-             ::grpc::ServerReaderWriter<::Response,
-             ::Request>* stream) {
+             ::grpc::ServerReaderWriter<::gufo::Response,
+             ::gufo::Request>* stream) {
                return service->Stream(ctx, stream);
              }, this)));
 }
@@ -101,17 +102,19 @@ Reverse::Service::Service() {
 Reverse::Service::~Service() {
 }
 
-::grpc::Status Reverse::Service::Do(::grpc::ServerContext* context, const ::Request* request, ::Response* response) {
+::grpc::Status Reverse::Service::Do(::grpc::ServerContext* context, const ::gufo::Request* request, ::gufo::Response* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Reverse::Service::Stream(::grpc::ServerContext* context, ::grpc::ServerReaderWriter< ::Response, ::Request>* stream) {
+::grpc::Status Reverse::Service::Stream(::grpc::ServerContext* context, ::grpc::ServerReaderWriter< ::gufo::Response, ::gufo::Request>* stream) {
   (void) context;
   (void) stream;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
+
+}  // namespace gufo
 

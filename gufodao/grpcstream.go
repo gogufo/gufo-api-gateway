@@ -58,15 +58,13 @@ func GRPCStream(host, port string, t *pb.Request) map[string]interface{} {
 	}
 
 	// List of files to upload
-	files := t.Files // добавь []string в pb.Request (список путей)
-	for _, path := range files {
-		if err := sendFile(stream, path); err != nil {
+	for _, f := range t.Files {
+		if err := sendFile(stream, f.Uri); err != nil {
 			answer["httpcode"] = 500
-			answer["message"] = fmt.Sprintf("upload %s failed: %v", path, err)
+			answer["message"] = fmt.Sprintf("upload %s failed: %v", f.Uri, err)
 			return answer
 		}
 	}
-
 	// Signal EOF to server
 	stream.CloseSend()
 
@@ -109,7 +107,7 @@ func sendFile(stream pb.Reverse_StreamClient, path string) error {
 				Data: buf[:n],
 			})
 			req := &pb.Request{
-				Args: map[string]*anypb.Any{"chunk": chunk},
+				Body: chunk,
 			}
 			if err := stream.Send(req); err != nil {
 				return err

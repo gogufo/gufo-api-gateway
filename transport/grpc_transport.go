@@ -73,8 +73,6 @@ func resolveService(svc string, req *pb.Request) (string, string) {
 	// 1. Check in-memory cache
 	if v, ok := svcCache.Load(svc); ok {
 		addr := v.(string)
-		// fmt.Fprintln(os.Stderr, ">>> Address in cache: ", addr)
-
 		h, p, _ := splitAddr(addr)
 		return h, p
 	}
@@ -84,15 +82,19 @@ func resolveService(svc string, req *pb.Request) (string, string) {
 		host := viper.GetString("microservices.masterservice.host")
 		port := viper.GetString("microservices.masterservice.port")
 
-		ir := &pb.InternalRequest{
-			Param:  ptr("getmicroservicebypath"),
-			Method: ptr("GET"),
+		// ⚠️ IMPORTANT: do NOT mutate original request
+		msReq := &pb.Request{
+			Module: "masterservice",
+			Param:  "getmicroservicebypath",
+			Method: pb.Method_METHOD_GET,
 		}
-		req.IR = ir
-		resp := sf.GRPCConnect(host, port, req)
+
+		resp := sf.GRPCConnect(host, port, msReq)
+
 		if h, ok := resp["host"].(string); ok {
 			p := fmt.Sprintf("%v", resp["port"])
 			addr := fmt.Sprintf("%s:%s", h, p)
+
 			svcCache.Store(svc, addr)
 			return h, p
 		}
@@ -101,8 +103,10 @@ func resolveService(svc string, req *pb.Request) (string, string) {
 	// 3. Default to static config
 	host := viper.GetString(fmt.Sprintf("microservices.%s.host", svc))
 	port := viper.GetString(fmt.Sprintf("microservices.%s.port", svc))
+
 	addr := fmt.Sprintf("%s:%s", host, port)
 	svcCache.Store(svc, addr)
+
 	return host, port
 }
 

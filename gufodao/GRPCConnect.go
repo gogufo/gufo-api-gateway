@@ -26,7 +26,7 @@ import (
 	viper "github.com/spf13/viper"
 )
 
-// GRPCConnect performs a gRPC call with connection pooling, TLS/mTLS, timeout, and streaming support.
+// GRPCConnect performs a gRPC call with connection pooling, TLS/mTLS and timeout.
 func GRPCConnect(host string, port string, t *pb.Request) map[string]interface{} {
 	answer := make(map[string]interface{})
 
@@ -37,15 +37,9 @@ func GRPCConnect(host string, port string, t *pb.Request) map[string]interface{}
 		return answer
 	}
 
-	// 🔹 Handle streaming requests
-	if t.IR != nil && t.IR.Param != nil && *t.IR.Param == "stream" {
-		return GRPCStream(host, port, t)
-	}
-
 	addr := fmt.Sprintf("%s:%s", host, port)
-	// fmt.Fprintln(os.Stderr, ">>> Address:", addr)
 
-	// 🔹 Get connection from pool with TLS/mTLS
+	// 🔹 Get connection from pool
 	conn, err := GetGRPCConn(
 		host,
 		port,
@@ -63,7 +57,7 @@ func GRPCConnect(host string, port string, t *pb.Request) map[string]interface{}
 
 	client := pb.NewReverseClient(conn)
 
-	// 🔹 Determine timeout per service or default (5s)
+	// 🔹 Timeout per service
 	timeout := viper.GetDuration(fmt.Sprintf("microservices.%s.timeout", safeModuleName(t)))
 	if timeout == 0 {
 		timeout = 5 * time.Second
@@ -82,52 +76,61 @@ func GRPCConnect(host string, port string, t *pb.Request) map[string]interface{}
 		return answer
 	}
 
-	answer = ToMapStringInterface(resp.Data)
+	// 🔹 Convert Data (Any → interface{})
+	if resp.Data != nil {
+		answer = ToMapStringInterface(resp.Data)
+	}
+
+	// 🔹 Propagate microservice error
+	if resp.Error != nil {
+		answer["error"] = map[string]interface{}{
+			"code":      resp.Error.Code,
+			"key":       resp.Error.Key,
+			"message":   resp.Error.Message,
+			"retryable": resp.Error.Retryable,
+		}
+	}
+
+	// 🔹 Attach meta (optional)
+	if resp.Meta != nil {
+		answer["meta"] = map[string]interface{}{
+			"status":     resp.Meta.Status,
+			"trace_id":   resp.Meta.TraceId,
+			"request_id": resp.Meta.RequestId,
+			"node":       resp.Meta.Node,
+		}
+	}
+
+	// 🔹 Sync auth/context back into request
 	copyRequestBack(t, resp.RequestBack)
 
 	return answer
 }
 
-// safeModuleName prevents panic if Module is nil
+// safeModuleName prevents panic
 func safeModuleName(t *pb.Request) string {
-	if t.Module == nil {
+	if t == nil || t.Module == "" {
 		return "unknown"
 	}
-	return *t.Module
+	return t.Module
 }
 
-// copyRequestBack updates token/session fields in request
+// copyRequestBack updates Auth and Context from response
 func copyRequestBack(t *pb.Request, rb *pb.Request) {
 	if rb == nil {
 		return
 	}
-	if rb.Token != nil {
-		t.Token = rb.Token
+
+	if rb.Auth != nil {
+		t.Auth = rb.Auth
 	}
-	if rb.TokenType != nil {
-		t.TokenType = rb.TokenType
-	}
-	if rb.Language != nil {
-		t.Language = rb.Language
-	}
-	if rb.UID != nil {
-		t.UID = rb.UID
-	}
-	if rb.IsAdmin != nil {
-		t.IsAdmin = rb.IsAdmin
-	}
-	if rb.SessionEnd != nil {
-		t.SessionEnd = rb.SessionEnd
-	}
-	if rb.Completed != nil {
-		t.Completed = rb.Completed
-	}
-	if rb.Readonly != nil {
-		t.Readonly = rb.Readonly
+
+	if rb.Context != nil {
+		t.Context = rb.Context
 	}
 }
 
-// logOrSentry logs locally or sends to Sentry if enabled
+// logOrSentry logs locally or sends to Sentry
 func logOrSentry(err error) {
 	if viper.GetBool("server.sentry") {
 		sentry.CaptureException(err)

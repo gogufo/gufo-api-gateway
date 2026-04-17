@@ -28,7 +28,6 @@ import (
 // Universal heartbeat entry through Gateway.
 // Microservices POST here -> Gufo routes to masterservice.
 func HeartbeatHandler(w http.ResponseWriter, r *http.Request, t *pb.Request) {
-	// fmt.Fprintln(os.Stderr, ">>> HeartbeatHandler")
 
 	var payload map[string]interface{}
 
@@ -39,30 +38,15 @@ func HeartbeatHandler(w http.ResponseWriter, r *http.Request, t *pb.Request) {
 	}
 
 	moduleAnswerv3(w, r, ans, t)
-
 }
 
 // heartbeatCore contains the shared heartbeat business logic.
-// It works in both standalone and cluster modes and is transport-agnostic
-// (no HTTP, no ResponseWriter, no Request).
-//
-// Behavior:
-// - If masterservice is DISABLED → returns a local mock response.
-// - If masterservice is ENABLED → proxies heartbeat to masterservice via gRPC.
-//
-// Input:
-// - t: original gRPC request
-// - payload: optional heartbeat payload (can be nil for pure gRPC calls)
-//
-// Output:
-// - map[string]interface{}: heartbeat response payload
-// - error: any transport or masterservice error
 func heartbeatCore(t *pb.Request, payload map[string]interface{}) (map[string]interface{}, error) {
 
 	msEnabled := viper.GetBool("server.masterservice")
 
 	// ------------------------------------------------------------
-	// MODE 2: Standalone mode → return local mock (no masterservice)
+	// MODE 2: Standalone mode → return local mock
 	// ------------------------------------------------------------
 	if !msEnabled {
 		mock := map[string]interface{}{
@@ -79,25 +63,24 @@ func heartbeatCore(t *pb.Request, payload map[string]interface{}) (map[string]in
 	// MODE 1: Cluster mode → proxy to MasterService via gRPC
 	// ------------------------------------------------------------
 
-	// If payload was not passed explicitly, try to reconstruct it from gRPC Args
+	// If payload is nil, initialize empty
 	if payload == nil {
 		payload = map[string]interface{}{}
-		for k, v := range t.Args {
-			payload[k], _ = sf.ConvertInterfaceToAny(v)
-		}
 	}
 
 	// Always update timestamp before proxying
 	payload["ts"] = time.Now().Unix()
 
+	// Convert payload to protobuf.Any
+	body, _ := sf.ConvertInterfaceToAny(payload)
+
 	// Build gRPC request for MasterService
 	req := &pb.Request{
-		Module: sf.StringPtr("masterservice"),
-		IR: &pb.InternalRequest{
-			Param:  sf.StringPtr("heartbeat"),
-			Method: sf.StringPtr("POST"),
-		},
-		Args: sf.ToMapStringAny(payload),
+		Module:  "masterservice",
+		Param:   "heartbeat",
+		Method:  pb.Method_METHOD_POST,
+		Body:    body,
+		Context: t.Context,
 	}
 
 	host := sf.ConfigString("microservices.masterservice.host")

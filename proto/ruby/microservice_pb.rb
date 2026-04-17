@@ -4,73 +4,109 @@
 require 'google/protobuf'
 
 require 'google/protobuf/any_pb'
+require 'google/protobuf/timestamp_pb'
 
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("microservice.proto", :syntax => :proto3) do
-    add_message "Request" do
-      proto3_optional :Module, :string, 1
-      proto3_optional :Param, :string, 2
-      proto3_optional :ParamID, :string, 3
-      proto3_optional :ParamIDD, :string, 4
-      proto3_optional :Action, :string, 5
-      map :Args, :string, :message, 6, "google.protobuf.Any"
-      proto3_optional :Path, :string, 7
-      proto3_optional :Token, :string, 8
-      proto3_optional :Sign, :string, 9
-      proto3_optional :SID, :string, 10
-      proto3_optional :IP, :string, 11
-      proto3_optional :UserAgent, :string, 12
-      proto3_optional :TokenType, :string, 13
-      proto3_optional :TimeStamp, :int32, 14
-      proto3_optional :Language, :string, 15
-      proto3_optional :APIVersion, :string, 16
-      proto3_optional :Method, :string, 17
-      proto3_optional :UID, :string, 18
-      proto3_optional :IsAdmin, :int32, 19
-      proto3_optional :SessionEnd, :int32, 20
-      proto3_optional :Completed, :int32, 21
-      proto3_optional :Readonly, :int32, 22
-      proto3_optional :File, :bytes, 23
-      proto3_optional :Filename, :string, 24
-      repeated :Files, :string, 25
-      proto3_optional :IR, :message, 26, "InternalRequest"
+    add_message "gufo.Request" do
+      optional :module, :string, 1
+      optional :param, :string, 2
+      optional :param_id, :string, 3
+      optional :param_idd, :string, 4
+      optional :action, :string, 5
+      map :query, :string, :string, 6
+      optional :body, :message, 7, "google.protobuf.Any"
+      optional :path, :string, 8
+      optional :method, :enum, 9, "gufo.Method"
+      optional :auth, :message, 10, "gufo.AuthContext"
+      optional :context, :message, 11, "gufo.RequestContext"
+      optional :file, :message, 12, "gufo.FileUpload"
+      repeated :files, :message, 13, "gufo.FileRef"
     end
-    add_message "InternalRequest" do
-      proto3_optional :Param, :string, 1
-      proto3_optional :ParamID, :string, 2
-      proto3_optional :Method, :string, 3
-      map :Args, :string, :message, 4, "google.protobuf.Any"
+    add_message "gufo.AuthContext" do
+      optional :token, :string, 1
+      optional :token_type, :string, 2
+      optional :sid, :string, 3
+      optional :uid, :string, 4
+      optional :sign, :string, 5
+      optional :is_admin, :bool, 6
+      optional :readonly, :bool, 7
+      optional :session_end, :int64, 8
+      map :meta, :string, :string, 9
     end
-    add_message "Error" do
+    add_message "gufo.RequestContext" do
+      optional :ip, :string, 1
+      optional :user_agent, :string, 2
+      optional :language, :string, 3
+      optional :api_version, :string, 4
+      optional :timestamp, :int64, 5
+      optional :trace_id, :string, 6
+      optional :request_id, :string, 7
+      optional :caller, :string, 8
+      map :meta, :string, :string, 9
+    end
+    add_message "gufo.FileUpload" do
+      optional :data, :bytes, 1
+      optional :filename, :string, 2
+      optional :content_type, :string, 3
+      optional :size, :int64, 4
+    end
+    add_message "gufo.FileRef" do
+      optional :name, :string, 1
+      optional :uri, :string, 2
+    end
+    add_message "gufo.Response" do
+      map :data, :string, :message, 1, "google.protobuf.Any"
+      optional :error, :message, 2, "gufo.Error"
+      optional :meta, :message, 3, "gufo.ResponseMeta"
+      optional :code, :enum, 4, "gufo.UploadStatusCode"
+      optional :request_back, :message, 5, "gufo.Request"
+    end
+    add_message "gufo.Error" do
       optional :code, :int32, 1
-      optional :message, :string, 2
-      map :meta, :string, :string, 3
+      optional :key, :string, 2
+      optional :message, :string, 3
+      map :meta, :string, :string, 4
+      optional :retryable, :bool, 5
     end
-    add_message "Response" do
-      map :Data, :string, :message, 1, "google.protobuf.Any"
-      proto3_optional :RequestBack, :message, 2, "Request"
-      proto3_optional :Code, :enum, 3, "UploadStatusCode"
-      proto3_optional :error, :message, 4, "Error"
+    add_message "gufo.ResponseMeta" do
+      optional :status, :int32, 1
+      optional :trace_id, :string, 2
+      optional :request_id, :string, 3
+      optional :node, :string, 4
+      optional :ts, :message, 5, "google.protobuf.Timestamp"
+      map :extra, :string, :string, 6
     end
-    add_message "FileChunk" do
+    add_message "gufo.FileChunk" do
       optional :name, :string, 1
       optional :data, :bytes, 2
     end
-    add_message "StringMap" do
-      map :entries, :string, :string, 1
+    add_enum "gufo.UploadStatusCode" do
+      value :UPLOAD_STATUS_UNKNOWN, 0
+      value :UPLOAD_STATUS_OK, 1
+      value :UPLOAD_STATUS_FAILED, 2
     end
-    add_enum "UploadStatusCode" do
-      value :Unknown, 0
-      value :Ok, 1
-      value :Failed, 2
+    add_enum "gufo.Method" do
+      value :METHOD_UNSPECIFIED, 0
+      value :METHOD_GET, 1
+      value :METHOD_POST, 2
+      value :METHOD_PUT, 3
+      value :METHOD_PATCH, 4
+      value :METHOD_DELETE, 5
     end
   end
 end
 
-Request = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("Request").msgclass
-InternalRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("InternalRequest").msgclass
-Error = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("Error").msgclass
-Response = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("Response").msgclass
-FileChunk = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("FileChunk").msgclass
-StringMap = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("StringMap").msgclass
-UploadStatusCode = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("UploadStatusCode").enummodule
+module Gufo
+  Request = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.Request").msgclass
+  AuthContext = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.AuthContext").msgclass
+  RequestContext = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.RequestContext").msgclass
+  FileUpload = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.FileUpload").msgclass
+  FileRef = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.FileRef").msgclass
+  Response = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.Response").msgclass
+  Error = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.Error").msgclass
+  ResponseMeta = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.ResponseMeta").msgclass
+  FileChunk = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.FileChunk").msgclass
+  UploadStatusCode = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.UploadStatusCode").enummodule
+  Method = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gufo.Method").enummodule
+end

@@ -1,4 +1,4 @@
-// Copyright 2019-2025 Alexey Yanchenko <mail@yanchenko.me>
+// Copyright 2019-2026 Alexey Yanchenko <mail@yanchenko.me>
 //
 // This file is part of the Gufo library.
 //
@@ -29,11 +29,18 @@ import (
 
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
-
 	"github.com/spf13/viper"
 )
 
 func ProcessPUT(w http.ResponseWriter, r *http.Request, t *pb.Request, version int) {
+
+	// Initialize nested proto structs if missing
+	if t.Auth == nil {
+		t.Auth = &pb.AuthContext{}
+	}
+	if t.Context == nil {
+		t.Context = &pb.RequestContext{}
+	}
 
 	// ===========================
 	//  SECURITY CHECK (sign / HMAC / mTLS)
@@ -46,15 +53,15 @@ func ProcessPUT(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 		secret := viper.GetString("security.hmac_secret")
 		maxAge := time.Duration(viper.GetInt("security.max_age")) * time.Second
 
-		if t.Sign == nil || t.Module == nil ||
-			!sf.VerifyHMAC(secret, *t.Module, *t.Sign, maxAge) {
+		if t.Auth.Sign == "" || t.Module == "" ||
+			!sf.VerifyHMAC(secret, t.Module, t.Auth.Sign, maxAge) {
 
 			errorAnswer(w, r, t, 401, "00001", "Invalid or expired HMAC signature")
 			return
 		}
 
 	case "sign":
-		if t.Sign == nil || viper.GetString("server.sign") != *t.Sign {
+		if t.Auth.Sign == "" || viper.GetString("server.sign") != t.Auth.Sign {
 			errorAnswer(w, r, t, 401, "00001", "Invalid signature")
 			return
 		}
@@ -72,7 +79,7 @@ func ProcessPUT(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 
 	path := r.URL.Path
 	patharray := strings.Split(path, "/")
-	if len(patharray) < 3 || *t.Module == "entrypoint" {
+	if len(patharray) < 3 || t.Module == "entrypoint" {
 		errorAnswer(w, r, t, 401, "0000235", "Wrong Path Length")
 		return
 	}
@@ -80,20 +87,14 @@ func ProcessPUT(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 	// 🔐 Check session
 	if viper.GetBool("server.session") {
 		t = checksession(t, r)
-		if t.UID != nil && *t.Readonly == int32(1) {
+		if t.Auth != nil && t.Auth.Uid != "" && t.Auth.Readonly {
 			errorAnswer(w, r, t, 401, "0000235", "Read Only User")
 			return
 		}
 	}
 
-	vrs := "v3"
-	if version == 2 {
-		vrs = "v2"
-	}
-	t.APIVersion = &vrs
-
-	param := "stream"
-	t.IR = &pb.InternalRequest{Param: &param}
-
+	vrs := "v1"
+	t.Context.ApiVersion = vrs
+	
 	connectgrpc(w, r, t)
 }

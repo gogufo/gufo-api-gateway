@@ -173,30 +173,49 @@ func streamMultipartFiles(stream pb.Reverse_StreamClient, r *http.Request, t *pb
 }
 
 func sendChunk(stream pb.Reverse_StreamClient, t *pb.Request, filename string, data []byte) error {
-	chunk := &pb.FileChunk{Name: filename, Data: data}
+	chunk := &pb.FileChunk{
+		Name: filename,
+		Data: data,
+	}
+
 	anyChunk, err := anypb.New(chunk)
 	if err != nil {
 		return err
 	}
+
 	req := &pb.Request{
 		Module: t.Module,
-		IR:     t.IR,
-		Args:   map[string]*anypb.Any{"chunk": anyChunk},
+		Method: t.Method,
+		Body:   anyChunk,
+
+		Auth:    t.Auth,
+		Context: t.Context,
 	}
+
 	return stream.Send(req)
 }
 
 // sendFileMarker — служебный маркер начала/конца файла (FileChunk с пустыми данными и именем + флагом)
 func sendFileMarker(stream pb.Reverse_StreamClient, t *pb.Request, filename, phase string) error {
-	meta := map[string]string{"filename": filename, "phase": phase} // {"start","end"}
-	anyMeta, err := anypb.New(&pb.StringMap{Entries: meta})
+	meta := map[string]string{
+		"filename": filename,
+		"phase":    phase, // "start" / "end"
+	}
+
+	anyMeta, err := anypb.New(&pb.RequestContext{
+		Meta: meta,
+	})
 	if err != nil {
 		return err
 	}
+
 	req := &pb.Request{
-		Module: t.Module,
-		IR:     t.IR,
-		Args:   map[string]*anypb.Any{"meta": anyMeta},
+		Module:  t.Module,
+		Method:  t.Method,
+		Body:    anyMeta,
+		Auth:    t.Auth,
+		Context: t.Context,
 	}
+
 	return stream.Send(req)
 }

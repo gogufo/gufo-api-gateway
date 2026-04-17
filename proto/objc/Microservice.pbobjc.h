@@ -27,20 +27,19 @@
 
 CF_EXTERN_C_BEGIN
 
+@class AuthContext;
 @class Error;
+@class FileRef;
+@class FileUpload;
 @class GPBAny;
-@class InternalRequest;
 @class Request;
+@class RequestContext;
+@class ResponseMeta;
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Enum UploadStatusCode
 
-/**
- * -------------------
- * Upload status
- * -------------------
- **/
 typedef GPB_ENUM(UploadStatusCode) {
   /**
    * Value used if any message's field encounters a value that is not defined
@@ -48,9 +47,9 @@ typedef GPB_ENUM(UploadStatusCode) {
    * of the field.
    **/
   UploadStatusCode_GPBUnrecognizedEnumeratorValue = kGPBUnrecognizedEnumeratorValue,
-  UploadStatusCode_Unknown = 0,
-  UploadStatusCode_Ok = 1,
-  UploadStatusCode_Failed = 2,
+  UploadStatusCode_UploadStatusUnknown = 0,
+  UploadStatusCode_UploadStatusOk = 1,
+  UploadStatusCode_UploadStatusFailed = 2,
 };
 
 GPBEnumDescriptor *UploadStatusCode_EnumDescriptor(void);
@@ -60,6 +59,31 @@ GPBEnumDescriptor *UploadStatusCode_EnumDescriptor(void);
  * the time this source was generated.
  **/
 BOOL UploadStatusCode_IsValidValue(int32_t value);
+
+#pragma mark - Enum Method_Enum
+
+typedef GPB_ENUM(Method_Enum) {
+  /**
+   * Value used if any message's field encounters a value that is not defined
+   * by this enum. The message will also have C functions to get/set the rawValue
+   * of the field.
+   **/
+  Method_Enum_GPBUnrecognizedEnumeratorValue = kGPBUnrecognizedEnumeratorValue,
+  Method_Enum_MethodUnspecified = 0,
+  Method_Enum_MethodGet = 1,
+  Method_Enum_MethodPost = 2,
+  Method_Enum_MethodPut = 3,
+  Method_Enum_MethodPatch = 4,
+  Method_Enum_MethodDelete = 5,
+};
+
+GPBEnumDescriptor *Method_Enum_EnumDescriptor(void);
+
+/**
+ * Checks to see if the given value is defined by the enum or was not known at
+ * the time this source was generated.
+ **/
+BOOL Method_Enum_IsValidValue(int32_t value);
 
 #pragma mark - MicroserviceRoot
 
@@ -84,199 +108,186 @@ typedef GPB_ENUM(Request_FieldNumber) {
   Request_FieldNumber_ParamId = 3,
   Request_FieldNumber_ParamIdd = 4,
   Request_FieldNumber_Action = 5,
-  Request_FieldNumber_Args = 6,
-  Request_FieldNumber_Path = 7,
-  Request_FieldNumber_Token = 8,
-  Request_FieldNumber_Sign = 9,
-  Request_FieldNumber_Sid = 10,
-  Request_FieldNumber_Ip = 11,
-  Request_FieldNumber_UserAgent = 12,
-  Request_FieldNumber_TokenType = 13,
-  Request_FieldNumber_TimeStamp = 14,
-  Request_FieldNumber_Language = 15,
-  Request_FieldNumber_Apiversion = 16,
-  Request_FieldNumber_Method = 17,
-  Request_FieldNumber_Uid = 18,
-  Request_FieldNumber_IsAdmin = 19,
-  Request_FieldNumber_SessionEnd = 20,
-  Request_FieldNumber_Completed = 21,
-  Request_FieldNumber_Readonly = 22,
-  Request_FieldNumber_File = 23,
-  Request_FieldNumber_Filename = 24,
-  Request_FieldNumber_FilesArray = 25,
-  Request_FieldNumber_Ir = 26,
+  Request_FieldNumber_Query = 6,
+  Request_FieldNumber_Body = 7,
+  Request_FieldNumber_Path = 8,
+  Request_FieldNumber_Method = 9,
+  Request_FieldNumber_Auth = 10,
+  Request_FieldNumber_Context = 11,
+  Request_FieldNumber_File = 12,
+  Request_FieldNumber_FilesArray = 13,
 };
 
-/**
- * -------------------
- * Client → Server
- * -------------------
- **/
 GPB_FINAL @interface Request : GPBMessage
 
+/** Microservice name */
 @property(nonatomic, readwrite, copy, null_resettable) NSString *module;
-/** Test to see if @c module has been set. */
-@property(nonatomic, readwrite) BOOL hasModule;
 
+/** Resource / handler */
 @property(nonatomic, readwrite, copy, null_resettable) NSString *param;
-/** Test to see if @c param has been set. */
-@property(nonatomic, readwrite) BOOL hasParam;
 
+/** Primary identifier */
 @property(nonatomic, readwrite, copy, null_resettable) NSString *paramId;
-/** Test to see if @c paramId has been set. */
-@property(nonatomic, readwrite) BOOL hasParamId;
 
+/** Secondary identifier */
 @property(nonatomic, readwrite, copy, null_resettable) NSString *paramIdd;
-/** Test to see if @c paramIdd has been set. */
-@property(nonatomic, readwrite) BOOL hasParamIdd;
 
+/** Optional action */
 @property(nonatomic, readwrite, copy, null_resettable) NSString *action;
-/** Test to see if @c action has been set. */
-@property(nonatomic, readwrite) BOOL hasAction;
 
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableDictionary<NSString*, GPBAny*> *args;
-/** The number of items in @c args without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger args_Count;
+/** Example: ?limit=10&search=alex */
+@property(nonatomic, readwrite, strong, null_resettable) NSMutableDictionary<NSString*, NSString*> *query;
+/** The number of items in @c query without causing the array to be created. */
+@property(nonatomic, readonly) NSUInteger query_Count;
+
+/** Typed payload (protobuf recommended) */
+@property(nonatomic, readwrite, strong, null_resettable) GPBAny *body;
+/** Test to see if @c body has been set. */
+@property(nonatomic, readwrite) BOOL hasBody;
 
 @property(nonatomic, readwrite, copy, null_resettable) NSString *path;
-/** Test to see if @c path has been set. */
-@property(nonatomic, readwrite) BOOL hasPath;
 
-@property(nonatomic, readwrite, copy, null_resettable) NSString *token;
-/** Test to see if @c token has been set. */
-@property(nonatomic, readwrite) BOOL hasToken;
+@property(nonatomic, readwrite) Method_Enum method;
 
-@property(nonatomic, readwrite, copy, null_resettable) NSString *sign;
-/** Test to see if @c sign has been set. */
-@property(nonatomic, readwrite) BOOL hasSign;
+@property(nonatomic, readwrite, strong, null_resettable) AuthContext *auth;
+/** Test to see if @c auth has been set. */
+@property(nonatomic, readwrite) BOOL hasAuth;
 
-@property(nonatomic, readwrite, copy, null_resettable) NSString *sid;
-/** Test to see if @c sid has been set. */
-@property(nonatomic, readwrite) BOOL hasSid;
+@property(nonatomic, readwrite, strong, null_resettable) RequestContext *context;
+/** Test to see if @c context has been set. */
+@property(nonatomic, readwrite) BOOL hasContext;
 
-@property(nonatomic, readwrite, copy, null_resettable) NSString *ip;
-/** Test to see if @c ip has been set. */
-@property(nonatomic, readwrite) BOOL hasIp;
-
-@property(nonatomic, readwrite, copy, null_resettable) NSString *userAgent;
-/** Test to see if @c userAgent has been set. */
-@property(nonatomic, readwrite) BOOL hasUserAgent;
-
-@property(nonatomic, readwrite, copy, null_resettable) NSString *tokenType;
-/** Test to see if @c tokenType has been set. */
-@property(nonatomic, readwrite) BOOL hasTokenType;
-
-@property(nonatomic, readwrite) int32_t timeStamp;
-
-@property(nonatomic, readwrite) BOOL hasTimeStamp;
-@property(nonatomic, readwrite, copy, null_resettable) NSString *language;
-/** Test to see if @c language has been set. */
-@property(nonatomic, readwrite) BOOL hasLanguage;
-
-@property(nonatomic, readwrite, copy, null_resettable) NSString *apiversion;
-/** Test to see if @c apiversion has been set. */
-@property(nonatomic, readwrite) BOOL hasApiversion;
-
-@property(nonatomic, readwrite, copy, null_resettable) NSString *method;
-/** Test to see if @c method has been set. */
-@property(nonatomic, readwrite) BOOL hasMethod;
-
-@property(nonatomic, readwrite, copy, null_resettable) NSString *uid;
-/** Test to see if @c uid has been set. */
-@property(nonatomic, readwrite) BOOL hasUid;
-
-@property(nonatomic, readwrite) int32_t isAdmin;
-
-@property(nonatomic, readwrite) BOOL hasIsAdmin;
-@property(nonatomic, readwrite) int32_t sessionEnd;
-
-@property(nonatomic, readwrite) BOOL hasSessionEnd;
-@property(nonatomic, readwrite) int32_t completed;
-
-@property(nonatomic, readwrite) BOOL hasCompleted;
-@property(nonatomic, readwrite) int32_t readonly;
-
-@property(nonatomic, readwrite) BOOL hasReadonly;
-/** Single file upload */
-@property(nonatomic, readwrite, copy, null_resettable) NSData *file;
+@property(nonatomic, readwrite, strong, null_resettable) FileUpload *file;
 /** Test to see if @c file has been set. */
 @property(nonatomic, readwrite) BOOL hasFile;
 
-@property(nonatomic, readwrite, copy, null_resettable) NSString *filename;
-/** Test to see if @c filename has been set. */
-@property(nonatomic, readwrite) BOOL hasFilename;
-
-/** Multi-file upload (list of filenames) */
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<NSString*> *filesArray;
+@property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<FileRef*> *filesArray;
 /** The number of items in @c filesArray without causing the array to be created. */
 @property(nonatomic, readonly) NSUInteger filesArray_Count;
 
-/** Optional: internal request (used by gateway) */
-@property(nonatomic, readwrite, strong, null_resettable) InternalRequest *ir;
-/** Test to see if @c ir has been set. */
-@property(nonatomic, readwrite) BOOL hasIr;
-
 @end
 
-#pragma mark - InternalRequest
+/**
+ * Fetches the raw value of a @c Request's @c method property, even
+ * if the value was not defined by the enum at the time the code was generated.
+ **/
+int32_t Request_Method_RawValue(Request *message);
+/**
+ * Sets the raw value of an @c Request's @c method property, allowing
+ * it to be set to a value that was not defined by the enum at the time the code
+ * was generated.
+ **/
+void SetRequest_Method_RawValue(Request *message, int32_t value);
 
-typedef GPB_ENUM(InternalRequest_FieldNumber) {
-  InternalRequest_FieldNumber_Param = 1,
-  InternalRequest_FieldNumber_ParamId = 2,
-  InternalRequest_FieldNumber_Method = 3,
-  InternalRequest_FieldNumber_Args = 4,
+#pragma mark - AuthContext
+
+typedef GPB_ENUM(AuthContext_FieldNumber) {
+  AuthContext_FieldNumber_Token = 1,
+  AuthContext_FieldNumber_TokenType = 2,
+  AuthContext_FieldNumber_Sid = 3,
+  AuthContext_FieldNumber_Uid = 4,
+  AuthContext_FieldNumber_Sign = 5,
+  AuthContext_FieldNumber_IsAdmin = 6,
+  AuthContext_FieldNumber_Readonly = 7,
+  AuthContext_FieldNumber_SessionEnd = 8,
+  AuthContext_FieldNumber_Meta = 9,
 };
 
-/**
- * -------------------
- * Internal request (used by gateway)
- * -------------------
- **/
-GPB_FINAL @interface InternalRequest : GPBMessage
+GPB_FINAL @interface AuthContext : GPBMessage
 
-@property(nonatomic, readwrite, copy, null_resettable) NSString *param;
-/** Test to see if @c param has been set. */
-@property(nonatomic, readwrite) BOOL hasParam;
+@property(nonatomic, readwrite, copy, null_resettable) NSString *token;
 
-@property(nonatomic, readwrite, copy, null_resettable) NSString *paramId;
-/** Test to see if @c paramId has been set. */
-@property(nonatomic, readwrite) BOOL hasParamId;
+@property(nonatomic, readwrite, copy, null_resettable) NSString *tokenType;
 
-@property(nonatomic, readwrite, copy, null_resettable) NSString *method;
-/** Test to see if @c method has been set. */
-@property(nonatomic, readwrite) BOOL hasMethod;
+@property(nonatomic, readwrite, copy, null_resettable) NSString *sid;
 
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableDictionary<NSString*, GPBAny*> *args;
-/** The number of items in @c args without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger args_Count;
+@property(nonatomic, readwrite, copy, null_resettable) NSString *uid;
 
-@end
+@property(nonatomic, readwrite, copy, null_resettable) NSString *sign;
 
-#pragma mark - Error
+@property(nonatomic, readwrite) BOOL isAdmin;
 
-typedef GPB_ENUM(Error_FieldNumber) {
-  Error_FieldNumber_Code = 1,
-  Error_FieldNumber_Message = 2,
-  Error_FieldNumber_Meta = 3,
-};
+@property(nonatomic, readwrite) BOOL readonly;
 
-/**
- * -------------------
- * Standardized error format
- * -------------------
- **/
-GPB_FINAL @interface Error : GPBMessage
+@property(nonatomic, readwrite) int64_t sessionEnd;
 
-/** Numeric error code */
-@property(nonatomic, readwrite) int32_t code;
-
-/** Human-readable message */
-@property(nonatomic, readwrite, copy, null_resettable) NSString *message;
-
-/** Optional metadata (debug info, trace, etc.) */
 @property(nonatomic, readwrite, strong, null_resettable) NSMutableDictionary<NSString*, NSString*> *meta;
 /** The number of items in @c meta without causing the array to be created. */
 @property(nonatomic, readonly) NSUInteger meta_Count;
+
+@end
+
+#pragma mark - RequestContext
+
+typedef GPB_ENUM(RequestContext_FieldNumber) {
+  RequestContext_FieldNumber_Ip = 1,
+  RequestContext_FieldNumber_UserAgent = 2,
+  RequestContext_FieldNumber_Language = 3,
+  RequestContext_FieldNumber_ApiVersion = 4,
+  RequestContext_FieldNumber_Timestamp = 5,
+  RequestContext_FieldNumber_TraceId = 6,
+  RequestContext_FieldNumber_RequestId = 7,
+  RequestContext_FieldNumber_Caller = 8,
+  RequestContext_FieldNumber_Meta = 9,
+};
+
+GPB_FINAL @interface RequestContext : GPBMessage
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *ip;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *userAgent;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *language;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *apiVersion;
+
+@property(nonatomic, readwrite) int64_t timestamp;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *traceId;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *requestId;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *caller;
+
+@property(nonatomic, readwrite, strong, null_resettable) NSMutableDictionary<NSString*, NSString*> *meta;
+/** The number of items in @c meta without causing the array to be created. */
+@property(nonatomic, readonly) NSUInteger meta_Count;
+
+@end
+
+#pragma mark - FileUpload
+
+typedef GPB_ENUM(FileUpload_FieldNumber) {
+  FileUpload_FieldNumber_Data_p = 1,
+  FileUpload_FieldNumber_Filename = 2,
+  FileUpload_FieldNumber_ContentType = 3,
+  FileUpload_FieldNumber_Size = 4,
+};
+
+GPB_FINAL @interface FileUpload : GPBMessage
+
+@property(nonatomic, readwrite, copy, null_resettable) NSData *data_p;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *filename;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *contentType;
+
+@property(nonatomic, readwrite) int64_t size;
+
+@end
+
+#pragma mark - FileRef
+
+typedef GPB_ENUM(FileRef_FieldNumber) {
+  FileRef_FieldNumber_Name = 1,
+  FileRef_FieldNumber_Uri = 2,
+};
+
+GPB_FINAL @interface FileRef : GPBMessage
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *name;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *uri;
 
 @end
 
@@ -284,16 +295,12 @@ GPB_FINAL @interface Error : GPBMessage
 
 typedef GPB_ENUM(Response_FieldNumber) {
   Response_FieldNumber_Data_p = 1,
-  Response_FieldNumber_RequestBack = 2,
-  Response_FieldNumber_Code = 3,
-  Response_FieldNumber_Error = 4,
+  Response_FieldNumber_Error = 2,
+  Response_FieldNumber_Meta = 3,
+  Response_FieldNumber_Code = 4,
+  Response_FieldNumber_RequestBack = 5,
 };
 
-/**
- * -------------------
- * Server → Client
- * -------------------
- **/
 GPB_FINAL @interface Response : GPBMessage
 
 /** Main response payload */
@@ -301,19 +308,23 @@ GPB_FINAL @interface Response : GPBMessage
 /** The number of items in @c data_p without causing the array to be created. */
 @property(nonatomic, readonly) NSUInteger data_p_Count;
 
-/** Original request reference (optional) */
-@property(nonatomic, readwrite, strong, null_resettable) Request *requestBack;
-/** Test to see if @c requestBack has been set. */
-@property(nonatomic, readwrite) BOOL hasRequestBack;
-
-/** Upload result (if file upload) */
-@property(nonatomic, readwrite) UploadStatusCode code;
-
-@property(nonatomic, readwrite) BOOL hasCode;
-/** Unified error object (optional) */
+/** Error object */
 @property(nonatomic, readwrite, strong, null_resettable) Error *error;
 /** Test to see if @c error has been set. */
 @property(nonatomic, readwrite) BOOL hasError;
+
+/** Metadata */
+@property(nonatomic, readwrite, strong, null_resettable) ResponseMeta *meta;
+/** Test to see if @c meta has been set. */
+@property(nonatomic, readwrite) BOOL hasMeta;
+
+/** Upload result */
+@property(nonatomic, readwrite) UploadStatusCode code;
+
+/** Optional debug echo */
+@property(nonatomic, readwrite, strong, null_resettable) Request *requestBack;
+/** Test to see if @c requestBack has been set. */
+@property(nonatomic, readwrite) BOOL hasRequestBack;
 
 @end
 
@@ -329,6 +340,63 @@ int32_t Response_Code_RawValue(Response *message);
  **/
 void SetResponse_Code_RawValue(Response *message, int32_t value);
 
+#pragma mark - Error
+
+typedef GPB_ENUM(Error_FieldNumber) {
+  Error_FieldNumber_Code = 1,
+  Error_FieldNumber_Key = 2,
+  Error_FieldNumber_Message = 3,
+  Error_FieldNumber_Meta = 4,
+  Error_FieldNumber_Retryable = 5,
+};
+
+GPB_FINAL @interface Error : GPBMessage
+
+@property(nonatomic, readwrite) int32_t code;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *key;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *message;
+
+@property(nonatomic, readwrite, strong, null_resettable) NSMutableDictionary<NSString*, NSString*> *meta;
+/** The number of items in @c meta without causing the array to be created. */
+@property(nonatomic, readonly) NSUInteger meta_Count;
+
+@property(nonatomic, readwrite) BOOL retryable;
+
+@end
+
+#pragma mark - ResponseMeta
+
+typedef GPB_ENUM(ResponseMeta_FieldNumber) {
+  ResponseMeta_FieldNumber_Status = 1,
+  ResponseMeta_FieldNumber_TraceId = 2,
+  ResponseMeta_FieldNumber_RequestId = 3,
+  ResponseMeta_FieldNumber_Node = 4,
+  ResponseMeta_FieldNumber_Ts = 5,
+  ResponseMeta_FieldNumber_Extra = 6,
+};
+
+GPB_FINAL @interface ResponseMeta : GPBMessage
+
+@property(nonatomic, readwrite) int32_t status;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *traceId;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *requestId;
+
+@property(nonatomic, readwrite, copy, null_resettable) NSString *node;
+
+@property(nonatomic, readwrite, strong, null_resettable) GPBTimestamp *ts;
+/** Test to see if @c ts has been set. */
+@property(nonatomic, readwrite) BOOL hasTs;
+
+@property(nonatomic, readwrite, strong, null_resettable) NSMutableDictionary<NSString*, NSString*> *extra;
+/** The number of items in @c extra without causing the array to be created. */
+@property(nonatomic, readonly) NSUInteger extra_Count;
+
+@end
+
 #pragma mark - FileChunk
 
 typedef GPB_ENUM(FileChunk_FieldNumber) {
@@ -336,35 +404,11 @@ typedef GPB_ENUM(FileChunk_FieldNumber) {
   FileChunk_FieldNumber_Data_p = 2,
 };
 
-/**
- * -------------------
- * Streaming data
- * -------------------
- **/
 GPB_FINAL @interface FileChunk : GPBMessage
 
 @property(nonatomic, readwrite, copy, null_resettable) NSString *name;
 
 @property(nonatomic, readwrite, copy, null_resettable) NSData *data_p;
-
-@end
-
-#pragma mark - StringMap
-
-typedef GPB_ENUM(StringMap_FieldNumber) {
-  StringMap_FieldNumber_Entries = 1,
-};
-
-/**
- * -------------------
- * Helper maps
- * -------------------
- **/
-GPB_FINAL @interface StringMap : GPBMessage
-
-@property(nonatomic, readwrite, strong, null_resettable) NSMutableDictionary<NSString*, NSString*> *entries;
-/** The number of items in @c entries without causing the array to be created. */
-@property(nonatomic, readonly) NSUInteger entries_Count;
 
 @end
 

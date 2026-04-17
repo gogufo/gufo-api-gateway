@@ -12,50 +12,63 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import any_pb2 as google_dot_protobuf_dot_any__pb2
+from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12microservice.proto\x1a\x19google/protobuf/any.proto\"\x9f\x07\n\x07Request\x12\x13\n\x06Module\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x12\n\x05Param\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x14\n\x07ParamID\x18\x03 \x01(\tH\x02\x88\x01\x01\x12\x15\n\x08ParamIDD\x18\x04 \x01(\tH\x03\x88\x01\x01\x12\x13\n\x06\x41\x63tion\x18\x05 \x01(\tH\x04\x88\x01\x01\x12 \n\x04\x41rgs\x18\x06 \x03(\x0b\x32\x12.Request.ArgsEntry\x12\x11\n\x04Path\x18\x07 \x01(\tH\x05\x88\x01\x01\x12\x12\n\x05Token\x18\x08 \x01(\tH\x06\x88\x01\x01\x12\x11\n\x04Sign\x18\t \x01(\tH\x07\x88\x01\x01\x12\x10\n\x03SID\x18\n \x01(\tH\x08\x88\x01\x01\x12\x0f\n\x02IP\x18\x0b \x01(\tH\t\x88\x01\x01\x12\x16\n\tUserAgent\x18\x0c \x01(\tH\n\x88\x01\x01\x12\x16\n\tTokenType\x18\r \x01(\tH\x0b\x88\x01\x01\x12\x16\n\tTimeStamp\x18\x0e \x01(\x05H\x0c\x88\x01\x01\x12\x15\n\x08Language\x18\x0f \x01(\tH\r\x88\x01\x01\x12\x17\n\nAPIVersion\x18\x10 \x01(\tH\x0e\x88\x01\x01\x12\x13\n\x06Method\x18\x11 \x01(\tH\x0f\x88\x01\x01\x12\x10\n\x03UID\x18\x12 \x01(\tH\x10\x88\x01\x01\x12\x14\n\x07IsAdmin\x18\x13 \x01(\x05H\x11\x88\x01\x01\x12\x17\n\nSessionEnd\x18\x14 \x01(\x05H\x12\x88\x01\x01\x12\x16\n\tCompleted\x18\x15 \x01(\x05H\x13\x88\x01\x01\x12\x15\n\x08Readonly\x18\x16 \x01(\x05H\x14\x88\x01\x01\x12\x11\n\x04\x46ile\x18\x17 \x01(\x0cH\x15\x88\x01\x01\x12\x15\n\x08\x46ilename\x18\x18 \x01(\tH\x16\x88\x01\x01\x12\r\n\x05\x46iles\x18\x19 \x03(\t\x12!\n\x02IR\x18\x1a \x01(\x0b\x32\x10.InternalRequestH\x17\x88\x01\x01\x1a\x41\n\tArgsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any:\x02\x38\x01\x42\t\n\x07_ModuleB\x08\n\x06_ParamB\n\n\x08_ParamIDB\x0b\n\t_ParamIDDB\t\n\x07_ActionB\x07\n\x05_PathB\x08\n\x06_TokenB\x07\n\x05_SignB\x06\n\x04_SIDB\x05\n\x03_IPB\x0c\n\n_UserAgentB\x0c\n\n_TokenTypeB\x0c\n\n_TimeStampB\x0b\n\t_LanguageB\r\n\x0b_APIVersionB\t\n\x07_MethodB\x06\n\x04_UIDB\n\n\x08_IsAdminB\r\n\x0b_SessionEndB\x0c\n\n_CompletedB\x0b\n\t_ReadonlyB\x07\n\x05_FileB\x0b\n\t_FilenameB\x05\n\x03_IR\"\xde\x01\n\x0fInternalRequest\x12\x12\n\x05Param\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\x14\n\x07ParamID\x18\x02 \x01(\tH\x01\x88\x01\x01\x12\x13\n\x06Method\x18\x03 \x01(\tH\x02\x88\x01\x01\x12(\n\x04\x41rgs\x18\x04 \x03(\x0b\x32\x1a.InternalRequest.ArgsEntry\x1a\x41\n\tArgsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any:\x02\x38\x01\x42\x08\n\x06_ParamB\n\n\x08_ParamIDB\t\n\x07_Method\"s\n\x05\x45rror\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x1e\n\x04meta\x18\x03 \x03(\x0b\x32\x10.Error.MetaEntry\x1a+\n\tMetaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xf9\x01\n\x08Response\x12!\n\x04\x44\x61ta\x18\x01 \x03(\x0b\x32\x13.Response.DataEntry\x12\"\n\x0bRequestBack\x18\x02 \x01(\x0b\x32\x08.RequestH\x00\x88\x01\x01\x12$\n\x04\x43ode\x18\x03 \x01(\x0e\x32\x11.UploadStatusCodeH\x01\x88\x01\x01\x12\x1a\n\x05\x65rror\x18\x04 \x01(\x0b\x32\x06.ErrorH\x02\x88\x01\x01\x1a\x41\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any:\x02\x38\x01\x42\x0e\n\x0c_RequestBackB\x07\n\x05_CodeB\x08\n\x06_error\"\'\n\tFileChunk\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"e\n\tStringMap\x12(\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x17.StringMap.EntriesEntry\x1a.\n\x0c\x45ntriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01*3\n\x10UploadStatusCode\x12\x0b\n\x07Unknown\x10\x00\x12\x06\n\x02Ok\x10\x01\x12\n\n\x06\x46\x61iled\x10\x02\x32G\n\x07Reverse\x12\x19\n\x02\x44o\x12\x08.Request\x1a\t.Response\x12!\n\x06Stream\x12\x08.Request\x1a\t.Response(\x01\x30\x01\x42\x04Z\x02./b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12microservice.proto\x12\x04gufo\x1a\x19google/protobuf/any.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8a\x03\n\x07Request\x12\x0e\n\x06module\x18\x01 \x01(\t\x12\r\n\x05param\x18\x02 \x01(\t\x12\x10\n\x08param_id\x18\x03 \x01(\t\x12\x11\n\tparam_idd\x18\x04 \x01(\t\x12\x0e\n\x06\x61\x63tion\x18\x05 \x01(\t\x12\'\n\x05query\x18\x06 \x03(\x0b\x32\x18.gufo.Request.QueryEntry\x12\"\n\x04\x62ody\x18\x07 \x01(\x0b\x32\x14.google.protobuf.Any\x12\x0c\n\x04path\x18\x08 \x01(\t\x12\x1c\n\x06method\x18\t \x01(\x0e\x32\x0c.gufo.Method\x12\x1f\n\x04\x61uth\x18\n \x01(\x0b\x32\x11.gufo.AuthContext\x12%\n\x07\x63ontext\x18\x0b \x01(\x0b\x32\x14.gufo.RequestContext\x12\x1e\n\x04\x66ile\x18\x0c \x01(\x0b\x32\x10.gufo.FileUpload\x12\x1c\n\x05\x66iles\x18\r \x03(\x0b\x32\r.gufo.FileRef\x1a,\n\nQueryEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xe9\x01\n\x0b\x41uthContext\x12\r\n\x05token\x18\x01 \x01(\t\x12\x12\n\ntoken_type\x18\x02 \x01(\t\x12\x0b\n\x03sid\x18\x03 \x01(\t\x12\x0b\n\x03uid\x18\x04 \x01(\t\x12\x0c\n\x04sign\x18\x05 \x01(\t\x12\x10\n\x08is_admin\x18\x06 \x01(\x08\x12\x10\n\x08readonly\x18\x07 \x01(\x08\x12\x13\n\x0bsession_end\x18\x08 \x01(\x03\x12)\n\x04meta\x18\t \x03(\x0b\x32\x1b.gufo.AuthContext.MetaEntry\x1a+\n\tMetaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xfb\x01\n\x0eRequestContext\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x12\n\nuser_agent\x18\x02 \x01(\t\x12\x10\n\x08language\x18\x03 \x01(\t\x12\x13\n\x0b\x61pi_version\x18\x04 \x01(\t\x12\x11\n\ttimestamp\x18\x05 \x01(\x03\x12\x10\n\x08trace_id\x18\x06 \x01(\t\x12\x12\n\nrequest_id\x18\x07 \x01(\t\x12\x0e\n\x06\x63\x61ller\x18\x08 \x01(\t\x12,\n\x04meta\x18\t \x03(\x0b\x32\x1e.gufo.RequestContext.MetaEntry\x1a+\n\tMetaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"P\n\nFileUpload\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\x12\x14\n\x0c\x63ontent_type\x18\x03 \x01(\t\x12\x0c\n\x04size\x18\x04 \x01(\x03\"$\n\x07\x46ileRef\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03uri\x18\x02 \x01(\t\"\xfe\x01\n\x08Response\x12&\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x18.gufo.Response.DataEntry\x12\x1a\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x0b.gufo.Error\x12 \n\x04meta\x18\x03 \x01(\x0b\x32\x12.gufo.ResponseMeta\x12$\n\x04\x63ode\x18\x04 \x01(\x0e\x32\x16.gufo.UploadStatusCode\x12#\n\x0crequest_back\x18\x05 \x01(\x0b\x32\r.gufo.Request\x1a\x41\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12#\n\x05value\x18\x02 \x01(\x0b\x32\x14.google.protobuf.Any:\x02\x38\x01\"\x98\x01\n\x05\x45rror\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x05\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t\x12#\n\x04meta\x18\x04 \x03(\x0b\x32\x15.gufo.Error.MetaEntry\x12\x11\n\tretryable\x18\x05 \x01(\x08\x1a+\n\tMetaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\xd6\x01\n\x0cResponseMeta\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x10\n\x08trace_id\x18\x02 \x01(\t\x12\x12\n\nrequest_id\x18\x03 \x01(\t\x12\x0c\n\x04node\x18\x04 \x01(\t\x12&\n\x02ts\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12,\n\x05\x65xtra\x18\x06 \x03(\x0b\x32\x1d.gufo.ResponseMeta.ExtraEntry\x1a,\n\nExtraEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\'\n\tFileChunk\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c*]\n\x10UploadStatusCode\x12\x19\n\x15UPLOAD_STATUS_UNKNOWN\x10\x00\x12\x14\n\x10UPLOAD_STATUS_OK\x10\x01\x12\x18\n\x14UPLOAD_STATUS_FAILED\x10\x02*v\n\x06Method\x12\x16\n\x12METHOD_UNSPECIFIED\x10\x00\x12\x0e\n\nMETHOD_GET\x10\x01\x12\x0f\n\x0bMETHOD_POST\x10\x02\x12\x0e\n\nMETHOD_PUT\x10\x03\x12\x10\n\x0cMETHOD_PATCH\x10\x04\x12\x11\n\rMETHOD_DELETE\x10\x05\x32[\n\x07Reverse\x12#\n\x02\x44o\x12\r.gufo.Request\x1a\x0e.gufo.Response\x12+\n\x06Stream\x12\r.gufo.Request\x1a\x0e.gufo.Response(\x01\x30\x01\x42\nZ\x08./;protob\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'microservice_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'Z\002./'
-  _REQUEST_ARGSENTRY._options = None
-  _REQUEST_ARGSENTRY._serialized_options = b'8\001'
-  _INTERNALREQUEST_ARGSENTRY._options = None
-  _INTERNALREQUEST_ARGSENTRY._serialized_options = b'8\001'
-  _ERROR_METAENTRY._options = None
-  _ERROR_METAENTRY._serialized_options = b'8\001'
+  DESCRIPTOR._serialized_options = b'Z\010./;proto'
+  _REQUEST_QUERYENTRY._options = None
+  _REQUEST_QUERYENTRY._serialized_options = b'8\001'
+  _AUTHCONTEXT_METAENTRY._options = None
+  _AUTHCONTEXT_METAENTRY._serialized_options = b'8\001'
+  _REQUESTCONTEXT_METAENTRY._options = None
+  _REQUESTCONTEXT_METAENTRY._serialized_options = b'8\001'
   _RESPONSE_DATAENTRY._options = None
   _RESPONSE_DATAENTRY._serialized_options = b'8\001'
-  _STRINGMAP_ENTRIESENTRY._options = None
-  _STRINGMAP_ENTRIESENTRY._serialized_options = b'8\001'
-  _UPLOADSTATUSCODE._serialized_start=1717
-  _UPLOADSTATUSCODE._serialized_end=1768
-  _REQUEST._serialized_start=50
-  _REQUEST._serialized_end=977
-  _REQUEST_ARGSENTRY._serialized_start=640
-  _REQUEST_ARGSENTRY._serialized_end=705
-  _INTERNALREQUEST._serialized_start=980
-  _INTERNALREQUEST._serialized_end=1202
-  _INTERNALREQUEST_ARGSENTRY._serialized_start=640
-  _INTERNALREQUEST_ARGSENTRY._serialized_end=705
-  _ERROR._serialized_start=1204
-  _ERROR._serialized_end=1319
-  _ERROR_METAENTRY._serialized_start=1276
-  _ERROR_METAENTRY._serialized_end=1319
-  _RESPONSE._serialized_start=1322
-  _RESPONSE._serialized_end=1571
-  _RESPONSE_DATAENTRY._serialized_start=1471
-  _RESPONSE_DATAENTRY._serialized_end=1536
-  _FILECHUNK._serialized_start=1573
-  _FILECHUNK._serialized_end=1612
-  _STRINGMAP._serialized_start=1614
-  _STRINGMAP._serialized_end=1715
-  _STRINGMAP_ENTRIESENTRY._serialized_start=1669
-  _STRINGMAP_ENTRIESENTRY._serialized_end=1715
-  _REVERSE._serialized_start=1770
-  _REVERSE._serialized_end=1841
+  _ERROR_METAENTRY._options = None
+  _ERROR_METAENTRY._serialized_options = b'8\001'
+  _RESPONSEMETA_EXTRAENTRY._options = None
+  _RESPONSEMETA_EXTRAENTRY._serialized_options = b'8\001'
+  _UPLOADSTATUSCODE._serialized_start=1765
+  _UPLOADSTATUSCODE._serialized_end=1858
+  _METHOD._serialized_start=1860
+  _METHOD._serialized_end=1978
+  _REQUEST._serialized_start=89
+  _REQUEST._serialized_end=483
+  _REQUEST_QUERYENTRY._serialized_start=439
+  _REQUEST_QUERYENTRY._serialized_end=483
+  _AUTHCONTEXT._serialized_start=486
+  _AUTHCONTEXT._serialized_end=719
+  _AUTHCONTEXT_METAENTRY._serialized_start=676
+  _AUTHCONTEXT_METAENTRY._serialized_end=719
+  _REQUESTCONTEXT._serialized_start=722
+  _REQUESTCONTEXT._serialized_end=973
+  _REQUESTCONTEXT_METAENTRY._serialized_start=676
+  _REQUESTCONTEXT_METAENTRY._serialized_end=719
+  _FILEUPLOAD._serialized_start=975
+  _FILEUPLOAD._serialized_end=1055
+  _FILEREF._serialized_start=1057
+  _FILEREF._serialized_end=1093
+  _RESPONSE._serialized_start=1096
+  _RESPONSE._serialized_end=1350
+  _RESPONSE_DATAENTRY._serialized_start=1285
+  _RESPONSE_DATAENTRY._serialized_end=1350
+  _ERROR._serialized_start=1353
+  _ERROR._serialized_end=1505
+  _ERROR_METAENTRY._serialized_start=676
+  _ERROR_METAENTRY._serialized_end=719
+  _RESPONSEMETA._serialized_start=1508
+  _RESPONSEMETA._serialized_end=1722
+  _RESPONSEMETA_EXTRAENTRY._serialized_start=1678
+  _RESPONSEMETA_EXTRAENTRY._serialized_end=1722
+  _FILECHUNK._serialized_start=1724
+  _FILECHUNK._serialized_end=1763
+  _REVERSE._serialized_start=1980
+  _REVERSE._serialized_end=2071
 # @@protoc_insertion_point(module_scope)

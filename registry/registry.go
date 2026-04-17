@@ -14,6 +14,8 @@
 // INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
 // PURPOSE AND NON-INFRINGEMENT.
 
+// Copyright 2019-2025 Alexey Yanchenko <mail@yanchenko.me>
+
 package registry
 
 import (
@@ -26,7 +28,6 @@ import (
 	sf "github.com/gogufo/gufo-api-gateway/gufodao"
 	pb "github.com/gogufo/gufo-api-gateway/proto/go"
 	viper "github.com/spf13/viper"
-	"google.golang.org/protobuf/types/known/anypb"
 )
 
 // ServiceInfo describes a resolved microservice endpoint.
@@ -42,13 +43,6 @@ var (
 )
 
 // getRegistryMode returns normalized registry mode.
-//
-// Supported modes:
-//   - "master"  – resolve via masterservice
-//   - "static"  – resolve from local config/env
-//
-// If server.masterservice=true and no explicit mode set -> "master".
-// Otherwise -> "static".
 func getRegistryMode() string {
 	mode := strings.ToLower(viper.GetString("server.registry_mode"))
 	if mode != "" {
@@ -91,12 +85,9 @@ func getServiceFromMaster(module string) (ServiceInfo, error) {
 	}
 
 	req := &pb.Request{
-		Module: sf.StringPtr("masterservice"),
-		IR: &pb.InternalRequest{
-			Param:  sf.StringPtr("getmicroservicebypath"),
-			Method: sf.StringPtr("GET"),
-			Args:   map[string]*anypb.Any{},
-		},
+		Module: "masterservice",
+		Param:  "getmicroservicebypath",
+		Method: sf.HttpMethodToProto("GET"),
 	}
 
 	ans := sf.GRPCConnect(host, port, req)
@@ -113,10 +104,8 @@ func getServiceFromMaster(module string) (ServiceInfo, error) {
 	return info, nil
 }
 
-// GetService resolves microservice endpoint either from cache,
-// static config/env, or masterservice, depending on registry mode.
+// GetService resolves microservice endpoint
 func GetService(module string) (ServiceInfo, error) {
-	// fmt.Fprintln(os.Stderr, ">>> REGISTRY GetService:", module)
 
 	// 1️⃣ Cache
 	if v, ok := cache.Load(module); ok {
@@ -125,11 +114,9 @@ func GetService(module string) (ServiceInfo, error) {
 			return info, nil
 		}
 	}
-	// fmt.Fprintln(os.Stderr, ">>> REGISTRY cache miss:", module)
 
 	// 2️⃣ STATIC REGISTRY MODE
 	mode := strings.ToLower(viper.GetString("server.registry_mode"))
-	// fmt.Fprintln(os.Stderr, ">>> REGISTRY static lookup for:", module)
 
 	if mode == "static" || viper.GetBool("server.masterservice") == false {
 
@@ -137,8 +124,6 @@ func GetService(module string) (ServiceInfo, error) {
 
 		host := viper.GetString("microservices." + key + ".host")
 		port := viper.GetString("microservices." + key + ".port")
-
-		// fmt.Fprintln(os.Stderr, ">>> REGISTRY static result host=", host, "port=", port)
 
 		if host == "" || port == "" {
 			return ServiceInfo{}, errors.New("static registry: host or port not set for " + key)
@@ -159,19 +144,13 @@ func GetService(module string) (ServiceInfo, error) {
 	port := viper.GetString("microservices.masterservice.port")
 
 	req := &pb.Request{
-		Module: sf.StringPtr("masterservice"),
-		IR: &pb.InternalRequest{
-			Param:  sf.StringPtr("getmicroservicebypath"),
-			Method: sf.StringPtr("GET"),
-			Args:   map[string]*anypb.Any{},
-		},
+		Module: "masterservice",
+		Param:  "getmicroservicebypath",
+		Method: sf.HttpMethodToProto("GET"),
 	}
-	// fmt.Fprintln(os.Stderr, ">>> REGISTRY fallback to MASTER for:", module)
 
 	ans := sf.GRPCConnect(host, port, req)
 	if ans["httpcode"] != nil {
-		// fmt.Fprintln(os.Stderr, ">>> REGISTRY ERROR: cannot resolve", module)
-
 		return ServiceInfo{}, errors.New("masterservice unavailable")
 	}
 
@@ -186,8 +165,6 @@ func GetService(module string) (ServiceInfo, error) {
 }
 
 // StartRefresher periodically revalidates cached entries.
-// For "static" mode it is effectively a no-op, because config/env
-// is treated as the source of truth.
 func StartRefresher() {
 	go func() {
 		ticker := time.NewTicker(30 * time.Second)
@@ -197,7 +174,7 @@ func StartRefresher() {
 	}()
 }
 
-// RefreshCache updates expired entries depending on registry mode.
+// RefreshCache updates expired entries
 func RefreshCache() {
 	mode := getRegistryMode()
 
@@ -216,7 +193,6 @@ func RefreshCache() {
 
 		switch mode {
 		case "static":
-			// For static mode we simply reload from config/env.
 			newInfo, err = getStaticServiceFromConfig(mod)
 		case "master":
 			newInfo, err = getServiceFromMaster(mod)
@@ -232,7 +208,7 @@ func RefreshCache() {
 	})
 }
 
-// StartSweeper removes expired entries from cache.
+// StartSweeper removes expired entries
 func StartSweeper() {
 	go func() {
 		ticker := time.NewTicker(1 * time.Minute)

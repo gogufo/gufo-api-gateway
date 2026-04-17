@@ -37,7 +37,7 @@ import (
 // checksession validates the session of an incoming request.
 // It extracts the token from the Authorization header (Bearer format preferred)
 // or, for backward compatibility, from query parameters (?access_token=...).
-// Then it verifies the session against the Session microservice (via Masterservice or direct host).
+// Then it verifies the session against the Session microservice.
 func checksession(t *pb.Request, r *http.Request) *pb.Request {
 	p := bluemonday.UGCPolicy()
 	var tokenHeader string
@@ -69,22 +69,32 @@ func checksession(t *pb.Request, r *http.Request) *pb.Request {
 		return t
 	}
 
+	// Ensure Auth exists
+	if t.Auth == nil {
+		t.Auth = &pb.AuthContext{}
+	}
+
+	t.Auth.Token = tokenHeader
+
 	// 4) Determine session microservice host
 	var host, port string
 	if viper.GetBool("server.masterservice") {
 		host = viper.GetString("microservices.masterservice.host")
 		port = viper.GetString("microservices.masterservice.port")
 
-		mst := &pb.InternalRequest{
-			Param:  sf.StringPtr("getsessionhost"),
-			Method: sf.StringPtr("GET"),
+		mstReq := &pb.Request{
+			Module:  "masterservice",
+			Param:   "getsessionhost",
+			Method:  pb.Method_METHOD_GET,
+			Context: t.Context,
+			Auth: &pb.AuthContext{
+				Token: tokenHeader,
+			},
 		}
-		t.IR = mst
-		t.Token = &tokenHeader
 
-		ans := sf.GRPCConnect(host, port, t)
+		ans := sf.GRPCConnect(host, port, mstReq)
 		if ans["httpcode"] != nil {
-			return t // masterservice error
+			return t
 		}
 
 		host = fmt.Sprintf("%v", ans["host"])
@@ -98,47 +108,43 @@ func checksession(t *pb.Request, r *http.Request) *pb.Request {
 	}
 
 	// 5) Call Session microservice to validate the token
-	mstb := &pb.InternalRequest{
-		Param:  sf.StringPtr("checksession"),
-		Method: sf.StringPtr("GET"),
+	sessionReq := &pb.Request{
+		Module:  "session",
+		Param:   "checksession",
+		Method:  pb.Method_METHOD_GET,
+		Context: t.Context,
+		Auth: &pb.AuthContext{
+			Token: tokenHeader,
+		},
 	}
-	t.IR = mstb
-	t.Token = &tokenHeader
 
-	ans := sf.GRPCConnect(host, port, t)
+	ans := sf.GRPCConnect(host, port, sessionReq)
 	if ans["error"] != nil {
 		sf.SetErrorLog(fmt.Sprintf("checksession: gRPC error: %v", ans["error"]))
 		return t
 	}
 
-	// 6) Populate response fields from Session service
+	// 6) Populate response fields into AuthContext
 	if v := ans["uid"]; v != nil {
-		uid := fmt.Sprintf("%v", v)
-		t.UID = &uid
+		t.Auth.Uid = fmt.Sprintf("%v", v)
 	}
 	if v := ans["isadmin"]; v != nil {
 		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
-		t.IsAdmin = sf.Int32Ptr(int32(i))
+		t.Auth.IsAdmin = i == 1
 	}
 	if v := ans["sessionend"]; v != nil {
 		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
-		t.SessionEnd = sf.Int32Ptr(int32(i))
-	}
-	if v := ans["completed"]; v != nil {
-		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
-		t.Completed = sf.Int32Ptr(int32(i))
+		t.Auth.SessionEnd = int64(i)
 	}
 	if v := ans["readonly"]; v != nil {
 		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
-		t.Readonly = sf.Int32Ptr(int32(i))
+		t.Auth.Readonly = i == 1
 	}
 	if v := ans["token"]; v != nil {
-		tkn := fmt.Sprintf("%v", v)
-		t.Token = &tkn
+		t.Auth.Token = fmt.Sprintf("%v", v)
 	}
 	if v := ans["token_type"]; v != nil {
-		tkntp := fmt.Sprintf("%v", v)
-		t.TokenType = &tkntp
+		t.Auth.TokenType = fmt.Sprintf("%v", v)
 	}
 
 	return t

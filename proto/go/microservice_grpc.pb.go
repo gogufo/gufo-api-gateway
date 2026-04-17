@@ -4,7 +4,7 @@
 // - protoc             v3.21.6
 // source: microservice.proto
 
-package __
+package proto
 
 import (
 	context "context"
@@ -36,7 +36,7 @@ func NewReverseClient(cc grpc.ClientConnInterface) ReverseClient {
 
 func (c *reverseClient) Do(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
-	err := c.cc.Invoke(ctx, "/Reverse/Do", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/gufo.Reverse/Do", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (c *reverseClient) Do(ctx context.Context, in *Request, opts ...grpc.CallOp
 }
 
 func (c *reverseClient) Stream(ctx context.Context, opts ...grpc.CallOption) (Reverse_StreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Reverse_ServiceDesc.Streams[0], "/Reverse/Stream", opts...)
+	stream, err := c.cc.NewStream(ctx, &Reverse_ServiceDesc.Streams[0], "/gufo.Reverse/Stream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +114,7 @@ func _Reverse_Do_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Reverse/Do",
+		FullMethod: "/gufo.Reverse/Do",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReverseServer).Do(ctx, req.(*Request))
@@ -152,7 +152,7 @@ func (x *reverseStreamServer) Recv() (*Request, error) {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Reverse_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "Reverse",
+	ServiceName: "gufo.Reverse",
 	HandlerType: (*ReverseServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -30,29 +30,26 @@ import (
 	"strings"
 	"time"
 
-	sf "github.com/gogufo/gufo-api-gateway/gufodao"
-	mid "github.com/gogufo/gufo-api-gateway/middleware"
-	"github.com/gogufo/gufo-api-gateway/registry"
-	"github.com/gogufo/gufo-api-gateway/transport"
-	"google.golang.org/grpc/keepalive"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/grpclog"
-	"google.golang.org/protobuf/types/known/anypb"
-	"google.golang.org/protobuf/types/known/wrapperspb"
-
 	"github.com/certifi/gocertifi"
-	handler "github.com/gogufo/gufo-api-gateway/handler"
-	pb "github.com/gogufo/gufo-api-gateway/proto/go"
-	v "github.com/gogufo/gufo-api-gateway/version"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-
 	"github.com/getsentry/sentry-go"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	sf "github.com/gogufo/gufo-api-gateway/gufodao"
+	handler "github.com/gogufo/gufo-api-gateway/handler"
+	mid "github.com/gogufo/gufo-api-gateway/middleware"
+	pb "github.com/gogufo/gufo-api-gateway/proto/go"
+	"github.com/gogufo/gufo-api-gateway/registry"
+	"github.com/gogufo/gufo-api-gateway/transport"
+	v "github.com/gogufo/gufo-api-gateway/version"
 	viper "github.com/spf13/viper"
 	"github.com/urfave/cli/v2"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/keepalive"
+	"google.golang.org/protobuf/types/known/anypb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 var app = cli.NewApp()
@@ -425,26 +422,30 @@ func (s *Server) Do(ctx context.Context, request *pb.Request) (*pb.Response, err
 	mode := strings.ToLower(viper.GetString("security.mode"))
 
 	switch mode {
+
 	case "hmac":
 		secret := viper.GetString("security.hmac_secret")
 		maxAge := time.Duration(viper.GetInt("security.max_age")) * time.Second
 
-		// Extra safety check: avoid nil dereference in request.Module or request.Sign
-		if request.Sign == nil || request.Module == nil ||
-			!sf.VerifyHMAC(secret, *request.Module, *request.Sign, maxAge) {
+		if request.Auth == nil ||
+			request.Auth.Sign == "" ||
+			request.Module == "" ||
+			!sf.VerifyHMAC(secret, request.Module, request.Auth.Sign, maxAge) {
 
 			sf.SetErrorLog("Unauthorized gRPC request (HMAC mode)")
 			return sf.ErrorReturn(request, 401, "00001", "Invalid or expired signature"), nil
 		}
 
 	case "sign":
-		if request.Sign == nil || viper.GetString("server.sign") != *request.Sign {
+		if request.Auth == nil ||
+			request.Auth.Sign == "" ||
+			viper.GetString("server.sign") != request.Auth.Sign {
+
 			sf.SetErrorLog("Unauthorized gRPC request (static sign mode)")
 			return sf.ErrorReturn(request, 401, "00001", "Invalid signature"), nil
 		}
 
 	case "mtls":
-		// For mTLS mode, trust gRPC layer verification — no Sign check needed
 		sf.SetLog("mTLS mode active - skipping sign verification")
 
 	default:
@@ -452,7 +453,7 @@ func (s *Server) Do(ctx context.Context, request *pb.Request) (*pb.Response, err
 		return sf.ErrorReturn(request, 500, "00002", "Security mode not configured"), nil
 	}
 
-	return handler.InternalRequest(request), nil
+	return handler.Handle(request), nil
 }
 
 // Stream handles bidirectional streaming RPC calls.

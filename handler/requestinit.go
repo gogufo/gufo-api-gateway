@@ -27,45 +27,53 @@ import (
 )
 
 func RequestInit(r *http.Request) *pb.Request {
-	t := &pb.Request{}
+
 	p := bluemonday.UGCPolicy()
 
 	path := r.URL.Path
 	patharray := strings.Split(path, "/")
 	pathlenth := len(patharray)
 
-	module := p.Sanitize(patharray[3])
-	t.Module = &module
-	t.Path = &path
-	t.Method = &r.Method
-
-	sgn := viper.GetString("server.sign")
-	curip := sf.ReadUserIP(r)
-	usagent := r.UserAgent()
-
-	t.Sign = &sgn
-
-	t.IP = &curip
-
-	t.UserAgent = &usagent
-
-	//Function in Plugin
-	if pathlenth >= 5 {
-		ptr := p.Sanitize(patharray[4])
-		t.Param = &ptr
+	// Initialize request
+	t := &pb.Request{
+		Auth:    &pb.AuthContext{},
+		Context: &pb.RequestContext{},
 	}
 
-	//ID for function in plugin
-	if pathlenth >= 6 {
-		ptrs := p.Sanitize(patharray[5])
-		t.ParamID = &ptrs
+	// -------------------------
+	// Core fields
+	// -------------------------
+	if pathlenth > 3 {
+		t.Module = p.Sanitize(patharray[3])
+	}
 
+	t.Path = path
+	t.Method = sf.HttpMethodToProto(r.Method)
+
+	// -------------------------
+	// Auth
+	// -------------------------
+	t.Auth.Sign = viper.GetString("server.sign")
+
+	// -------------------------
+	// Context
+	// -------------------------
+	t.Context.Ip = sf.ReadUserIP(r)
+	t.Context.UserAgent = r.UserAgent()
+
+	// -------------------------
+	// Routing params
+	// -------------------------
+	if pathlenth >= 5 {
+		t.Param = p.Sanitize(patharray[4])
+	}
+
+	if pathlenth >= 6 {
+		t.ParamId = p.Sanitize(patharray[5])
 	}
 
 	if pathlenth >= 7 {
-		ptrs := p.Sanitize(patharray[6])
-		t.ParamIDD = &ptrs
-
+		t.ParamIdd = p.Sanitize(patharray[6])
 	}
 
 	return t

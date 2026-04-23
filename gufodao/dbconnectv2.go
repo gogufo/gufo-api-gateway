@@ -19,12 +19,11 @@ package gufodao
 import (
 	"fmt"
 
+	//	"gorm.io/driver/sqlite"
+	viper "github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
-	//	"gorm.io/driver/sqlite"
-	viper "github.com/spf13/viper"
 )
 
 // DB struct
@@ -98,6 +97,57 @@ func ConnectDBv2() (*DBv2, error) {
 
 	sqlDB.SetMaxIdleConns(dbcon)
 	sqlDB.SetMaxOpenConns(dbpool)
+
+	return db, nil
+}
+
+func DBConnect(prefix string) (*gorm.DB, error) {
+
+	dbtype := viper.GetString(prefix + ".type")
+	user := viper.GetString(prefix + ".user")
+	pass := DecryptConfigPasswords(viper.GetString(prefix + ".password"))
+	dbname := viper.GetString(prefix + ".dbname")
+	host := viper.GetString(prefix + ".host")
+	port := viper.GetString(prefix + ".port")
+	charset := viper.GetString(prefix + ".charset")
+	sslmode := viper.GetString(prefix + ".sslmode")
+
+	var db *gorm.DB
+	var err error
+
+	switch dbtype {
+
+	case "mysql":
+		dsn := fmt.Sprintf(
+			"%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
+			user, pass, host, port, dbname, charset,
+		)
+
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	case "postgres":
+		dsn := fmt.Sprintf(
+			"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+			host, port, user, dbname, pass, sslmode,
+		)
+
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	default:
+		return nil, fmt.Errorf("unsupported db type: %s", dbtype)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+
+	sqlDB.SetMaxIdleConns(viper.GetInt(prefix + ".connectionssize"))
+	sqlDB.SetMaxOpenConns(viper.GetInt(prefix + ".poolsize"))
 
 	return db, nil
 }

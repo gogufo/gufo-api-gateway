@@ -35,10 +35,28 @@ var (
 	svcCache sync.Map
 )
 
+// init config once (NOT in Call)
+func init() {
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
+
+	// bind only critical keys
+	_ = viper.BindEnv("server.grpc_timeout")
+	_ = viper.BindEnv("server.masterservice")
+
+	_ = viper.BindEnv("security.ca_path")
+	_ = viper.BindEnv("security.cert_path")
+	_ = viper.BindEnv("security.key_path")
+}
+
 // Call executes a gRPC call to a remote microservice.
 // Host/Port is resolved from cache or via masterservice discovery.
 func (t *GRPCTransport) Call(ctx context.Context, svc, method string, req *pb.Request) (*pb.Response, error) {
 	host, port := resolveService(svc, req)
+
+	if host == "" || port == "" {
+		return nil, fmt.Errorf("invalid service address for %s: host=%s port=%s", svc, host, port)
+	}
 
 	conn, err := sf.GetGRPCConn(
 		host, port,
@@ -52,11 +70,12 @@ func (t *GRPCTransport) Call(ctx context.Context, svc, method string, req *pb.Re
 
 	client := pb.NewReverseClient(conn)
 
-	// Timeout per microservice
+	// Timeout
 	timeout := viper.GetDuration("server.grpc_timeout")
-	if timeout == 0 {
+	if timeout <= 0 {
 		timeout = 5 * time.Second
 	}
+
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
@@ -70,19 +89,23 @@ func (t *GRPCTransport) Call(ctx context.Context, svc, method string, req *pb.Re
 
 // resolveService returns host and port from cache or asks masterservice.
 func resolveService(svc string, req *pb.Request) (string, string) {
-	// 1. Check in-memory cache
+	// 1. Cache
 	if v, ok := svcCache.Load(svc); ok {
-		addr := v.(string)
-		h, p, _ := splitAddr(addr)
-		return h, p
+		h, p, err := splitAddr(v.(string))
+		if err == nil {
+			return h, p
+		}
 	}
 
-	// 2. Fallback to masterservice discovery (if enabled)
+	// 2. Masterservice
 	if viper.GetBool("server.masterservice") && svc != "masterservice" {
 		host := viper.GetString("microservices.masterservice.host")
 		port := viper.GetString("microservices.masterservice.port")
 
-		// ⚠️ IMPORTANT: do NOT mutate original request
+		if host == "" || port == "" {
+			return "", ""
+		}
+
 		msReq := &pb.Request{
 			Module: "masterservice",
 			Param:  "getmicroservicebypath",
@@ -93,16 +116,22 @@ func resolveService(svc string, req *pb.Request) (string, string) {
 
 		if h, ok := resp["host"].(string); ok {
 			p := fmt.Sprintf("%v", resp["port"])
-			addr := fmt.Sprintf("%s:%s", h, p)
 
-			svcCache.Store(svc, addr)
-			return h, p
+			if h != "" && p != "" {
+				addr := fmt.Sprintf("%s:%s", h, p)
+				svcCache.Store(svc, addr)
+				return h, p
+			}
 		}
 	}
 
-	// 3. Default to static config
+	// 3. Static config
 	host := viper.GetString(fmt.Sprintf("microservices.%s.host", svc))
 	port := viper.GetString(fmt.Sprintf("microservices.%s.port", svc))
+
+	if host == "" || port == "" {
+		return "", ""
+	}
 
 	addr := fmt.Sprintf("%s:%s", host, port)
 	svcCache.Store(svc, addr)

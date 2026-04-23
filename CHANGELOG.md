@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.30.1 2026-04-23
+- Bug fixed with GRPC Timeout in ENV
+- Add DBConnect with prefix in gufodao - allow multiple DB connection
+
 ## 1.30.0 2026-04-17
 
 ### 🚨 Breaking Changes

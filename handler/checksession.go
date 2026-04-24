@@ -39,46 +39,73 @@ import (
 // or, for backward compatibility, from query parameters (?access_token=...).
 // Then it verifies the session against the Session microservice.
 func checksession(t *pb.Request, r *http.Request) *pb.Request {
+
 	p := bluemonday.UGCPolicy()
-	var tokenHeader string
 
-	// 1) Extract token from Authorization header (RFC 6750)
-	authHeader := strings.TrimSpace(r.Header.Get("Authorization"))
-	if authHeader != "" {
-		parts := strings.SplitN(authHeader, " ", 2)
-		if len(parts) == 2 && strings.EqualFold(parts[0], "Bearer") {
-			tokenHeader = parts[1]
-		} else {
-			sf.SetErrorLog("checksession: invalid Authorization header format")
-			return t
-		}
-	} else {
-		// 2) Legacy fallback: access_token in URL query
-		if q := r.URL.Query().Get("access_token"); q != "" {
-			tokenHeader = p.Sanitize(q)
-			if tt := r.URL.Query().Get("token_type"); tt != "" {
-				tokenHeader = fmt.Sprintf("%s %s", p.Sanitize(tt), tokenHeader)
-			} else {
-				tokenHeader = "Bearer " + tokenHeader
-			}
-		}
-	}
-
-	// 3) No token found — return without session data
-	if tokenHeader == "" {
-		return t
-	}
-
-	// Ensure Auth exists
+	// Ensure AuthContext exists but DO NOT overwrite existing values
 	if t.Auth == nil {
 		t.Auth = &pb.AuthContext{}
 	}
 
-	t.Auth.Token = tokenHeader
+	var tokenHeader string
+	var tokenType string
 
-	// 4) Determine session microservice host
+	// ===========================
+	// 1. Extract token from Authorization header
+	// ===========================
+	authHeader := strings.TrimSpace(r.Header.Get("Authorization"))
+
+	if authHeader != "" {
+		parts := strings.SplitN(authHeader, " ", 2)
+
+		if len(parts) == 2 {
+			tokenType = strings.TrimSpace(parts[0])
+			tokenHeader = strings.TrimSpace(parts[1])
+		} else {
+			sf.SetErrorLog("checksession: invalid Authorization header format")
+			return t
+		}
+	}
+
+	// ===========================
+	// 2. Fallback to query parameters
+	// ===========================
+	if tokenHeader == "" {
+		if q := r.URL.Query().Get("access_token"); q != "" {
+			tokenHeader = p.Sanitize(q)
+
+			if tt := r.URL.Query().Get("token_type"); tt != "" {
+				tokenType = p.Sanitize(tt)
+			} else {
+				tokenType = "Bearer"
+			}
+		}
+	}
+
+	// ===========================
+	// 3. No token → skip session validation
+	// ===========================
+	if tokenHeader == "" {
+		return t
+	}
+
+	// ===========================
+	// 4. Preserve existing token if already set (e.g. X-API-Token)
+	// ===========================
+	if t.Auth.Token == "" {
+		t.Auth.Token = tokenHeader
+	}
+	if t.Auth.TokenType == "" && tokenType != "" {
+		t.Auth.TokenType = tokenType
+	}
+
+	// ===========================
+	// 5. Resolve session service host
+	// ===========================
 	var host, port string
+
 	if viper.GetBool("server.masterservice") {
+
 		host = viper.GetString("microservices.masterservice.host")
 		port = viper.GetString("microservices.masterservice.port")
 
@@ -93,21 +120,27 @@ func checksession(t *pb.Request, r *http.Request) *pb.Request {
 		}
 
 		ans := sf.GRPCConnect(host, port, mstReq)
+
 		if ans["httpcode"] != nil {
 			return t
 		}
 
 		host = fmt.Sprintf("%v", ans["host"])
 		port = fmt.Sprintf("%v", ans["port"])
+
 	} else {
+
 		if !viper.IsSet("microservices.session.host") {
 			return t
 		}
+
 		host = viper.GetString("microservices.session.host")
 		port = viper.GetString("microservices.session.port")
 	}
 
-	// 5) Call Session microservice to validate the token
+	// ===========================
+	// 6. Validate session via session microservice
+	// ===========================
 	sessionReq := &pb.Request{
 		Module:  "session",
 		Param:   "checksession",
@@ -119,30 +152,38 @@ func checksession(t *pb.Request, r *http.Request) *pb.Request {
 	}
 
 	ans := sf.GRPCConnect(host, port, sessionReq)
+
 	if ans["error"] != nil {
 		sf.SetErrorLog(fmt.Sprintf("checksession: gRPC error: %v", ans["error"]))
 		return t
 	}
 
-	// 6) Populate response fields into AuthContext
+	// ===========================
+	// 7. Populate AuthContext from response
+	// ===========================
 	if v := ans["uid"]; v != nil {
 		t.Auth.Uid = fmt.Sprintf("%v", v)
 	}
+
 	if v := ans["isadmin"]; v != nil {
 		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
 		t.Auth.IsAdmin = i == 1
 	}
+
 	if v := ans["sessionend"]; v != nil {
 		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
 		t.Auth.SessionEnd = int64(i)
 	}
+
 	if v := ans["readonly"]; v != nil {
 		i, _ := strconv.Atoi(fmt.Sprintf("%v", v))
 		t.Auth.Readonly = i == 1
 	}
+
 	if v := ans["token"]; v != nil {
 		t.Auth.Token = fmt.Sprintf("%v", v)
 	}
+
 	if v := ans["token_type"]; v != nil {
 		t.Auth.TokenType = fmt.Sprintf("%v", v)
 	}

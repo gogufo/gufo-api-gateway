@@ -124,6 +124,8 @@ func ProcessREQ(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 		}
 		t.Query = paramMap
 	}
+	
+	t = fillAuthFromHeaders(t, r)
 
 	//check for session
 	if viper.GetBool("server.session") {

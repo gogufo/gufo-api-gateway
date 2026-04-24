@@ -1,8 +1,24 @@
 # Changelog
 
-## 1.30.1 2026-04-23
+## 1.30.1 2026-04-25
 - Bug fixed with GRPC Timeout in ENV
 - Add DBConnect with prefix in gufodao - allow multiple DB connection
+-  Gufo Session Handling Refactor:
+
+### Changes
+- Decoupled token extraction from session validation
+- Gateway no longer overrides existing AuthContext.Token
+- Authorization header is parsed independently of session mode
+- Session validation is now optional (controlled by server.session)
+
+### Behavior Changes
+- Requests without tokens are no longer blocked by the gateway
+- Token presence does not imply mandatory session validation
+- Downstream services receive raw authentication data (token, token_type)
+
+### Compatibility
+- Fully backward compatible with existing session-based authentication
+- No changes required for services using session microservice
 
 ## 1.30.0 2026-04-17
 

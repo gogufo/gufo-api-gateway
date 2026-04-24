@@ -698,6 +698,6 @@ You can:
 
 ## 📜 License
 
-Licensed under the **Apache License 2.0**
-© 2019–2025 Alexey Yanchenko. All rights reserved.
+Licensed under the **Business Source License 1.1**
+© 2019–2026 Alexey Yanchenko. All rights reserved.
 

@@ -84,6 +84,8 @@ func ProcessPUT(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 		return
 	}
 
+	t = fillAuthFromHeaders(t, r)
+
 	// 🔐 Check session
 	if viper.GetBool("server.session") {
 		t = checksession(t, r)
@@ -95,6 +97,6 @@ func ProcessPUT(w http.ResponseWriter, r *http.Request, t *pb.Request, version i
 
 	vrs := "v1"
 	t.Context.ApiVersion = vrs
-	
+
 	connectgrpc(w, r, t)
 }

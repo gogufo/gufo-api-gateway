@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.31.0 2026-09-17
+
+### Added
+
+- Added MCP HTTP gateway support.
+- Added configurable MCP endpoint through:
+  - `GUFO_MCP_PATH`
+  - `GUFO_MCP_MODULE`
+- Added `handler.MCP` as a dedicated MCP HTTP adapter.
+- MCP requests are forwarded to the configured microservice through the existing gRPC transport.
+- MCP requests are marked with `Context.Meta["mcp"] = "true"` so the target microservice can select MCP handling.
+- MCP request bodies are preserved as raw JSON bytes inside `google.protobuf.Any`.
+- MCP responses are returned from the microservice through `Response.Data["mcp"]` and passed back to the MCP client as raw JSON-RPC responses.
+- Existing REST API processing and `ProcessREQ` flow remain unchanged.
+- Added MCP request ID preservation for gateway-generated JSON-RPC errors.
+- Added startup logging showing the configured MCP endpoint and target microservice.
+
+### Configuration
+
+MCP is enabled when both configuration variables are present:
+
+```yaml
+- name: GUFO_MCP_PATH
+  value: "/api/v1/mcp"
+
+- name: GUFO_MCP_MODULE
+  value: "test"
+
 ## 1.30.1 2026-04-25
 - Bug fixed with GRPC Timeout in ENV
 - Add DBConnect with prefix in gufodao - allow multiple DB connection

@@ -276,6 +276,15 @@ func StartService(c *cli.Context) (rtnerr error) {
 	r.Use(otelhttp.NewMiddleware("gufo")) // telemetry tracing
 
 	// Routes
+	mcpPath := viper.GetString("mcp.path")
+    mcpModule := viper.GetString("mcp.module")
+if mcpPath != "" && mcpModule != "" {
+ 
+    r.Handle(mcpPath, http.HandlerFunc(handler.MCP))
+    sf.SetLog(fmt.Sprintf("🔌 MCP endpoint enabled: %s -> %s", mcpPath, mcpModule))
+
+}
+
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/health", handler.Health)
 		r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

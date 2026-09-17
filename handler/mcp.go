@@ -14,17 +14,6 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
-// MCP handles MCP HTTP requests and forwards them to the configured
-// microservice through the existing Gufo gRPC transport.
-//
-// The MCP protocol itself is handled by the target microservice.
-// Gufo only:
-//   1. accepts the MCP HTTP request;
-//   2. wraps the request into pb.Request;
-//   3. marks it as MCP;
-//   4. sends it through the existing gRPC transport;
-//   5. extracts the MCP response;
-//   6. returns the MCP JSON to the HTTP client.
 func MCP(w http.ResponseWriter, r *http.Request) {
 	mcpPath := viper.GetString("mcp.path")
 	mcpModule := viper.GetString("mcp.module")
@@ -34,13 +23,11 @@ func MCP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// MCP JSON-RPC requests are currently accepted via POST.
 	if r.Method != http.MethodPost {
 		http.Error(w, "MCP endpoint requires POST", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Read the complete MCP JSON-RPC request.
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Cannot read MCP request body", http.StatusBadRequest)
@@ -52,32 +39,42 @@ func MCP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate JSON without unmarshalling and re-marshalling it.
-	// The original request bytes are preserved below.
 	if !json.Valid(body) {
 		http.Error(w, "Invalid MCP JSON", http.StatusBadRequest)
 		return
 	}
 
-	// Extract JSON-RPC request ID so that Gufo-generated errors
-	// can preserve the request/response correlation.
 	requestID := extractMCPRequestID(body)
 
-	// Build the standard Gufo request.
-	req := &pb.Request{
-		Module: mcpModule,
-		Path:   mcpPath,
-		Method: pb.Method_METHOD_POST,
-		Auth:   &pb.AuthContext{},
-		Context: &pb.RequestContext{
-			ApiVersion: "v1",
-			Meta: map[string]string{
-				"mcp": "true",
-			},
-		},
+	// Build the standard Gufo request first.
+	// This preserves the same Auth, Sign, IP, User-Agent and
+	// other request initialization used by normal REST requests.
+	req := RequestInit(r)
+
+	// MCP-specific routing.
+	req.Module = mcpModule
+	req.Path = mcpPath
+	req.Method = pb.Method_METHOD_POST
+
+	// Mark the request as MCP for the target microservice.
+	if req.Context == nil {
+		req.Context = &pb.RequestContext{}
 	}
 
-	// Preserve the original MCP JSON bytes as protobuf Any.
+	req.Context.ApiVersion = "v1"
+
+	if req.Context.Meta == nil {
+		req.Context.Meta = make(map[string]string)
+	}
+
+	req.Context.Meta["mcp"] = "true"
+
+	// Preserve the HTTP request ID explicitly.
+	if rid := r.Header.Get("X-Request-ID"); rid != "" {
+		req.Context.RequestId = rid
+	}
+
+	// Store raw MCP JSON in protobuf Any.
 	bytesValue := &wrapperspb.BytesValue{
 		Value: body,
 	}
@@ -88,29 +85,19 @@ func MCP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Preserve authentication information exactly as for normal requests.
+	// Preserve normal Gufo authentication headers.
 	req = fillAuthFromHeaders(req, r)
 
-	// Preserve request metadata.
-	if req.Context == nil {
-		req.Context = &pb.RequestContext{}
-	}
-
-	if req.Context.Meta == nil {
-		req.Context.Meta = make(map[string]string)
-	}
-
-	req.Context.Meta["mcp"] = "true"
-
-	if rid := r.Header.Get("X-Request-ID"); rid != "" {
-		req.Context.RequestId = rid
-	}
-
-	req.Context.Ip = r.RemoteAddr
-	req.Context.UserAgent = r.UserAgent()
-
-	// Use the existing Gufo gRPC transport.
+	// Send the request through the existing Gufo transport.
 	tr := transport.Get()
+
+	fmt.Println(">>> GUFO MCP: calling microservice")
+	fmt.Printf(">>> GUFO MCP: module=%s method=%s path=%s sign_set=%t\n",
+		req.Module,
+		sf.ProtoMethodToString(req.Method),
+		req.Path,
+		req.Auth != nil && req.Auth.Sign != "",
+	)
 
 	resp, err := tr.Call(
 		r.Context(),
@@ -118,6 +105,9 @@ func MCP(w http.ResponseWriter, r *http.Request) {
 		sf.ProtoMethodToString(req.Method),
 		req,
 	)
+
+	fmt.Printf(">>> GUFO MCP: response=%+v err=%v\n", resp, err)
+
 	if err != nil {
 		writeMCPError(
 			w,
@@ -140,8 +130,6 @@ func MCP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// The MCP microservice must return the MCP JSON payload
-	// in response.data["mcp"].
 	mcpAny, ok := resp.Data["mcp"]
 	if !ok || mcpAny == nil {
 		writeMCPError(
@@ -166,42 +154,36 @@ func MCP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return the MCP JSON-RPC response to Hermes.
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-
 	_, _ = w.Write(mcpJSON)
 }
 
-// extractMCPRequestID extracts the JSON-RPC request ID from the original
-// MCP request without changing or reserializing the request body.
-func extractMCPRequestID(body []byte) interface{} {
+func extractMCPRequestID(body []byte) json.RawMessage {
 	var request struct {
-		ID interface{} `json:"id"`
+		ID json.RawMessage `json:"id"`
 	}
 
 	if err := json.Unmarshal(body, &request); err != nil {
 		return nil
 	}
 
+	if len(request.ID) == 0 {
+		return nil
+	}
+
 	return request.ID
 }
 
-// extractMCPBody extracts raw JSON bytes from the Any representation
-// produced by the MCP microservice.
 func extractMCPBody(v *anypb.Any) ([]byte, error) {
 	if v == nil {
 		return nil, fmt.Errorf("nil protobuf Any")
 	}
 
-	// ConvertInterfaceToAny stores JSON bytes inside BytesValue.
 	const bytesValueTypeURL = "type.googleapis.com/google.protobuf.BytesValue"
 
 	if v.TypeUrl != bytesValueTypeURL {
-		return nil, fmt.Errorf(
-			"unexpected Any type: %s",
-			v.TypeUrl,
-		)
+		return nil, fmt.Errorf("unexpected Any type: %s", v.TypeUrl)
 	}
 
 	bytesValue := &wrapperspb.BytesValue{}
@@ -214,7 +196,6 @@ func extractMCPBody(v *anypb.Any) ([]byte, error) {
 		return nil, fmt.Errorf("empty MCP response")
 	}
 
-	// Verify that the microservice returned valid JSON.
 	if !json.Valid(bytesValue.Value) {
 		return nil, fmt.Errorf("MCP response is not valid JSON")
 	}
@@ -222,22 +203,31 @@ func extractMCPBody(v *anypb.Any) ([]byte, error) {
 	return bytesValue.Value, nil
 }
 
-// writeMCPError returns a JSON-RPC error response.
 func writeMCPError(
 	w http.ResponseWriter,
 	httpStatus int,
 	code int,
 	message string,
-	id interface{},
+	id json.RawMessage,
 ) {
-	response := map[string]interface{}{
-		"jsonrpc": "2.0",
-		"id":      id,
-		"error": map[string]interface{}{
-			"code":    code,
-			"message": message,
-		},
+	if len(id) == 0 {
+		id = json.RawMessage("null")
 	}
+
+	response := struct {
+		JSONRPC string          `json:"jsonrpc"`
+		ID      json.RawMessage `json:"id"`
+		Error   struct {
+			Code    int    `json:"code"`
+			Message string `json:"message"`
+		} `json:"error"`
+	}{
+		JSONRPC: "2.0",
+		ID:      id,
+	}
+
+	response.Error.Code = code
+	response.Error.Message = message
 
 	data, err := json.Marshal(response)
 	if err != nil {
@@ -247,6 +237,5 @@ func writeMCPError(
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatus)
-
 	_, _ = w.Write(data)
 }

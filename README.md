@@ -4,7 +4,7 @@
 [![test status](https://github.com/gogufo/gufo-api-gateway/actions/workflows/build.yml/badge.svg)](https://github.com/gogufo/gufo-api-gateway/actions)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gogufo/gufo-api-gateway)](https://goreportcard.com/report/github.com/gogufo/gufo-api-gateway)
 
-**Gufo** (from Italian — *“owl”*) is an open-source, lightweight production-grade **gRPC + REST API Gateway**
+**Gufo** (from Italian — *“owl”*) is an open-source, lightweight production-grade **MCP + gRPC + REST API Gateway**
 for modular microservice architectures.
 Originally designed as a RESTful plugin framework, Gufo has evolved into a secure, flexible, and production-ready gateway
 with a focus on **simplicity**, **security**, and **extensibility**.
@@ -43,15 +43,28 @@ Verified:
 ## ✨ Key Features
 
 * 🧩 **Modular Architecture** — plug in your own gRPC or REST microservices
+
+* 🤖 **MCP Support** — expose microservice capabilities through the Model Context Protocol (MCP), enabling AI assistants and MCP clients to securely interact with backend services
+
 * 🔐 **Secure by Default** — AES-GCM encrypted configs, TLS & mTLS support, and environment-based secrets
+
 * 🚀 **Zero-Config Startup** — Gufo auto-creates a minimal config if missing
+
 * 🧠 **Master-Service Discovery** — dynamic registration of connected microservices
+
 * 🪶 **Lightweight Core** — written in pure Go with minimal dependencies
+
 * 📦 **Docker-Ready** — one-command build and run
-* ⚙️ **Extensible** — easily build your own plugins or sidecar services
+
+* ⚙️ **Extensible** — easily build your own plugins, MCP integrations, or sidecar services
+
 * 📡 **gRPC Connection Pool** — TLS/mTLS, retries, deadlines, keepalive, and per-service timeouts
+
 * 📁 **Streaming & Multi-File Upload** — REST `PUT` → gRPC streaming bridge
+
 * 📊 **Metrics & Telemetry** — Prometheus + OpenTelemetry integration
+
+
 
 ---
 

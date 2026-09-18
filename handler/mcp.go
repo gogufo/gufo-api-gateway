@@ -51,6 +51,18 @@ func MCP(w http.ResponseWriter, r *http.Request) {
 	// other request initialization used by normal REST requests.
 	req := RequestInit(r)
 
+	var mcpMessage struct {
+	Method string `json:"method"`
+	ID     json.RawMessage `json:"id"`
+}
+
+if err := json.Unmarshal(body, &mcpMessage); err != nil {
+	http.Error(w, "Invalid MCP JSON", http.StatusBadRequest)
+	return
+}
+
+isNotification := mcpMessage.Method == "notifications/initialized"
+
 	// MCP-specific routing.
 	req.Module = mcpModule
 	req.Path = mcpPath
@@ -106,7 +118,29 @@ func MCP(w http.ResponseWriter, r *http.Request) {
 		req,
 	)
 
+
 	fmt.Printf(">>> GUFO MCP: response=%+v err=%v\n", resp, err)
+
+	if err != nil {
+    if isNotification {
+        w.WriteHeader(http.StatusBadGateway)
+        return
+    }
+
+    writeMCPError(
+        w,
+        http.StatusBadGateway,
+        -32603,
+        fmt.Sprintf("MCP transport error: %v", err),
+        requestID,
+    )
+    return
+}
+
+if isNotification {
+    w.WriteHeader(http.StatusAccepted)
+    return
+}
 
 	if err != nil {
 		writeMCPError(

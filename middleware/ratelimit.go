@@ -54,15 +54,18 @@ func NewRateLimiter(rps int, refill time.Duration, burst int) *RateLimiter {
 func (rl *RateLimiter) refillTokens() {
 	now := time.Now()
 	elapsed := now.Sub(rl.last)
-	tokensToAdd := int(elapsed / rl.refill)
 
-	if tokensToAdd > 0 {
-		rl.tokens += tokensToAdd
-		if rl.tokens > rl.burst {
-			rl.tokens = rl.burst
-		}
-		rl.last = now
+	tokensToAdd := int(elapsed.Seconds() * float64(rl.rps))
+	if tokensToAdd <= 0 {
+		return
 	}
+
+	rl.tokens += tokensToAdd
+	if rl.tokens > rl.burst {
+		rl.tokens = rl.burst
+	}
+
+	rl.last = now
 }
 
 func (rl *RateLimiter) Before(r *http.Request, ctx context.Context) (context.Context, error) {
